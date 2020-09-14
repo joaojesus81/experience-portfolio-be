@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS experience-portfolio;
-CREATE DATABASE experience-portfolio;
+DROP DATABASE IF EXISTS experience_portfolio;
+CREATE DATABASE experience_portfolio;
 
-DROP DATABASE IF EXISTS experience-portfolio-test;
-CREATE DATABASE experience-portfolio-test;
+DROP DATABASE IF EXISTS experience_portfolio_test;
+CREATE DATABASE experience_portfolio_test;

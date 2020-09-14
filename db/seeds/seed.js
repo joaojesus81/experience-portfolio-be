@@ -1,6 +1,6 @@
 const { projectsData } = require("../data/index.js");
 
-const { formatProjects } = require("../utils/utils");
+const { formatProjects } = require("../utils/dataFormatting.js");
 
 exports.seed = function (knex) {
   console.log("seeding");

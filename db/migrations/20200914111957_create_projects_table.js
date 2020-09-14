@@ -30,6 +30,6 @@ exports.up = function (knex) {
 };
 
 exports.down = function (knex) {
-  console.log("creating projects table");
+  console.log("dropping projects table");
   return knex.schema.dropTable("projects");
 };
