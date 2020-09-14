@@ -4,11 +4,14 @@ const {
   keywordThesaurusData,
   projectsData,
   projectKeywordsData,
+  staffMeta,
+  staffExperience,
 } = require("../data/index.js");
 
-const { formatProjects } = require("../utils/dataFormatting");
+const { formatProjects, filterStaffTime } = require("../utils/dataFormatting");
 
 exports.seed = function (knex) {
+  let projectCodeArray = [];
   console.log("seeding");
   return knex.migrate
     .rollback()
@@ -26,10 +29,24 @@ exports.seed = function (knex) {
         })
         .then(() => {
           const formattedProjects = formatProjects(projectsData);
-          return knex("projects").insert(formattedProjects);
+          return knex("projects")
+            .insert(formattedProjects)
+            .returning("ProjectCode");
+        })
+        .then((projectCodes) => {
+          projectCodeArray = projectCodes;
+          return knex("projectKeywords").insert(projectKeywordsData);
         })
         .then(() => {
-          //return knex("projectKeywords").insert(projectKeywordsData);
+          return knex("staffMeta").insert(staffMeta).returning("StaffID");
+        })
+        .then((staffIDArray) => {
+          const formattedStaff = filterStaffTime(
+            staffExperience,
+            staffIDArray,
+            projectCodeArray
+          );
+          return knex("staffExperience").insert(formattedStaff);
         });
     });
 };

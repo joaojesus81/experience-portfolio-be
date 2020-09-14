@@ -25,3 +25,20 @@ exports.formatProjects = (list) => {
 
   return formattedArray;
 };
+
+exports.formatStaffExperience = (list) => {
+  const filteredArray = list.filter(({ ...object }) => {
+    return typeof object.ProjectCode !== "string";
+  });
+  return filteredArray;
+};
+
+exports.filterStaffTime = (experience, staffnos, projectcodes) => {
+  const filteredArray = experience.filter(({ ...object }) => {
+    return (
+      projectcodes.includes(object.ProjectCode) &&
+      staffnos.includes(object.StaffID)
+    );
+  });
+  return filteredArray;
+};

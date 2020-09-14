@@ -159,7 +159,7 @@ fs.writeFile(
 
 fs.writeFile(
   "./db/data/test/keywordList.json",
-  JSON.stringify(devkeywordList),
+  JSON.stringify(testkeywordList),
   "utf8",
   (err) => {
     if (err) throw err;

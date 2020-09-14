@@ -1,4 +1,4 @@
-const { formatProjects } = require("../dataFormatting.js");
+const { formatProjects, filterStaffTime } = require("../dataFormatting.js");
 
 describe("formatProjects", () => {
   test("Returns a new array", () => {
@@ -257,5 +257,50 @@ describe("formatProjects", () => {
         Confidential: 0,
       },
     ]);
+  });
+});
+
+describe("filterStaffTime", () => {
+  test("Returns a new array", () => {
+    const input = [];
+    const output = filterStaffTime(input);
+    expect(Array.isArray(output)).toBe(true);
+    expect(output).not.toBe(input);
+  });
+  test("Removes projects where staff id or project code aren't present", () => {
+    const exampleExperience = [
+      { ProjectCode: 23796600, StaffID: 59754, TotalHrs: 11.25 },
+      { ProjectCode: 24675700, StaffID: 37704, TotalHrs: 8.75 },
+      { ProjectCode: 24527100, StaffID: 56876, TotalHrs: 66.5 },
+      { ProjectCode: 24675700, StaffID: 56876, TotalHrs: 1223.75 },
+    ];
+    const exampleStaffList = [59754, 56876];
+    const exampleProjectList = [23796600, 24527100];
+    const expectedOutput = [
+      { ProjectCode: 23796600, StaffID: 59754, TotalHrs: 11.25 },
+      { ProjectCode: 24527100, StaffID: 56876, TotalHrs: 66.5 },
+    ];
+    expect(
+      filterStaffTime(exampleExperience, exampleStaffList, exampleProjectList)
+    ).toEqual(expectedOutput);
+  });
+  test("Does not mutate original", () => {
+    const exampleExperience = [
+      { ProjectCode: 23796600, StaffID: 59754, TotalHrs: 11.25 },
+      { ProjectCode: 24675700, StaffID: 37704, TotalHrs: 8.75 },
+      { ProjectCode: 24527100, StaffID: 56876, TotalHrs: 66.5 },
+      { ProjectCode: 24675700, StaffID: 56876, TotalHrs: 1223.75 },
+    ];
+    const exampleStaffList = [59754, 56876];
+    const exampleProjectList = [23796600, 24527100];
+    filterStaffTime(exampleExperience, exampleStaffList, exampleProjectList);
+    expect(exampleExperience).toEqual([
+      { ProjectCode: 23796600, StaffID: 59754, TotalHrs: 11.25 },
+      { ProjectCode: 24675700, StaffID: 37704, TotalHrs: 8.75 },
+      { ProjectCode: 24527100, StaffID: 56876, TotalHrs: 66.5 },
+      { ProjectCode: 24675700, StaffID: 56876, TotalHrs: 1223.75 },
+    ]);
+    expect(exampleStaffList).toEqual([59754, 56876]);
+    expect(exampleProjectList).toEqual([23796600, 24527100]);
   });
 });
