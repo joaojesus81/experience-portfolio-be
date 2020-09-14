@@ -19,9 +19,9 @@ exports.up = function (knex) {
     projectsTable.string("State");
     projectsTable.decimal("Latitude");
     projectsTable.decimal("Longitude");
-    projectsTable.string("ScopeOfService");
-    projectsTable.string("ScopeOfWorks");
-    projectsTable.integer("PercentComplete");
+    projectsTable.text("ScopeOfService");
+    projectsTable.text("ScopeOfWorks");
+    projectsTable.decimal("PercentComplete");
     projectsTable.integer("ClientID");
     projectsTable.string("ClientName");
     projectsTable.string("ProjectURL");

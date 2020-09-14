@@ -12,6 +12,8 @@ exports.up = function (knex) {
     staffMetaTable.string("imgUrl");
     staffMetaTable.date("careerStart");
     staffMetaTable.string("nationality");
+    staffMetaTable.string("highLevelDescription");
+    staffMetaTable.string("valueStatement");
   });
 };
 
