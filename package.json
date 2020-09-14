@@ -1,0 +1,29 @@
+{
+  "name": "experience-portfolio-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup-dbs": "psql -f ./db/setup.sql",
+    "migrate-latest": "knex migrate:latest",
+    "migrate-rollback": "knex migrate:rollback",
+    "seed": "knex seed:run",
+    "make-data": "node ./db/utils/datasetup.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samstyles84/experience-portfolio-be.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samstyles84/experience-portfolio-be/issues"
+  },
+  "homepage": "https://github.com/samstyles84/experience-portfolio-be#readme",
+  "dependencies": {
+    "knex": "^0.21.5",
+    "pg": "^8.3.3"
+  }
+}
