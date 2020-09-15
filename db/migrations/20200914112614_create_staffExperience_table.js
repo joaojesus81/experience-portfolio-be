@@ -7,7 +7,7 @@ exports.up = function (knex) {
       .references("projects.ProjectCode");
     staffExperienceTable.integer("StaffID").references("staffMeta.StaffID");
     staffExperienceTable.decimal("TotalHrs");
-    staffExperienceTable.string("experience");
+    staffExperienceTable.text("experience");
   });
 };
 

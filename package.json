@@ -9,7 +9,8 @@
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",
     "seed": "knex seed:run",
-    "make-data": "node ./db/utils/datasetup.js"
+    "make-data": "node ./db/utils/datasetup.js",
+    "start": "node listen.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,10 @@
   },
   "homepage": "https://github.com/samstyles84/experience-portfolio-be#readme",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "knex": "^0.21.5",
+    "moment": "^2.28.0",
     "pg": "^8.3.3"
   },
   "devDependencies": {

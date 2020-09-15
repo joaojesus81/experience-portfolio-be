@@ -3,8 +3,8 @@ exports.up = function (knex) {
   return knex.schema.createTable("projects", (projectsTable) => {
     projectsTable.integer("ProjectCode").primary().unique().notNullable();
     projectsTable.string("JobNameLong").notNullable();
-    projectsTable.date("StartDate");
-    projectsTable.date("EndDate");
+    projectsTable.timestamp("StartDate");
+    projectsTable.timestamp("EndDate");
     projectsTable.string("CentreName");
     projectsTable.integer("AccountingCentreCode");
     projectsTable.string("PracticeName");
@@ -26,6 +26,7 @@ exports.up = function (knex) {
     projectsTable.string("ClientName");
     projectsTable.string("ProjectURL");
     projectsTable.boolean("Confidential");
+    projectsTable.string("imageURL");
   });
 };
 
