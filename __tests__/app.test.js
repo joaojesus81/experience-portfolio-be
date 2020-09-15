@@ -413,9 +413,103 @@ describe("app", () => {
               expect(msg).toBe("ProjectCode not found");
             });
         });
+        test("PATCH: 200 - amend project details by project code", () => {
+          return request(app)
+            .patch("/api/project/22398800")
+            .send({
+              JobNameLong: "Warrington Time Square",
+              ScopeOfService: "Multi-disciplinary appointment.",
+              Confidential: false,
+            })
+            .expect(200)
+            .then(({ body: { project } }) => {
+              expect(project).toEqual({
+                ProjectCode: 22398800,
+                JobNameLong: "WARRINGTON TIME SQUARE",
+                StartDate: "2012-03-23T12:00:00.000Z",
+                EndDate: "2020-08-30T11:00:00.000Z",
+                CentreName: "Buildings NW & Yorkshire",
+                AccountingCentreCode: 1419,
+                PracticeName: "Building Engineering",
+                BusinessCode: "BC03",
+                BusinessName: "Property",
+                ProjectDirectorID: 29952,
+                ProjectDirectorName: "Matthew Holden",
+                ProjectManagerID: 37704,
+                ProjectManagerName: "Samuel Styles",
+                CountryName: "England",
+                Town: "Warrington",
+                ScopeOfService: "Multi-disciplinary appointment.",
+                ScopeOfWorks:
+                  "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+                Latitude: 53.39,
+                Longitude: -2.6,
+                State: "CHESHIRE",
+                PercentComplete: 100,
+                ClientID: 11276,
+                ClientName: "Muse Developments Ltd",
+                ProjectURL:
+                  "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
+                Confidential: false,
+                imageURL: null,
+              });
+            });
+        });
+        test("PATCH: 404 - ProjectCode doesn't exist in the database", () => {
+          return request(app)
+            .patch("/api/project/9999999")
+            .send({
+              JobNameLong: "Warrington Time Square",
+              ScopeOfService: "Multi-disciplinary appointment.",
+              Confidential: false,
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
+        test("PATCH: 400 - bad ProjectCode", () => {
+          return request(app)
+            .patch("/api/project/wbsq")
+            .send({
+              JobNameLong: "Warrington Time Square",
+              ScopeOfService: "Multi-disciplinary appointment.",
+              Confidential: false,
+            })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("PATCH: 400 - non-existent attribute", () => {
+          return request(app)
+            .patch("/api/project/25397800")
+            .send({
+              newPic: "www.samstyles.com",
+            })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("INVALID METHODS: 405 error", () => {
+          const invalidMethods = ["put", "delete", "post"];
+          const endPoint = "/api/project/25397800";
+          const promises = invalidMethods.map((method) => {
+            return request(app)
+              [method](endPoint)
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("method not allowed!!!");
+              });
+          });
+          return Promise.all(promises);
+        });
+      });
+      describe("/project/staff/:ProjectCode", () => {
         test("PATCH: 200 - add staff experience to project", () => {
           return request(app)
-            .patch("/api/project/22398800?StaffID=37704")
+            .patch("/api/project/staff/22398800?StaffID=37704")
             .send({ experience: "Sam worked really hard on this project." })
             .expect(200)
             .then(({ body: { project } }) => {
@@ -458,7 +552,7 @@ describe("app", () => {
         });
         test("PATCH: 404 - no staff_id provided", () => {
           return request(app)
-            .patch("/api/project/25397800")
+            .patch("/api/project/staff/25397800")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -470,7 +564,7 @@ describe("app", () => {
         });
         test("PATCH: 404 - cannot patch staff experience if no time row exists", () => {
           return request(app)
-            .patch("/api/project/25397800?StaffID=37704")
+            .patch("/api/project/staff/25397800?StaffID=37704")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -484,7 +578,7 @@ describe("app", () => {
         });
         test("PATCH: 404 - staffmember doesn't exist in the database", () => {
           return request(app)
-            .patch("/api/project/25397800?StaffID=99999")
+            .patch("/api/project/staff/25397800?StaffID=99999")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -496,7 +590,7 @@ describe("app", () => {
         });
         test("PATCH: 400 - bad StaffID", () => {
           return request(app)
-            .patch("/api/project/25397800?StaffID=samstyles")
+            .patch("/api/project/staff/25397800?StaffID=samstyles")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -508,7 +602,7 @@ describe("app", () => {
         });
         test("PATCH: 400 - non-existent attribute", () => {
           return request(app)
-            .patch("/api/project/25397800?StaffID=37704")
+            .patch("/api/project/staff/25397800?StaffID=37704")
             .send({
               newPic: "www.samstyles.com",
             })
@@ -519,7 +613,7 @@ describe("app", () => {
         });
         test("PATCH: 404 - ProjectCode doesn't exist in the database", () => {
           return request(app)
-            .patch("/api/project/9999999?StaffID=37704")
+            .patch("/api/project/staff/9999999?StaffID=37704")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -531,7 +625,7 @@ describe("app", () => {
         });
         test("PATCH: 404 - bad ProjectCode", () => {
           return request(app)
-            .patch("/api/project/999999?StaffID=37704")
+            .patch("/api/project/staff/999999?StaffID=37704")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -543,7 +637,7 @@ describe("app", () => {
         });
         test("POST: 201 - adds staff experience  if no time row exists", () => {
           return request(app)
-            .post("/api/project/25397800?StaffID=37704")
+            .post("/api/project/staff/25397800?StaffID=37704")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -561,7 +655,7 @@ describe("app", () => {
         });
         test("POST: 404 - no staff_id provided", () => {
           return request(app)
-            .post("/api/project/25397800")
+            .post("/api/project/staff/25397800")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -573,7 +667,7 @@ describe("app", () => {
         });
         test("POST: 400 - bad StaffID", () => {
           return request(app)
-            .post("/api/project/25397800?StaffID=samstyles")
+            .post("/api/project/staff/25397800?StaffID=samstyles")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -585,7 +679,7 @@ describe("app", () => {
         });
         test("POST: 404 - staffmember doesn't exist in the database", () => {
           return request(app)
-            .post("/api/project/25397800?StaffID=99999")
+            .post("/api/project/staff/25397800?StaffID=99999")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -597,7 +691,7 @@ describe("app", () => {
         });
         test("POST: 404 - experience or TotalHrs missing", () => {
           return request(app)
-            .post("/api/project/25397800?StaffID=37704")
+            .post("/api/project/staff/25397800?StaffID=37704")
             .send({
               experience: "Sam worked really hard on this project.",
             })
@@ -608,7 +702,7 @@ describe("app", () => {
         });
         test("POST: 404 - ProjectCode doesn't exist in the database", () => {
           return request(app)
-            .post("/api/project/9999999?StaffID=37704")
+            .post("/api/project/staff/9999999?StaffID=37704")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -620,7 +714,7 @@ describe("app", () => {
         });
         test("POST: 404 - bad ProjectCode", () => {
           return request(app)
-            .post("/api/project/999999?StaffID=37704")
+            .post("/api/project/staff/999999?StaffID=37704")
             .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
@@ -631,8 +725,8 @@ describe("app", () => {
             });
         });
         test("INVALID METHODS: 405 error", () => {
-          const invalidMethods = ["put", "delete"];
-          const endPoint = "/api/project/25397800";
+          const invalidMethods = ["get", "put", "delete"];
+          const endPoint = "/api/project/staff/25397800";
           const promises = invalidMethods.map((method) => {
             return request(app)
               [method](endPoint)

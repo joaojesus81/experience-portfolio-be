@@ -65,7 +65,6 @@ const fetchStaffMetaByID = (StaffID) => {
 
 const patchStaffMetaByID = (StaffID, metaData) => {
   const columnsToUpdate = Object.keys(metaData);
-  console.log("patching");
 
   //Validate on the front end
   // if (validateColumns(columnsToUpdate)) {

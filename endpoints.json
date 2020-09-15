@@ -118,6 +118,48 @@
     }
   },
   "PATCH /api/project/:ProjectCode": {
+    "description": "amend project details",
+    "examplePatchObject": {
+      "JobNameLong": "Warrington Time Square",
+      "ScopeOfService": "Multi-disciplinary appointment.",
+      "Confidential": false
+    },
+    "exampleResponse": {
+      "project": {
+        "ProjectCode": 22398800,
+        "JobNameLong": "WARRINGTON TIME SQUARE",
+        "StartDate": "2012-03-23T12:00:00.000Z",
+        "EndDate": "2020-08-30T11:00:00.000Z",
+        "CentreName": "Buildings NW & Yorkshire",
+        "AccountingCentreCode": 1419,
+        "PracticeName": "Building Engineering",
+        "BusinessCode": "BC03",
+        "BusinessName": "Property",
+        "ProjectDirectorID": 29952,
+        "ProjectDirectorName": "Matthew Holden",
+        "ProjectManagerID": 37704,
+        "ProjectManagerName": "Samuel Styles",
+        "CountryName": "England",
+        "Town": "Warrington",
+        "ScopeOfService": "Multi-disciplinary appointment.",
+        "ScopeOfWorks": "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+        "Latitude": 53.39,
+        "Longitude": -2.6,
+        "State": "CHESHIRE",
+        "PercentComplete": 100,
+        "ClientID": 11276,
+        "ClientName": "Muse Developments Ltd",
+        "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
+        "Confidential": false,
+        "imageURL": null,
+        "StaffID": 37704,
+        "TotalHrs": 3730.75,
+        "experience": "Sam worked really hard on this project.",
+        "experienceID": 1
+      }
+    }
+  },
+  "PATCH /api/project/staff/:ProjectCode": {
     "description": "add staff experience to project",
     "queries": [{ "StaffID": 37704 }],
     "examplePatchObject": {
@@ -155,6 +197,22 @@
         "TotalHrs": 3730.75,
         "experience": "Sam worked really hard on this project.",
         "experienceID": 1
+      }
+    }
+  },
+  "POST /api/project/staff/:ProjectCode": {
+    "description": "add staff experience to project where their time hasn't come from the Arup system",
+    "queries": [{ "StaffID": 37704 }],
+    "examplePatchObject": {
+      "experience": "Sam worked really hard on this project."
+    },
+    "exampleResponse": {
+      "experience": {
+        "TotalHrs": 5,
+        "experience": "Sam worked really hard on this project.",
+        "experienceID": 50,
+        "ProjectCode": 25397800,
+        "StaffID": 37704
       }
     }
   }

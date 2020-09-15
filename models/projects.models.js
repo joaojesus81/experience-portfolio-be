@@ -120,4 +120,29 @@ const fetchProjectByProjectCode = (ProjectCode, StaffID) => {
   });
 };
 
-module.exports = { fetchProjectsByStaffID, fetchProjectByProjectCode };
+const patchProjectData = (ProjectCode, projectData) => {
+  const columnsToUpdate = Object.keys(projectData);
+
+  if (columnsToUpdate.includes("JobNameLong"))
+    projectData.JobNameLong = projectData.JobNameLong.toUpperCase();
+  if (columnsToUpdate.includes("State"))
+    projectData.State = projectData.State.toUpperCase();
+
+  return knex
+    .from("projects")
+    .where("projects.ProjectCode", ProjectCode)
+    .update(projectData, columnsToUpdate)
+    .then((projects) => {
+      if (projects.length === 0) {
+        return Promise.reject({ status: 404, msg: "ProjectCode not found" });
+      } else {
+        return fetchProjectByProjectCode(ProjectCode);
+      }
+    });
+};
+
+module.exports = {
+  fetchProjectsByStaffID,
+  fetchProjectByProjectCode,
+  patchProjectData,
+};
