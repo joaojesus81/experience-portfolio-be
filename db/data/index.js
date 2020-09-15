@@ -4,10 +4,12 @@ const productionData = require("./prod");
 
 const ENV = process.env.NODE_ENV || "development";
 
+//Note !!! Production set to dev data for now due to size during development!!
+
 if (ENV === "development") {
   exportData = developmentData;
 } else if (ENV === "production") {
-  exportData = productionData;
+  exportData = developmentData;
 } else {
   exportData = testData;
 }
