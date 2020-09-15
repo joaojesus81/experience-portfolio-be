@@ -2,7 +2,19 @@ const {
   fetchProjectsByStaffID,
   fetchProjectByProjectCode,
   patchProjectData,
+  fetchProjects,
 } = require("../models/projects.models");
+
+const sendProjects = (req, res, next) => {
+  const filters = req.query;
+  fetchProjects(filters)
+    .then((projects) => {
+      res.status(200).send({ projects });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
 
 const sendProjectsByStaffID = (req, res, next) => {
   const { StaffID } = req.params;
@@ -44,4 +56,5 @@ module.exports = {
   sendProjectsByStaffID,
   sendProjectByProjectCode,
   updateProjectDetails,
+  sendProjects,
 };

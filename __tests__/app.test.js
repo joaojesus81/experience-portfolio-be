@@ -228,23 +228,116 @@ describe("app", () => {
       });
     });
     describe("/projects", () => {
+      test("GET: 200 - returns a list of all projects", () => {
+        return request(app)
+          .get("/api/projects")
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                }),
+              ])
+            );
+          });
+      });
+      test("GET: 200 - returns a list of all projects filtered by ClientName", () => {
+        return request(app)
+          .get("/api/projects?ClientName=Network Rail Limited")
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            console.log(projects);
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(2);
+            projects.forEach((project) => {
+              expect(project.ClientName).toBe("Network Rail Limited");
+            });
+          });
+      });
+      test("GET: 200 - filter also accepts other properties", () => {
+        return request(app)
+          .get("/api/projects?PracticeName=Building Engineering")
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            console.log(projects);
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(31);
+            projects.forEach((project) => {
+              expect(project.PracticeName).toBe("Building Engineering");
+            });
+          });
+      });
+      test("GET: 200 - filter works with multiple properties", () => {
+        return request(app)
+          .get(
+            "/api/projects?PracticeName=Building Engineering&ClientName=Muse Developments Ltd"
+          )
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            console.log(projects);
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(2);
+            projects.forEach((project) => {
+              expect(project.PracticeName).toBe("Building Engineering");
+              expect(project.ClientName).toBe("Muse Developments Ltd");
+            });
+          });
+      });
       describe("/projects/staff/:StaffID", () => {
         test("GET: 200 - check staffmember exists and fetch project list for an individual", () => {
           return request(app)
             .get("/api/projects/staff/37704")
             .expect(200)
             .then(({ body: { projects } }) => {
+              console.log(projects);
               expect(projects).toEqual(
                 expect.arrayContaining([
                   expect.objectContaining({
                     ProjectCode: expect.any(Number),
-                    StaffID: 37704,
+                    StaffID: expect.any(Number),
                     TotalHrs: expect.any(Number),
                     experience: null,
                     experienceID: expect.any(Number),
                   }),
                 ])
               );
+              projects.forEach((project) => {
+                expect(project.StaffID).toBe(37704);
+              });
             });
         });
         test("GET: 200 - check staffmember exists and fetch project details for an individual", () => {
@@ -256,7 +349,7 @@ describe("app", () => {
                 expect.arrayContaining([
                   expect.objectContaining({
                     ProjectCode: expect.any(Number),
-                    StaffID: 37704,
+                    StaffID: expect.any(Number),
                     TotalHrs: expect.any(Number),
                     experience: null,
                     experienceID: expect.any(Number),
@@ -265,6 +358,10 @@ describe("app", () => {
                   }),
                 ])
               );
+              expect(projects.length).toBe(17);
+              projects.forEach((project) => {
+                expect(project.StaffID).toBe(37704);
+              });
             });
         });
         test("GET: 404 - staffmember doesn't exist in the database", () => {

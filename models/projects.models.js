@@ -45,6 +45,27 @@ const parseDecimals = (projectArray) => {
   return formatttedProjects;
 };
 
+const fetchProjects = (filters) => {
+  console.log(filters);
+  return knex
+    .select("*")
+    .from("projects")
+    .returning("*")
+    .modify((query) => {
+      query.where(filters);
+    })
+    .then((projects) => {
+      if (projects.length === 0) {
+        return Promise.reject({
+          status: 200,
+          msg: "No matching projects found",
+        });
+      } else {
+        return parseDecimals(projects);
+      }
+    });
+};
+
 const fetchProjectsByStaffID = (StaffID, showDetails) => {
   // We need sortBy and an order.
   // We need to filter by hours > a certain amount.
@@ -64,9 +85,9 @@ const fetchProjectsByStaffID = (StaffID, showDetails) => {
               "staffExperience.ProjectCode",
               "projects.ProjectCode"
             )
-            .where("staffExperience.StaffID", StaffID)
             .orderBy("projects.ProjectCode", "asc");
       })
+      .where("staffExperience.StaffID", StaffID)
       .returning("*")
       .then((projects) => {
         if (projects.length === 0) {
@@ -145,4 +166,5 @@ module.exports = {
   fetchProjectsByStaffID,
   fetchProjectByProjectCode,
   patchProjectData,
+  fetchProjects,
 };
