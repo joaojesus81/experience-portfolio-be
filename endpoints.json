@@ -2,6 +2,28 @@
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
+  "GET /api/projects": {
+    "description": "serves up an array of all projects",
+    "queries": "Accepts all properties of a project as a query, e.g: '/api/projects?ClientName=Network Rail Limited'.  Multiple queries can be included; they are matched with AND, not OR.",
+    "exampleResponse": {
+      "projects": [
+        {
+          "ProjectCode": 22398800,
+          "StaffID": 37704,
+          "TotalHrs": 100,
+          "experience": null,
+          "experienceID": 1
+        },
+        {
+          "ProjectCode": 246259,
+          "StaffID": 37704,
+          "TotalHrs": 200,
+          "experience": null,
+          "experienceID": 2
+        }
+      ]
+    }
+  },
   "GET /api/staff/meta/:StaffID": {
     "description": "fetch meta data for an individual",
     "exampleResponse": {
@@ -57,9 +79,13 @@
       }
     }
   },
+
   "GET /api/projects/staff/:StaffID": {
     "description": "serves up project list for an individual",
-    "queries": [{ "showDetails": false }],
+    "queries": [
+      "showDetails=true",
+      "OR accepts all properties of a project as queries, e.g: '/api/projects/staff/37704?ClientName=Muse Developments Ltd'.  Multiple queries can be included; they are matched with AND, not OR."
+    ],
     "exampleResponse": {
       "projects": [
         {
@@ -81,7 +107,7 @@
   },
   "GET /api/project/:ProjectCode": {
     "description": "get project details by project code",
-    "queries": [{ "StaffID": 37704 }],
+    "queries": ["StaffID=37704"],
     "exampleResponse": {
       "project": {
         "ProjectCode": 22398800,
@@ -161,7 +187,7 @@
   },
   "PATCH /api/project/staff/:ProjectCode": {
     "description": "add staff experience to project",
-    "queries": [{ "StaffID": 37704 }],
+    "queries": ["StaffID=37704"],
     "examplePatchObject": {
       "experience": "Sam worked really hard on this project."
     },
@@ -202,7 +228,7 @@
   },
   "POST /api/project/staff/:ProjectCode": {
     "description": "add staff experience to project where their time hasn't come from the Arup system",
-    "queries": [{ "StaffID": 37704 }],
+    "queries": ["StaffID=37704"],
     "examplePatchObject": {
       "experience": "Sam worked really hard on this project."
     },

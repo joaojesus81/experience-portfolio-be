@@ -250,7 +250,6 @@ describe("app", () => {
           .get("/api/projects?ClientName=Network Rail Limited")
           .expect(200)
           .then(({ body: { projects } }) => {
-            console.log(projects);
             expect(projects).toEqual(
               expect.arrayContaining([
                 expect.objectContaining({
@@ -273,7 +272,6 @@ describe("app", () => {
           .get("/api/projects?PracticeName=Building Engineering")
           .expect(200)
           .then(({ body: { projects } }) => {
-            console.log(projects);
             expect(projects).toEqual(
               expect.arrayContaining([
                 expect.objectContaining({
@@ -298,7 +296,6 @@ describe("app", () => {
           )
           .expect(200)
           .then(({ body: { projects } }) => {
-            console.log(projects);
             expect(projects).toEqual(
               expect.arrayContaining([
                 expect.objectContaining({
@@ -316,6 +313,27 @@ describe("app", () => {
               expect(project.ClientName).toBe("Muse Developments Ltd");
             });
           });
+      });
+      test("GET: 400 - nonsense filter ", () => {
+        return request(app)
+          .get("/api/projects?Sam=Cool")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("bad request to db!!!");
+          });
+      });
+      test("INVALID METHODS: 405 error", () => {
+        const invalidMethods = ["put", "patch", "post", "delete"];
+        const endPoint = "/api/projects";
+        const promises = invalidMethods.map((method) => {
+          return request(app)
+            [method](endPoint)
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("method not allowed!!!");
+            });
+        });
+        return Promise.all(promises);
       });
       describe("/projects/staff/:StaffID", () => {
         test("GET: 200 - check staffmember exists and fetch project list for an individual", () => {
@@ -364,6 +382,87 @@ describe("app", () => {
               });
             });
         });
+        test("GET: 200 - list can be filtered ", () => {
+          //note: show details will be set to true if filters are used since most of the filter categories are in the detailed part)
+          return request(app)
+            .get("/api/projects/staff/37704?ClientName=Muse Developments Ltd")
+            .expect(200)
+            .then(({ body: { projects } }) => {
+              console.log(projects);
+              expect(projects).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    ProjectCode: expect.any(Number),
+                    StaffID: expect.any(Number),
+                    TotalHrs: expect.any(Number),
+                    experience: null,
+                    experienceID: expect.any(Number),
+                    JobNameLong: expect.any(String),
+                    ClientName: expect.any(String),
+                  }),
+                ])
+              );
+              projects.forEach((project) => {
+                expect(project.StaffID).toBe(37704);
+                expect(project.ClientName).toBe("Muse Developments Ltd");
+              });
+              expect(projects.length).toBe(2);
+            });
+        });
+        test("GET: 200 - works with other filters ", () => {
+          return request(app)
+            .get("/api/projects/staff/56876?BusinessCode=BC14")
+            .expect(200)
+            .then(({ body: { projects } }) => {
+              console.log(projects);
+              expect(projects).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    ProjectCode: expect.any(Number),
+                    StaffID: expect.any(Number),
+                    TotalHrs: expect.any(Number),
+                    experience: null,
+                    experienceID: expect.any(Number),
+                    JobNameLong: expect.any(String),
+                    ClientName: expect.any(String),
+                  }),
+                ])
+              );
+              projects.forEach((project) => {
+                expect(project.StaffID).toBe(56876);
+                expect(project.BusinessCode).toBe("BC14");
+              });
+              expect(projects.length).toBe(3);
+            });
+        });
+        test("GET: 200 - filters work with show details ", () => {
+          return request(app)
+            .get(
+              "/api/projects/staff/37704?ClientName=Muse Developments Ltd&showDetails=false"
+            )
+            .expect(200)
+            .then(({ body: { projects } }) => {
+              console.log(projects);
+              expect(projects).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    ProjectCode: expect.any(Number),
+                    StaffID: expect.any(Number),
+                    TotalHrs: expect.any(Number),
+                    experience: null,
+                    experienceID: expect.any(Number),
+                    JobNameLong: expect.any(String),
+                    ClientName: expect.any(String),
+                  }),
+                ])
+              );
+              projects.forEach((project) => {
+                expect(project.StaffID).toBe(37704);
+                expect(project.ClientName).toBe("Muse Developments Ltd");
+              });
+              expect(projects.length).toBe(2);
+            });
+        });
         test("GET: 404 - staffmember doesn't exist in the database", () => {
           const apiString = `/api/projects/staff/99999`;
           return request(app)
@@ -376,6 +475,14 @@ describe("app", () => {
         test("GET: 400 - bad StaffID", () => {
           return request(app)
             .get("/api/projects/staff/samstyles")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("GET: 400 - nonsense filter ", () => {
+          return request(app)
+            .get("/api/projects/staff/37704?Sam=Cool")
             .expect(400)
             .then(({ body: { msg } }) => {
               expect(msg).toBe("bad request to db!!!");

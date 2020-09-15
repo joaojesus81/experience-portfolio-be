@@ -46,7 +46,6 @@ const parseDecimals = (projectArray) => {
 };
 
 const fetchProjects = (filters) => {
-  console.log(filters);
   return knex
     .select("*")
     .from("projects")
@@ -66,10 +65,15 @@ const fetchProjects = (filters) => {
     });
 };
 
-const fetchProjectsByStaffID = (StaffID, showDetails) => {
+const fetchProjectsByStaffID = (StaffID, filters) => {
   // We need sortBy and an order.
-  // We need to filter by hours > a certain amount.
-  // We need to filter by
+  let showDetails = false;
+  if (Object.keys(filters).includes("showDetails")) {
+    showDetails = filters.showDetails;
+    delete filters.showDetails;
+  }
+
+  const filterKeys = Object.keys(filters);
 
   return checkStaffIDExists(StaffID).then((staffExists) => {
     if (!staffExists)
@@ -78,7 +82,7 @@ const fetchProjectsByStaffID = (StaffID, showDetails) => {
       .select("*")
       .from("staffExperience")
       .modify((query) => {
-        if (showDetails)
+        if (showDetails || filterKeys.length > 0) {
           query
             .leftJoin(
               "projects",
@@ -86,6 +90,12 @@ const fetchProjectsByStaffID = (StaffID, showDetails) => {
               "projects.ProjectCode"
             )
             .orderBy("projects.ProjectCode", "asc");
+        }
+      })
+      .modify((query) => {
+        if (filterKeys.length > 0) {
+          query.where(filters);
+        }
       })
       .where("staffExperience.StaffID", StaffID)
       .returning("*")

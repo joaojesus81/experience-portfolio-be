@@ -18,8 +18,8 @@ const sendProjects = (req, res, next) => {
 
 const sendProjectsByStaffID = (req, res, next) => {
   const { StaffID } = req.params;
-  const { showDetails = false } = req.query;
-  fetchProjectsByStaffID(StaffID, showDetails)
+  const filters = req.query;
+  fetchProjectsByStaffID(StaffID, filters)
     .then((projects) => {
       res.status(200).send({ projects });
     })
