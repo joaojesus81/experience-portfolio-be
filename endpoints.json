@@ -1,5 +1,161 @@
 {
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
+  },
+  "GET /api/staff/meta/:StaffID": {
+    "description": "fetch meta data for an individual",
+    "exampleResponse": {
+      "staffMeta": {
+        "StaffID": 37704,
+        "StaffName": "Samuel Styles",
+        "Email": "Sam.Styles@arup.com",
+        "LocationName": "Manchester Office",
+        "StartDate": "2007-09-05T23:00:00.000Z",
+        "JobTitle": "Senior Engineer",
+        "GradeLevel": 6,
+        "DisciplineName": "Structural Engineering",
+        "imgUrl": null,
+        "careerStart": null,
+        "nationality": null,
+        "highLevelDescription": null,
+        "valueStatement": null,
+        "qualifications": null,
+        "professionalAssociations": null,
+        "committees": null,
+        "publications": null
+      }
+    }
+  },
+  "PATCH /api/staff/meta/:StaffID": {
+    "description": "updates staff metadata for an individual",
+    "examplePatchObject": {
+      "imgUrl": "www.samstyles.com",
+      "careerStart": "2007-09-05T21:00:00.000Z",
+      "highLevelDescription": "Sam operates at a VERY high level",
+      "valueStatement": "Sam adds lots of value",
+      "nationality": "British"
+    },
+    "exampleResponse": {
+      "staffMeta": {
+        "StaffID": 37704,
+        "StaffName": "Samuel Styles",
+        "Email": "Sam.Styles@arup.com",
+        "LocationName": "Manchester Office",
+        "StartDate": "2007-09-05T23:00:00.000Z",
+        "JobTitle": "Senior Engineer",
+        "GradeLevel": 6,
+        "DisciplineName": "Structural Engineering",
+        "imgUrl": "www.samstyles.com",
+        "careerStart": "2007-09-05T21:00:00.000Z",
+        "highLevelDescription": "Sam operates at a VERY high level",
+        "valueStatement": "Sam adds lots of value",
+        "nationality": "British",
+        "qualifications": null,
+        "professionalAssociations": null,
+        "committees": null,
+        "publications": null
+      }
+    }
+  },
+  "GET /api/projects/staff/:StaffID": {
+    "description": "serves up project list for an individual",
+    "queries": [{ "showDetails": false }],
+    "exampleResponse": {
+      "projects": [
+        {
+          "ProjectCode": 22398800,
+          "StaffID": 37704,
+          "TotalHrs": 100,
+          "experience": null,
+          "experienceID": 1
+        },
+        {
+          "ProjectCode": 246259,
+          "StaffID": 37704,
+          "TotalHrs": 200,
+          "experience": null,
+          "experienceID": 2
+        }
+      ]
+    }
+  },
+  "GET /api/project/:ProjectCode": {
+    "description": "get project details by project code",
+    "queries": [{ "StaffID": 37704 }],
+    "exampleResponse": {
+      "project": {
+        "ProjectCode": 22398800,
+        "JobNameLong": "WARRINGTON TOWN CENTRE REDEVELOPMENT",
+        "StartDate": "2012-03-23T12:00:00.000Z",
+        "EndDate": "2020-08-30T11:00:00.000Z",
+        "CentreName": "Buildings NW & Yorkshire",
+        "AccountingCentreCode": 1419,
+        "PracticeName": "Building Engineering",
+        "BusinessCode": "BC03",
+        "BusinessName": "Property",
+        "ProjectDirectorID": 29952,
+        "ProjectDirectorName": "Matthew Holden",
+        "ProjectManagerID": 37704,
+        "ProjectManagerName": "Samuel Styles",
+        "CountryName": "England",
+        "Town": "Warrington",
+        "ScopeOfService": "Multi-disciplinary appointment, initially in support of bid, then project delivery if Muse are successful.",
+        "ScopeOfWorks": "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+        "Latitude": 53.39,
+        "Longitude": -2.6,
+        "State": "CHESHIRE",
+        "PercentComplete": 100,
+        "ClientID": 11276,
+        "ClientName": "Muse Developments Ltd",
+        "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
+        "Confidential": true,
+        "imageURL": null,
+        "StaffID": 37704,
+        "TotalHrs": 3730.75,
+        "experience": null,
+        "experienceID": 1
+      }
+    }
+  },
+  "PATCH /api/project/:ProjectCode": {
+    "description": "add staff experience to project",
+    "queries": [{ "StaffID": 37704 }],
+    "examplePatchObject": {
+      "experience": "Sam worked really hard on this project."
+    },
+    "exampleResponse": {
+      "project": {
+        "ProjectCode": 22398800,
+        "JobNameLong": "WARRINGTON TOWN CENTRE REDEVELOPMENT",
+        "StartDate": "2012-03-23T12:00:00.000Z",
+        "EndDate": "2020-08-30T11:00:00.000Z",
+        "CentreName": "Buildings NW & Yorkshire",
+        "AccountingCentreCode": 1419,
+        "PracticeName": "Building Engineering",
+        "BusinessCode": "BC03",
+        "BusinessName": "Property",
+        "ProjectDirectorID": 29952,
+        "ProjectDirectorName": "Matthew Holden",
+        "ProjectManagerID": 37704,
+        "ProjectManagerName": "Samuel Styles",
+        "CountryName": "England",
+        "Town": "Warrington",
+        "ScopeOfService": "Multi-disciplinary appointment, initially in support of bid, then project delivery if Muse are successful.",
+        "ScopeOfWorks": "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+        "Latitude": 53.39,
+        "Longitude": -2.6,
+        "State": "CHESHIRE",
+        "PercentComplete": 100,
+        "ClientID": 11276,
+        "ClientName": "Muse Developments Ltd",
+        "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
+        "Confidential": true,
+        "imageURL": null,
+        "StaffID": 37704,
+        "TotalHrs": 3730.75,
+        "experience": "Sam worked really hard on this project.",
+        "experienceID": 1
+      }
+    }
   }
 }

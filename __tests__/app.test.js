@@ -440,6 +440,18 @@ describe("app", () => {
               });
             });
         });
+        test("PATCH: 404 - no staff_id provided", () => {
+          return request(app)
+            .patch("/api/project/25397800")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("No staff id provided!!!");
+            });
+        });
         test("PATCH: 404 - cannot patch staff experience if no time row exists", () => {
           return request(app)
             .patch("/api/project/25397800?StaffID=37704")

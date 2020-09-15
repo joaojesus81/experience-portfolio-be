@@ -1,5 +1,4 @@
 const knex = require("../connection");
-//const { formatAxiosDates } = require("../utils");
 
 const { fetchProjectByProjectCode } = require("./projects.models");
 
@@ -70,6 +69,11 @@ const patchStaffMetaByID = (StaffID, metaData) => {
 };
 
 const patchStaffExperienceOnProject = (ProjectCode, StaffID, experience) => {
+  if (!StaffID)
+    return Promise.reject({
+      status: 404,
+      msg: "No staff id provided!!!",
+    });
   return checkStaffIDExists(StaffID).then(() => {
     const columnsToUpdate = Object.keys(experience);
     return knex
