@@ -397,6 +397,22 @@ describe("app", () => {
               expect(msg).toBe("bad request to db!!!");
             });
         });
+        test("GET: 400 - bad ProjectCode", () => {
+          return request(app)
+            .get("/api/project/WBSQ?StaffID=37704")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("GET: 404 - ProjectCode doesn't exist in the database", () => {
+          return request(app)
+            .get("/api/project/9999999?StaffID=37704")
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
         test("PATCH: 200 - add staff experience to project", () => {
           return request(app)
             .patch("/api/project/22398800?StaffID=37704")
@@ -501,8 +517,121 @@ describe("app", () => {
               expect(msg).toBe("bad request to db!!!");
             });
         });
+        test("PATCH: 404 - ProjectCode doesn't exist in the database", () => {
+          return request(app)
+            .patch("/api/project/9999999?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
+        test("PATCH: 404 - bad ProjectCode", () => {
+          return request(app)
+            .patch("/api/project/999999?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
+        test("POST: 201 - adds staff experience  if no time row exists", () => {
+          return request(app)
+            .post("/api/project/25397800?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(200)
+            .then(({ body: { experience } }) => {
+              expect(experience).toEqual({
+                TotalHrs: 5,
+                experience: "Sam worked really hard on this project.",
+                experienceID: expect.any(Number),
+                ProjectCode: 25397800,
+                StaffID: 37704,
+              });
+            });
+        });
+        test("POST: 404 - no staff_id provided", () => {
+          return request(app)
+            .post("/api/project/25397800")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("No staff id provided!!!");
+            });
+        });
+        test("POST: 400 - bad StaffID", () => {
+          return request(app)
+            .post("/api/project/25397800?StaffID=samstyles")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("POST: 404 - staffmember doesn't exist in the database", () => {
+          return request(app)
+            .post("/api/project/25397800?StaffID=99999")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("StaffID not found");
+            });
+        });
+        test("POST: 404 - experience or TotalHrs missing", () => {
+          return request(app)
+            .post("/api/project/25397800?StaffID=37704")
+            .send({
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("Missing attributes!!!");
+            });
+        });
+        test("POST: 404 - ProjectCode doesn't exist in the database", () => {
+          return request(app)
+            .post("/api/project/9999999?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
+        test("POST: 404 - bad ProjectCode", () => {
+          return request(app)
+            .post("/api/project/999999?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
         test("INVALID METHODS: 405 error", () => {
-          const invalidMethods = ["put", "post", "delete"];
+          const invalidMethods = ["put", "delete"];
           const endPoint = "/api/project/25397800";
           const promises = invalidMethods.map((method) => {
             return request(app)
@@ -514,50 +643,6 @@ describe("app", () => {
           });
           return Promise.all(promises);
         });
-        // test("POST: 201 - adds staff experience  if no time row exists", () => {
-        //   return request(app)
-        //     .post("/api/project/25397800?StaffID=37704")
-        //     .send({
-        //       TotalHrs: 5,
-        //       experience: "Sam worked really hard on this project.",
-        //     })
-        //     .expect(200)
-        //     .then(({ body: { project } }) => {
-        //       expect(project).toEqual({
-        //         ProjectCode: 25397800,
-        //         JobNameLong: "JLR PROJECT CHURCHILL CONSTRUCTION STAGE",
-        //         StartDate: "14/02/2017",
-        //         EndDate: "31/03/2020",
-        //         CentreName: "Buildings Midlands",
-        //         AccountingCentreCode: "01181",
-        //         PracticeName: "Building Engineering",
-        //         BusinessCode: "BC17",
-        //         BusinessName: "Science, Industry & Technology",
-        //         ProjectDirectorID: 7389,
-        //         ProjectDirectorName: "Daniel Goodreid",
-        //         ProjectManagerID: 42621,
-        //         ProjectManagerName: "Philip Hives",
-        //         CountryName: "England",
-        //         Town: "COVENTRY",
-        //         ScopeOfService:
-        //           "Civil, structural, mechanical, electrical, and public health engineering, geotechnical, fire, and acoustics services. Preparation of technical design (RIBA Stage 4) for a D&B Contractor (Skanska).",
-        //         ScopeOfWorks:
-        //           "NB: External enquiries to be directed to the main contractor.\n\nJaguar Land Rover (JLR) approached Arup to assist in realising their vision for the Coventry site to become a world class powertrain centre of excellence, providing high quality powertrain solutions to meet their global product cycle plan. Following the tendering stage Arup was appointed by the contractor as multi-disciplinary engineering designers in charge of technical design (RIBA Stage 4) Drawing on our successful delivery of the Engine Manufacturing Centre in Wolverhampton, Arup provided multi-disciplinary designs for the creation of a new Powertrain and Development Centre to incorporate testing and support facilities including: Powertrain Test Cells; Chassis Dynamometer Test Cells; Cycle Simulation Test Cells; Mechanical Development Test Cells; Calibration / Performance & Emission Test Cells; Component Testing; Hybrid Test Cells; Support Areas and Office Accommodation for Powertrain Engineers.\n\nThe project achieved a BREEAM rating of excellence.",
-        //         Latitude: 52.381111,
-        //         Longitude: -1.486389,
-        //         State: "WEST MIDLANDS",
-        //         PercentComplete: 100,
-        //         ClientID: 8868,
-        //         ClientName: "Skanska Construction Company Ltd",
-        //         ProjectURL:
-        //           "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=25397800",
-        //         Confidential: 0,
-        //         TotalHrs: null,
-        //         experience: "Sam worked really hard on this project.",
-        //         experienceID: expect.any(Number),
-        //       });
-        //     });
-        // });
       });
     });
   });

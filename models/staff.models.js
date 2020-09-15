@@ -2,31 +2,51 @@ const knex = require("../connection");
 
 const { fetchProjectByProjectCode } = require("./projects.models");
 
-//Validate on the front end
-// function validateColumns(columnsToUpdate) {
-//   return (
-//     columnsToUpdate.includes("StaffName") ||
-//     columnsToUpdate.includes("Email") ||
-//     columnsToUpdate.includes("LocationName") ||
-//     columnsToUpdate.includes("StartDate") ||
-//     columnsToUpdate.includes("JobTitle") ||
-//     columnsToUpdate.includes("GradeLevel") ||
-//     columnsToUpdate.includes("DisciplineName")
-//   );
-// }
-
-const checkStaffIDExists = (StaffID) => {
+const checkStaffIDExists = (StaffID = 0) => {
   return knex
     .select("StaffID")
     .from("staffMeta")
     .where("staffMeta.StaffID", StaffID)
     .then((staffMeta) => {
       if (staffMeta.length === 0) {
-        return Promise.reject({ status: 404, msg: "StaffID not found" });
+        return false;
       } else {
         return true;
       }
     });
+};
+
+const checkProjectCodeExists = (ProjectCode) => {
+  return knex
+    .select("ProjectCode")
+    .from("projects")
+    .where("projects.ProjectCode", ProjectCode)
+    .then((projects) => {
+      if (projects.length === 0) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+};
+
+const validateStaffExperience = (ProjectCode, StaffID) => {
+  if (!StaffID)
+    return Promise.reject({
+      status: 404,
+      msg: "No staff id provided!!!",
+    });
+  return checkStaffIDExists(StaffID).then((staffExists) => {
+    if (!staffExists) {
+      return Promise.reject({ status: 404, msg: "StaffID not found" });
+    }
+    return checkProjectCodeExists(ProjectCode).then((projectExists) => {
+      if (!projectExists) {
+        return Promise.reject({ status: 404, msg: "ProjectCode not found" });
+      }
+      return true;
+    });
+  });
 };
 
 const fetchStaffMetaByID = (StaffID) => {
@@ -69,12 +89,7 @@ const patchStaffMetaByID = (StaffID, metaData) => {
 };
 
 const patchStaffExperienceOnProject = (ProjectCode, StaffID, experience) => {
-  if (!StaffID)
-    return Promise.reject({
-      status: 404,
-      msg: "No staff id provided!!!",
-    });
-  return checkStaffIDExists(StaffID).then(() => {
+  return validateStaffExperience(ProjectCode, StaffID).then((isValid) => {
     const columnsToUpdate = Object.keys(experience);
     return knex
       .from("staffExperience")
@@ -94,8 +109,41 @@ const patchStaffExperienceOnProject = (ProjectCode, StaffID, experience) => {
   });
 };
 
+const postStaffExperienceOnProject = (ProjectCode, StaffID, experience) => {
+  return validateStaffExperience(ProjectCode, StaffID).then((isValid) => {
+    const columnsToUpdate = Object.keys(experience);
+
+    if (
+      !columnsToUpdate.includes("experience") ||
+      !columnsToUpdate.includes("TotalHrs")
+    ) {
+      return Promise.reject({
+        status: 404,
+        msg: "Missing attributes!!!",
+      });
+    }
+
+    const experienceToInsert = {
+      TotalHrs: experience.TotalHrs,
+      StaffID: StaffID,
+      ProjectCode: ProjectCode,
+      experience: experience.experience,
+    };
+
+    return knex("staffExperience")
+      .insert(experienceToInsert)
+      .returning("*")
+      .then((experienceArray) => {
+        const newExperience = experienceArray[0];
+        newExperience.TotalHrs = parseFloat(newExperience.TotalHrs);
+        return newExperience;
+      });
+  });
+};
+
 module.exports = {
   fetchStaffMetaByID,
   patchStaffMetaByID,
   patchStaffExperienceOnProject,
+  postStaffExperienceOnProject,
 };

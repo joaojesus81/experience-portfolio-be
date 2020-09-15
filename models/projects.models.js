@@ -14,6 +14,20 @@ const checkStaffIDExists = (StaffID = 0) => {
     });
 };
 
+const checkProjectCodeExists = (ProjectCode) => {
+  return knex
+    .select("ProjectCode")
+    .from("projects")
+    .where("projects.ProjectCode", ProjectCode)
+    .then((projects) => {
+      if (projects.length === 0) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+};
+
 const parseDecimals = (projectArray) => {
   formatttedProjects = projectArray.map((project) => {
     for (dataField in project) {
@@ -72,7 +86,10 @@ const fetchProjectByProjectCode = (ProjectCode, StaffID) => {
     if (!staffExists && StaffID)
       return Promise.reject({ status: 404, msg: "StaffID not found" });
 
-    return checkStaffIDExists(StaffID).then(() => {
+    return checkProjectCodeExists(ProjectCode).then((projectExists) => {
+      if (!projectExists)
+        return Promise.reject({ status: 404, msg: "ProjectCode not found" });
+
       return knex
         .select("*")
         .from("projects")

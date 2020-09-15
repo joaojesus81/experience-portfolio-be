@@ -2,6 +2,7 @@ const {
   fetchStaffMetaByID,
   patchStaffMetaByID,
   patchStaffExperienceOnProject,
+  postStaffExperienceOnProject,
 } = require("../models/staff.models");
 
 const sendStaffMetaByID = (req, res, next) => {
@@ -40,8 +41,22 @@ const updateStaffExperienceOnProject = (req, res, next) => {
     });
 };
 
+const addStaffExperienceOnProject = (req, res, next) => {
+  const { ProjectCode } = req.params;
+  const { StaffID } = req.query;
+  const experience = req.body;
+  postStaffExperienceOnProject(ProjectCode, StaffID, experience)
+    .then((experience) => {
+      res.status(200).send({ experience });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports = {
   sendStaffMetaByID,
   updateStaffMetaByID,
   updateStaffExperienceOnProject,
+  addStaffExperienceOnProject,
 };

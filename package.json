@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test && jest",
+    "test": "NODE_ENV=test && jest --runInBand",
     "setup-dbs": "psql -f ./db/setup.sql",
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",
