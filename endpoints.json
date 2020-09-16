@@ -24,6 +24,33 @@
       ]
     }
   },
+  "GET /api/staff/meta": {
+    "description": "fetch meta data for all staff; can be filtered by any staff meta key",
+    "queries": ["GradeLevel=6", "accepts any staff meta key(s)"],
+    "exampleResponse": {
+      "staffMeta": [
+        {
+          "StaffID": 37704,
+          "StaffName": "Samuel Styles",
+          "Email": "Sam.Styles@arup.com",
+          "LocationName": "Manchester Office",
+          "StartDate": "2007-09-05T23:00:00.000Z",
+          "JobTitle": "Senior Engineer",
+          "GradeLevel": 6,
+          "DisciplineName": "Structural Engineering",
+          "imgUrl": null,
+          "careerStart": null,
+          "nationality": null,
+          "highLevelDescription": null,
+          "valueStatement": null,
+          "qualifications": null,
+          "professionalAssociations": null,
+          "committees": null,
+          "publications": null
+        }
+      ]
+    }
+  },
   "GET /api/staff/meta/:StaffID": {
     "description": "fetch meta data for an individual",
     "exampleResponse": {

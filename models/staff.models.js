@@ -51,6 +51,22 @@ const validateStaffExperience = (ProjectCode, StaffID) => {
   });
 };
 
+const fetchStaffMeta = (filters) => {
+  return knex
+    .select("*")
+    .from("staffMeta")
+    .modify((query) => {
+      query.where(filters);
+    })
+    .then((staffMeta) => {
+      if (staffMeta.length === 0) {
+        return Promise.reject({ status: 404, msg: "StaffID not found" });
+      } else {
+        return staffMeta;
+      }
+    });
+};
+
 const fetchStaffMetaByID = (StaffID) => {
   return knex
     .select("*")
@@ -169,4 +185,5 @@ module.exports = {
   patchStaffExperienceOnProject,
   postStaffExperienceOnProject,
   postStaffImage,
+  fetchStaffMeta,
 };

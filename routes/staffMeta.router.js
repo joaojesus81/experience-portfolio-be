@@ -6,6 +6,7 @@ const {
   sendStaffMetaByID,
   updateStaffMetaByID,
   updateStaffPhotoByID,
+  sendStaffMeta,
 } = require("../controllers/staff.controllers");
 
 staffMetaRouter
@@ -14,5 +15,7 @@ staffMetaRouter
   .patch(updateStaffMetaByID)
   .post(updateStaffPhotoByID)
   .all(handle405s);
+
+staffMetaRouter.route("/").get(sendStaffMeta).all(handle405s);
 
 module.exports = staffMetaRouter;

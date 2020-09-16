@@ -34,6 +34,73 @@ describe("app", () => {
     });
     describe("/staff", () => {
       describe("/staff/meta/", () => {
+        test("GET: 200 - returns a list of staff and their metadata", () => {
+          return request(app)
+            .get("/api/staff/meta")
+            .expect(200)
+            .then(({ body: { staffMeta } }) => {
+              expect(staffMeta).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    StaffID: expect.any(Number),
+                    StaffName: expect.any(String),
+                    Email: expect.any(String),
+                    StaffID: expect.any(Number),
+                    LocationName: expect.any(String),
+                    StartDate: expect.any(String),
+                    JobTitle: expect.any(String),
+                    GradeLevel: expect.any(Number),
+                    DisciplineName: expect.any(String),
+                  }),
+                ])
+              );
+              expect(staffMeta.length).toBe(3);
+            });
+        });
+        test("GET: 200 - list accepts filters", () => {
+          return request(app)
+            .get("/api/staff/meta?GradeLevel=5")
+            .expect(200)
+            .then(({ body: { staffMeta } }) => {
+              expect(staffMeta).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    StaffID: expect.any(Number),
+                    StaffName: expect.any(String),
+                    Email: expect.any(String),
+                    StaffID: expect.any(Number),
+                    LocationName: expect.any(String),
+                    StartDate: expect.any(String),
+                    JobTitle: expect.any(String),
+                    GradeLevel: expect.any(Number),
+                    DisciplineName: expect.any(String),
+                  }),
+                ])
+              );
+              expect(staffMeta.length).toBe(1);
+            });
+        });
+        test("GET: 400 - nonsense filter ", () => {
+          return request(app)
+            .get("/api/staff/meta?Sam=Cool")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("INVALID METHODS: 405 error", () => {
+          const invalidMethods = ["put", "patch", "post", "delete"];
+          const endPoint = "/api/staff/meta";
+          const promises = invalidMethods.map((method) => {
+            return request(app)
+              [method](endPoint)
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("method not allowed!!!");
+              });
+          });
+          return Promise.all(promises);
+        });
         describe("/staff/meta/:StaffID", () => {
           test("GET: 200 - check staffmember exists and fetch meta data for an individual", () => {
             return request(app)

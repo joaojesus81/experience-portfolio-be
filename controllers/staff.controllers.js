@@ -4,7 +4,19 @@ const {
   patchStaffExperienceOnProject,
   postStaffExperienceOnProject,
   postStaffImage,
+  fetchStaffMeta,
 } = require("../models/staff.models");
+
+const sendStaffMeta = (req, res, next) => {
+  const filters = req.query;
+  fetchStaffMeta(filters)
+    .then((staffMeta) => {
+      res.status(200).send({ staffMeta });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
 
 const sendStaffMetaByID = (req, res, next) => {
   const { StaffID } = req.params;
@@ -82,4 +94,5 @@ module.exports = {
   updateStaffExperienceOnProject,
   addStaffExperienceOnProject,
   updateStaffPhotoByID,
+  sendStaffMeta,
 };
