@@ -26,7 +26,7 @@ exports.up = function (knex) {
     projectsTable.string("ClientName");
     projectsTable.string("ProjectURL");
     projectsTable.boolean("Confidential");
-    projectsTable.string("imageURL");
+    projectsTable.string("imgURL");
   });
 };
 

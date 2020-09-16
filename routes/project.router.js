@@ -5,6 +5,7 @@ const { handle405s } = require("../errors");
 const {
   sendProjectByProjectCode,
   updateProjectDetails,
+  updateProjectImage,
 } = require("../controllers/projects.controllers");
 
 const {
@@ -16,6 +17,7 @@ projectRouter
   .route("/:ProjectCode")
   .get(sendProjectByProjectCode)
   .patch(updateProjectDetails)
+  .post(updateProjectImage)
   .all(handle405s);
 
 projectRouter

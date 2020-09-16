@@ -49,7 +49,7 @@ describe("app", () => {
                   JobTitle: "Senior Engineer",
                   GradeLevel: 6,
                   DisciplineName: "Structural Engineering",
-                  imgUrl: null,
+                  imgURL: null,
                   careerStart: null,
                   nationality: null,
                   highLevelDescription: null,
@@ -93,7 +93,7 @@ describe("app", () => {
                   JobTitle: "Senior Engineer",
                   GradeLevel: 6,
                   DisciplineName: "Structural Engineering",
-                  imgUrl: null,
+                  imgURL: null,
                   careerStart: null,
                   nationality: "British",
                   highLevelDescription: null,
@@ -109,7 +109,7 @@ describe("app", () => {
             return request(app)
               .patch("/api/staff/meta/37704")
               .send({
-                imgUrl: "www.samstyles.com",
+                imgURL: "www.samstyles.com",
                 careerStart: "2007-09-05T21:00:00.000Z",
                 highLevelDescription: "Sam operates at a VERY high level",
                 valueStatement: "Sam adds lots of value",
@@ -126,7 +126,7 @@ describe("app", () => {
                   JobTitle: "Senior Engineer",
                   GradeLevel: 6,
                   DisciplineName: "Structural Engineering",
-                  imgUrl: "www.samstyles.com",
+                  imgURL: "www.samstyles.com",
                   careerStart: "2007-09-05T21:00:00.000Z",
                   highLevelDescription: "Sam operates at a VERY high level",
                   valueStatement: "Sam adds lots of value",
@@ -153,7 +153,7 @@ describe("app", () => {
             return request(app)
               .patch(`/api/staff/meta/99999`)
               .send({
-                imgUrl: "www.samstyles.com",
+                imgURL: "www.samstyles.com",
                 careerStart: "2007-09-05T21:00:00.000Z",
                 highLevelDescription: "Sam operates at a VERY high level",
                 valueStatement: "Sam adds lots of value",
@@ -168,7 +168,7 @@ describe("app", () => {
             return request(app)
               .patch("/api/staff/meta/samstyles")
               .send({
-                imgUrl: "www.samstyles.com",
+                imgURL: "www.samstyles.com",
                 careerStart: "2007-09-05T21:00:00.000Z",
                 highLevelDescription: "Sam operates at a VERY high level",
                 valueStatement: "Sam adds lots of value",
@@ -190,9 +190,7 @@ describe("app", () => {
                 expect(msg).toBe("bad request to db!!!");
               });
           });
-          // test("POST: 200 - add Staffimage and update imgURL", () => {
-          //   //tested using insomnia
-          // });
+          // test("POST: 200 - add Staffimage and update imgURL", () => { //tested using insomnia });
           test("POST: 400 - cannot be used to post anything other than a file", () => {
             return request(app)
               .post("/api/staff/meta/37704")
@@ -202,13 +200,8 @@ describe("app", () => {
                 expect(msg).toBe("no files provided");
               });
           });
-          // test("POST: 404 - file rejected by cloudinary", () => {
-          //   //tested using insomnia
-          // });
-          // test("POST: 400 - bad StaffID", () => {
-          // //tested in insomnia
-          // }
-
+          // test("POST: 404 - file rejected by cloudinary", () => { //tested using insomnia });
+          // test("POST: 400 - bad StaffID", () => { //tested using insomnia });
           test("INVALID METHODS: 405 error", () => {
             const invalidMethods = ["put", "delete"];
             const endPoint = "/api/staff/meta/37704";
@@ -537,7 +530,7 @@ describe("app", () => {
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
                 Confidential: true,
-                imageURL: null,
+                imgURL: null,
               });
             });
         });
@@ -575,7 +568,7 @@ describe("app", () => {
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
                 Confidential: true,
-                imageURL: null,
+                imgURL: null,
                 StaffID: 37704,
                 TotalHrs: 3730.75,
                 experience: null,
@@ -653,7 +646,7 @@ describe("app", () => {
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
                 Confidential: false,
-                imageURL: null,
+                imgURL: null,
               });
             });
         });
@@ -694,8 +687,20 @@ describe("app", () => {
               expect(msg).toBe("bad request to db!!!");
             });
         });
+        // test("POST: 200 - add Projectimage and update imgURL", () => { //tested using insomnia });
+        test("POST: 400 - cannot be used to post anything other than a file", () => {
+          return request(app)
+            .post("/api/project/22398800")
+            .send({ nationality: "British" })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("no files provided");
+            });
+        });
+        // test("POST: 404 - file rejected by cloudinary", () => { //tested using insomnia });
+        // test("POST: 400 - bad ProjectCode", () => { //tested using insomnia });
         test("INVALID METHODS: 405 error", () => {
-          const invalidMethods = ["put", "delete", "post"];
+          const invalidMethods = ["put", "delete"];
           const endPoint = "/api/project/25397800";
           const promises = invalidMethods.map((method) => {
             return request(app)
@@ -744,7 +749,7 @@ describe("app", () => {
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
                 Confidential: true,
-                imageURL: null,
+                imgURL: null,
                 StaffID: 37704,
                 TotalHrs: 3730.75,
                 experience: "Sam worked really hard on this project.",

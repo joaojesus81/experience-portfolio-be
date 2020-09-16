@@ -9,7 +9,7 @@ exports.up = function (knex) {
     staffMetaTable.string("JobTitle");
     staffMetaTable.integer("GradeLevel");
     staffMetaTable.string("DisciplineName");
-    staffMetaTable.string("imgUrl");
+    staffMetaTable.string("imgURL");
     staffMetaTable.timestamp("careerStart");
     staffMetaTable.string("nationality");
     staffMetaTable.string("qualifications");

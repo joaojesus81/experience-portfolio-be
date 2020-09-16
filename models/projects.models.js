@@ -1,4 +1,5 @@
 const knex = require("../connection");
+const cloudinary = require("cloudinary").v2;
 
 const checkStaffIDExists = (StaffID = 0) => {
   return knex
@@ -177,9 +178,31 @@ const patchProjectData = (ProjectCode, projectData) => {
     });
 };
 
+const postProjectImage = (ProjectCode, values) => {
+  return checkProjectCodeExists(ProjectCode).then((projectExists) => {
+    if (!projectExists)
+      return Promise.reject({ status: 404, msg: "ProjectCode not found" });
+
+    const image = values[0];
+
+    const imageName = image.name.replace(/\.[^/.]+$/, "");
+    const options = {
+      upload_preset: "expportpreset",
+      folder: "expport/projectPics",
+      public_id: imageName,
+    };
+    return cloudinary.uploader
+      .upload(image.path, options)
+      .then((uploadedFile) => {
+        return uploadedFile.secure_url;
+      });
+  });
+};
+
 module.exports = {
   fetchProjectsByStaffID,
   fetchProjectByProjectCode,
   patchProjectData,
   fetchProjects,
+  postProjectImage,
 };

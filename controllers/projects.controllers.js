@@ -3,6 +3,7 @@ const {
   fetchProjectByProjectCode,
   patchProjectData,
   fetchProjects,
+  postProjectImage,
 } = require("../models/projects.models");
 
 const sendProjects = (req, res, next) => {
@@ -56,9 +57,31 @@ const updateProjectDetails = (req, res, next) => {
     });
 };
 
+const updateProjectImage = (req, res, next) => {
+  if (req.files) {
+    const values = Object.values(req.files);
+    const { ProjectCode } = req.params;
+
+    postProjectImage(ProjectCode, values)
+      .then((uploadedFileURL) => {
+        const projectData = { imgURL: uploadedFileURL };
+        patchProjectData(ProjectCode, projectData).then((project) => {
+          res.status(201).send({ project });
+        });
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } else {
+    err = { status: 400, msg: "no files provided" };
+    next(err);
+  }
+};
+
 module.exports = {
   sendProjectsByStaffID,
   sendProjectByProjectCode,
   updateProjectDetails,
   sendProjects,
+  updateProjectImage,
 };

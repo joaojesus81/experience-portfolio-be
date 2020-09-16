@@ -62,7 +62,7 @@ const updateStaffPhotoByID = (req, res, next) => {
 
     postStaffImage(StaffID, values)
       .then((uploadedFileURL) => {
-        const metaData = { imgUrl: uploadedFileURL };
+        const metaData = { imgURL: uploadedFileURL };
         patchStaffMetaByID(StaffID, metaData).then((staffMeta) => {
           res.status(201).send({ staffMeta });
         });

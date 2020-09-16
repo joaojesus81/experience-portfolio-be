@@ -79,7 +79,31 @@
       }
     }
   },
-
+  "POST /api/staff/meta/:StaffID": {
+    "description": "updates staff photo for an individual",
+    "examplePostObject": "image file within a data form",
+    "exampleResponse": {
+      "staffMeta": {
+        "StaffID": 37704,
+        "StaffName": "Samuel Styles",
+        "Email": "Sam.Styles@arup.com",
+        "LocationName": "Manchester Office",
+        "StartDate": "2007-09-05T23:00:00.000Z",
+        "JobTitle": "Senior Engineer",
+        "GradeLevel": 6,
+        "DisciplineName": "Structural Engineering",
+        "imgUrl": "https://res.cloudinary.com/gfsimages/image/upload/v1600254199/expport/staffPics/widnes_29.jpg",
+        "careerStart": "2007-09-05T21:00:00.000Z",
+        "highLevelDescription": "Sam operates at a VERY high level",
+        "valueStatement": "Sam adds lots of value",
+        "nationality": "British",
+        "qualifications": null,
+        "professionalAssociations": null,
+        "committees": null,
+        "publications": null
+      }
+    }
+  },
   "GET /api/projects/staff/:StaffID": {
     "description": "serves up project list for an individual",
     "queries": [
@@ -182,6 +206,40 @@
         "TotalHrs": 3730.75,
         "experience": "Sam worked really hard on this project.",
         "experienceID": 1
+      }
+    }
+  },
+  "POST /api/project/:ProjectCode": {
+    "description": "updates a photo for a project",
+    "examplePostObject": "image file within a data form",
+    "exampleResponse": {
+      "project": {
+        "ProjectCode": 22398800,
+        "JobNameLong": "WARRINGTON TIME SQUARE",
+        "StartDate": "2012-03-23T12:00:00.000Z",
+        "EndDate": "2020-08-30T11:00:00.000Z",
+        "CentreName": "Buildings NW & Yorkshire",
+        "AccountingCentreCode": 1419,
+        "PracticeName": "Building Engineering",
+        "BusinessCode": "BC03",
+        "BusinessName": "Property",
+        "ProjectDirectorID": 29952,
+        "ProjectDirectorName": "Matthew Holden",
+        "ProjectManagerID": 37704,
+        "ProjectManagerName": "Samuel Styles",
+        "CountryName": "England",
+        "Town": "Warrington",
+        "State": "CHESHIRE",
+        "Latitude": 53.39,
+        "Longitude": -2.6,
+        "ScopeOfService": "Multi-disciplinary appointment.",
+        "ScopeOfWorks": "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+        "PercentComplete": 100,
+        "ClientID": 11276,
+        "ClientName": "Muse Developments Ltd",
+        "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
+        "Confidential": false,
+        "imageURL": "https://res.cloudinary.com/gfsimages/image/upload/v1600262593/expport/projectPics/widnes_29.jpg"
       }
     }
   },

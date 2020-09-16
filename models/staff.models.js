@@ -143,19 +143,24 @@ const postStaffExperienceOnProject = (ProjectCode, StaffID, experience) => {
 };
 
 const postStaffImage = (StaffID, values) => {
-  const image = values[0];
+  return checkStaffIDExists(StaffID).then((staffExists) => {
+    if (!staffExists) {
+      return Promise.reject({ status: 404, msg: "StaffID not found" });
+    }
+    const image = values[0];
 
-  const imageName = image.name.replace(/\.[^/.]+$/, "");
-  const options = {
-    upload_preset: "expportpreset",
-    folder: "expport/staffPics",
-    public_id: imageName,
-  };
-  return cloudinary.uploader
-    .upload(image.path, options)
-    .then((uploadedFile) => {
-      return uploadedFile.secure_url;
-    });
+    const imageName = image.name.replace(/\.[^/.]+$/, "");
+    const options = {
+      upload_preset: "expportpreset",
+      folder: "expport/staffPics",
+      public_id: imageName,
+    };
+    return cloudinary.uploader
+      .upload(image.path, options)
+      .then((uploadedFile) => {
+        return uploadedFile.secure_url;
+      });
+  });
 };
 
 module.exports = {

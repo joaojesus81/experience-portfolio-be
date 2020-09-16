@@ -26,12 +26,6 @@ exports.handleCloudinaryErrors = (err, req, res, next) => {
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
-  console.log("in custom errors");
-  // console.log(err);
-
-  // if (err.code === "ERR_HTTP_INVALID_STATUS_CODE") {
-  //   res.status(400).send({ msg: "no files sent" });
-  // } else
   if ("status" in err) {
     {
       res.status(err.status).send({ msg: err.msg });
