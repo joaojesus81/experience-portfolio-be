@@ -867,6 +867,35 @@ describe("app", () => {
               expect(keywords.length).toBe(47);
             });
         });
+        test("GET: 400 - bad ProjectCode", () => {
+          return request(app)
+            .get("/api/project/keywords/WBSQ")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("GET: 404 - ProjectCode doesn't exist in the database", () => {
+          return request(app)
+            .get("/api/project/keywords/9999999")
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
+        test("INVALID METHODS: 405 error", () => {
+          const invalidMethods = ["put", "patch", "post", "delete"];
+          const endPoint = "/api/project/keywords/25397800";
+          const promises = invalidMethods.map((method) => {
+            return request(app)
+              [method](endPoint)
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("method not allowed!!!");
+              });
+          });
+          return Promise.all(promises);
+        });
       });
     });
     describe("/project/staff/:ProjectCode", () => {

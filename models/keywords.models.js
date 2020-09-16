@@ -1,5 +1,19 @@
 const knex = require("../connection");
 
+const checkProjectCodeExists = (ProjectCode) => {
+  return knex
+    .select("ProjectCode")
+    .from("projects")
+    .where("projects.ProjectCode", ProjectCode)
+    .then((projects) => {
+      if (projects.length === 0) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+};
+
 const fetchKeywordGroups = () => {
   return knex.select("*").from("keywordGroups").returning("*");
 };
@@ -39,24 +53,28 @@ const fetchRelatedKeywords = (keywordArray) => {
 };
 
 const fetchKeywordsByProjectCode = (ProjectCode, filters) => {
-  const { includeRelated } = filters;
+  return checkProjectCodeExists(ProjectCode).then((projectExists) => {
+    if (!projectExists)
+      return Promise.reject({ status: 404, msg: "ProjectCode not found" });
+    const { includeRelated } = filters;
 
-  return knex
-    .select("KeywordCode")
-    .from("projectKeywords")
-    .where("projectKeywords.ProjectCode", ProjectCode)
-    .orderBy("KeywordCode", "asc")
-    .then((keywordArray) => {
-      const keywords = keywordArray.map((keywordObject) => {
-        return keywordObject.KeywordCode;
+    return knex
+      .select("KeywordCode")
+      .from("projectKeywords")
+      .where("projectKeywords.ProjectCode", ProjectCode)
+      .orderBy("KeywordCode", "asc")
+      .then((keywordArray) => {
+        const keywords = keywordArray.map((keywordObject) => {
+          return keywordObject.KeywordCode;
+        });
+        return keywords;
+      })
+      .then((keywordArray) => {
+        if (includeRelated) {
+          return fetchRelatedKeywords(keywordArray);
+        } else return keywordArray;
       });
-      return keywords;
-    })
-    .then((keywordArray) => {
-      if (includeRelated) {
-        return fetchRelatedKeywords(keywordArray);
-      } else return keywordArray;
-    });
+  });
 };
 
 module.exports = {
