@@ -3,6 +3,7 @@ const {
   patchStaffMetaByID,
   patchStaffExperienceOnProject,
   postStaffExperienceOnProject,
+  postStaffImage,
 } = require("../models/staff.models");
 
 const sendStaffMetaByID = (req, res, next) => {
@@ -54,9 +55,31 @@ const addStaffExperienceOnProject = (req, res, next) => {
     });
 };
 
+const updateStaffPhotoByID = (req, res, next) => {
+  if (req.files) {
+    const values = Object.values(req.files);
+    const { StaffID } = req.params;
+
+    postStaffImage(StaffID, values)
+      .then((uploadedFileURL) => {
+        const metaData = { imgUrl: uploadedFileURL };
+        patchStaffMetaByID(StaffID, metaData).then((staffMeta) => {
+          res.status(201).send({ staffMeta });
+        });
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } else {
+    err = { status: 400, msg: "no files provided" };
+    next(err);
+  }
+};
+
 module.exports = {
   sendStaffMetaByID,
   updateStaffMetaByID,
   updateStaffExperienceOnProject,
   addStaffExperienceOnProject,
+  updateStaffPhotoByID,
 };

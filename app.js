@@ -9,6 +9,7 @@ const {
   handleCustomErrors,
   handle404s,
   handle500s,
+  handleCloudinaryErrors,
 } = require("./errors");
 
 require("dotenv").config();
@@ -41,6 +42,7 @@ app.use("/api", apiRouter);
 app.all("*", handle404s);
 
 app.use(handlePSQLErrors);
+app.use(handleCloudinaryErrors);
 app.use(handleCustomErrors);
 app.use(handle500s);
 

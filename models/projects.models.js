@@ -67,6 +67,7 @@ const fetchProjects = (filters) => {
 
 const fetchProjectsByStaffID = (StaffID, filters) => {
   // We need sortBy and an order.
+  console.log("in model");
   let showDetails = false;
   if (Object.keys(filters).includes("showDetails")) {
     showDetails = filters.showDetails;
@@ -76,39 +77,43 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
   const filterKeys = Object.keys(filters);
 
   return checkStaffIDExists(StaffID).then((staffExists) => {
-    if (!staffExists)
+    console.log("in checkStaffIDExists", staffExists);
+    if (!staffExists) {
+      console.log("promise.reject");
       return Promise.reject({ status: 404, msg: "StaffID not found" });
-    return knex
-      .select("*")
-      .from("staffExperience")
-      .modify((query) => {
-        if (showDetails || filterKeys.length > 0) {
-          query
-            .leftJoin(
-              "projects",
-              "staffExperience.ProjectCode",
-              "projects.ProjectCode"
-            )
-            .orderBy("projects.ProjectCode", "asc");
-        }
-      })
-      .modify((query) => {
-        if (filterKeys.length > 0) {
-          query.where(filters);
-        }
-      })
-      .where("staffExperience.StaffID", StaffID)
-      .returning("*")
-      .then((projects) => {
-        if (projects.length === 0) {
-          return Promise.reject({
-            status: 200,
-            msg: "No matching projects found",
-          });
-        } else {
-          return parseDecimals(projects);
-        }
-      });
+    } else {
+      return knex
+        .select("*")
+        .from("staffExperience")
+        .modify((query) => {
+          if (showDetails || filterKeys.length > 0) {
+            query
+              .leftJoin(
+                "projects",
+                "staffExperience.ProjectCode",
+                "projects.ProjectCode"
+              )
+              .orderBy("projects.ProjectCode", "asc");
+          }
+        })
+        .modify((query) => {
+          if (filterKeys.length > 0) {
+            query.where(filters);
+          }
+        })
+        .where("staffExperience.StaffID", StaffID)
+        .returning("*")
+        .then((projects) => {
+          if (projects.length === 0) {
+            return Promise.reject({
+              status: 200,
+              msg: "No matching projects found",
+            });
+          } else {
+            return parseDecimals(projects);
+          }
+        });
+    }
   });
 };
 

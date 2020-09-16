@@ -139,7 +139,6 @@ describe("app", () => {
               });
           });
           test("PATCH: 422 - cannot update StaffID", () => {
-            //Should there be anything else we can't change?
             return request(app)
               .patch("/api/staff/meta/37704")
               .send({
@@ -150,26 +149,6 @@ describe("app", () => {
                 return request(app).get("/api/staff/meta/37704").expect(200);
               });
           });
-          //Handle the below on the front end.
-          // test("PATCH: 422 - cannot update other Arup projects fields", () => {
-          //   return request(app)
-          //     .patch("/api/staff/meta/37704")
-          //     .send({
-          //       StaffName: "Samuel Styles",
-          //       Email: "Sam.Styles@arup.com",
-          //       LocationName: "Manchester Office",
-          //       StartDate: "2007-09-05T23:00:00.000Z",
-          //       JobTitle: "Senior Engineer",
-          //       GradeLevel: 6,
-          //       DisciplineName: "Structural Engineering",
-          //     })
-          //     .expect(422)
-          //     .then(({ body: { msg } }) => {
-          //       expect(msg).toBe(
-          //         "Arup projects fields should be updated on central systems!!!"
-          //       );
-          //     });
-          // });
           test("PATCH: 404 - staffmember doesn't exist in the database", () => {
             return request(app)
               .patch(`/api/staff/meta/99999`)
@@ -211,8 +190,27 @@ describe("app", () => {
                 expect(msg).toBe("bad request to db!!!");
               });
           });
+          // test("POST: 200 - add Staffimage and update imgURL", () => {
+          //   //tested using insomnia
+          // });
+          test("POST: 400 - cannot be used to post anything other than a file", () => {
+            return request(app)
+              .post("/api/staff/meta/37704")
+              .send({ nationality: "British" })
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("no files provided");
+              });
+          });
+          // test("POST: 404 - file rejected by cloudinary", () => {
+          //   //tested using insomnia
+          // });
+          // test("POST: 400 - bad StaffID", () => {
+          // //tested in insomnia
+          // }
+
           test("INVALID METHODS: 405 error", () => {
-            const invalidMethods = ["put", "post", "delete"];
+            const invalidMethods = ["put", "delete"];
             const endPoint = "/api/staff/meta/37704";
             const promises = invalidMethods.map((method) => {
               return request(app)

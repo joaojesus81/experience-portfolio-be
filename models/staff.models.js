@@ -1,5 +1,7 @@
 const knex = require("../connection");
 
+const cloudinary = require("cloudinary").v2;
+
 const { fetchProjectByProjectCode } = require("./projects.models");
 
 const checkStaffIDExists = (StaffID = 0) => {
@@ -140,9 +142,26 @@ const postStaffExperienceOnProject = (ProjectCode, StaffID, experience) => {
   });
 };
 
+const postStaffImage = (StaffID, values) => {
+  const image = values[0];
+
+  const imageName = image.name.replace(/\.[^/.]+$/, "");
+  const options = {
+    upload_preset: "expportpreset",
+    folder: "expport/staffPics",
+    public_id: imageName,
+  };
+  return cloudinary.uploader
+    .upload(image.path, options)
+    .then((uploadedFile) => {
+      return uploadedFile.secure_url;
+    });
+};
+
 module.exports = {
   fetchStaffMetaByID,
   patchStaffMetaByID,
   patchStaffExperienceOnProject,
   postStaffExperienceOnProject,
+  postStaffImage,
 };
