@@ -19,6 +19,7 @@ describe("app", () => {
         expect(res.body.msg).toBe("Path not found! :-(");
       });
   });
+
   describe("/api", () => {
     test("GET: 200 - responds with a JSON object describing all available endpoints", () => {
       return request(app)
@@ -32,6 +33,7 @@ describe("app", () => {
           );
         });
     });
+
     describe("/staff", () => {
       describe("/staff/meta/", () => {
         test("GET: 200 - returns a list of staff and their metadata", () => {
@@ -101,6 +103,7 @@ describe("app", () => {
           });
           return Promise.all(promises);
         });
+
         describe("/staff/meta/:StaffID", () => {
           test("GET: 200 - check staffmember exists and fetch meta data for an individual", () => {
             return request(app)
@@ -285,6 +288,7 @@ describe("app", () => {
         });
       });
     });
+
     describe("/projects", () => {
       test("GET: 200 - returns a list of all projects", () => {
         return request(app)
@@ -375,7 +379,7 @@ describe("app", () => {
       test("GET: 200 - additional filter to include project keywords", () => {
         return request(app)
           .get(
-            "/api/projects?includeKeywords=true&ClientName=Network Rail Limited"
+            "/api/projects?includeKeywords=true&ClientName=Muse Developments Ltd"
           )
           .expect(200)
           .then(({ body: { projects } }) => {
@@ -393,7 +397,7 @@ describe("app", () => {
             );
             expect(projects.length).toBe(2);
             projects.forEach((project) => {
-              expect(project.ClientName).toBe("Network Rail Limited");
+              expect(project.ClientName).toBe("Muse Developments Ltd");
             });
           });
       });
@@ -418,6 +422,7 @@ describe("app", () => {
         });
         return Promise.all(promises);
       });
+
       describe("/projects/staff/:StaffID", () => {
         test("GET: 200 - check staffmember exists and fetch project list for an individual", () => {
           return request(app)
@@ -542,7 +547,7 @@ describe("app", () => {
               expect(projects.length).toBe(2);
             });
         });
-        test.only("GET: 200 - additional filter to include project keywords", () => {
+        test("GET: 200 - additional filter to include project keywords", () => {
           return request(app)
             .get(
               "/api/projects/staff/37704?includeKeywords=true&ClientName=Muse Developments Ltd"
@@ -610,7 +615,132 @@ describe("app", () => {
           return Promise.all(promises);
         });
       });
+      describe("/projects/keywords/:StaffID", () => {
+        test("GET: 200 - get keywords for staff projects", () => {
+          return request(app)
+            .get(
+              "/api/projects/keywords/37704?ClientName=Muse Developments Ltd"
+            )
+            .expect(200)
+            .then(({ body: { keywords } }) => {
+              expect(keywords).toEqual([
+                "AP0054",
+                "AP9900",
+                "BC0001",
+                "BC0004",
+                "BC0016",
+                "BP9900",
+                "CT0010",
+                "CT0035",
+                "CT9900",
+                "DI0001",
+                "DI0004",
+                "DI0005",
+                "DI0006",
+                "DI0007",
+                "DI0008",
+                "DI0010",
+                "DI0016",
+                "DI0040",
+                "DI0054",
+                "DI0055",
+                "DI0056",
+                "DI0058",
+                "DI0070",
+                "DI0079",
+                "DI0080",
+                "DI9900",
+                "IP0001",
+                "MA0005",
+                "MA0031",
+                "MA9900",
+                "MI0048",
+                "MI0052",
+                "MI0069",
+                "MI0135",
+                "MI0191",
+                "MI0205",
+                "MI0209",
+                "MI0239",
+                "MI0255",
+                "MI0279",
+                "MI0282",
+                "MI0285",
+                "MI0289",
+                "MI0292",
+                "MI0310",
+                "MI0311",
+                "MI0313",
+                "MI0334",
+                "MI0345",
+                "MI0348",
+                "MI0418",
+                "MI0419",
+                "MI0451",
+                "MI0557",
+                "MI0563",
+                "MI0577",
+                "MI0956",
+                "MI9001",
+                "MI9002",
+                "MI9900",
+                "MS0014",
+                "MS0022",
+                "MS9900",
+                "MT0127",
+                "MT0260",
+                "MT0289",
+                "MT0298",
+                "MT0313",
+                "MT0364",
+                "MT9900",
+                "MW0019",
+                "MW0026",
+                "MW0032",
+                "MW9900",
+                "PS0021",
+                "PS0029",
+                "PS0039",
+                "PS0054",
+                "PS5001",
+                "PS9900",
+              ]);
+              expect(keywords.length).toBe(80);
+            });
+        });
+        test("GET: 404 - staffmember doesn't exist in the database", () => {
+          const apiString = `/api/projects/keywords/99999`;
+          return request(app)
+            .get(apiString)
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("StaffID not found");
+            });
+        });
+        test("GET: 400 - bad StaffID", () => {
+          return request(app)
+            .get("/api/projects/keywords/samstyles")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("INVALID METHODS: 405 error", () => {
+          const invalidMethods = ["put", "patch", "post", "delete"];
+          const endPoint = "/api/projects/keywords/37704";
+          const promises = invalidMethods.map((method) => {
+            return request(app)
+              [method](endPoint)
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("method not allowed!!!");
+              });
+          });
+          return Promise.all(promises);
+        });
+      });
     });
+
     describe("/project", () => {
       describe("/project/:ProjectCode", () => {
         test("GET: 200 - get project details by project code", () => {
@@ -830,6 +960,7 @@ describe("app", () => {
           return Promise.all(promises);
         });
       });
+
       describe("/project/keywords/:ProjectCode", () => {
         test("GET: 200 - get keywords for a project", () => {
           return request(app)
@@ -952,6 +1083,7 @@ describe("app", () => {
         });
       });
     });
+
     describe("/project/staff/:ProjectCode", () => {
       test("PATCH: 200 - add staff experience to project", () => {
         return request(app)
@@ -1185,6 +1317,7 @@ describe("app", () => {
       });
     });
   });
+
   describe("/keywords", () => {
     test("GET: 200 - returns list of keywords, ", () => {
       return request(app)
@@ -1234,6 +1367,7 @@ describe("app", () => {
       });
       return Promise.all(promises);
     });
+
     describe("/keywords/groups", () => {
       test("GET: 200 - returns list of keyword groups", () => {
         return request(app)

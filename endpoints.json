@@ -27,6 +27,32 @@
       ]
     }
   },
+  "GET /api/projects/staff/:StaffID": {
+    "description": "serves up project list for an individual",
+    "queries": [
+      "showDetails=true will mean project details are included",
+      "OR accepts all properties of a project as queries, e.g 'ClientName=Muse Developments Ltd'.  Multiple queries can be included; they are matched with AND, not OR.",
+      "includeKeywords=true will mean that keyword codes are included within each project.  This can be chained onto the other queries."
+    ],
+    "exampleResponse": {
+      "projects": [
+        {
+          "ProjectCode": 22398800,
+          "StaffID": 37704,
+          "TotalHrs": 100,
+          "experience": null,
+          "experienceID": 1
+        },
+        {
+          "ProjectCode": 246259,
+          "StaffID": 37704,
+          "TotalHrs": 200,
+          "experience": null,
+          "experienceID": 2
+        }
+      ]
+    }
+  },
   "GET /api/staff/meta": {
     "description": "fetch meta data for all staff; can be filtered by any staff meta key",
     "queries": ["GradeLevel=6", "accepts any staff meta key(s)"],
@@ -132,31 +158,6 @@
         "committees": null,
         "publications": null
       }
-    }
-  },
-  "GET /api/projects/staff/:StaffID": {
-    "description": "serves up project list for an individual",
-    "queries": [
-      "showDetails=true",
-      "OR accepts all properties of a project as queries, e.g: '/api/projects/staff/37704?ClientName=Muse Developments Ltd'.  Multiple queries can be included; they are matched with AND, not OR."
-    ],
-    "exampleResponse": {
-      "projects": [
-        {
-          "ProjectCode": 22398800,
-          "StaffID": 37704,
-          "TotalHrs": 100,
-          "experience": null,
-          "experienceID": 1
-        },
-        {
-          "ProjectCode": 246259,
-          "StaffID": 37704,
-          "TotalHrs": 200,
-          "experience": null,
-          "experienceID": 2
-        }
-      ]
     }
   },
   "GET /api/project/:ProjectCode": {
