@@ -1013,5 +1013,86 @@ describe("app", () => {
         });
       });
     });
+    describe("/keywords", () => {
+      test("GET: 200 - returns list of keywords, ", () => {
+        return request(app)
+          .get("/api/keywords")
+          .expect(200)
+          .then(({ body: { keywords } }) => {
+            expect(keywords).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  KeywordCode: expect.any(String),
+                  Keyword: expect.any(String),
+                  KeywordGroupCode: expect.any(String),
+                }),
+              ])
+            );
+          });
+      });
+      test("GET: 200 - returns list of keywords, can be filtered by group ", () => {
+        return request(app)
+          .get("/api/keywords?KeywordGroupCode=AE")
+          .expect(200)
+          .then(({ body: { keywords } }) => {
+            expect(keywords).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  KeywordCode: expect.any(String),
+                  Keyword: expect.any(String),
+                  KeywordGroupCode: expect.any(String),
+                }),
+              ])
+            );
+            keywords.forEach((keyword) => {
+              expect(keyword.KeywordGroupCode).toBe("AE");
+            });
+          });
+      });
+      test("INVALID METHODS: 405 error", () => {
+        const invalidMethods = ["put", "delete", "patch", "post"];
+        const endPoint = "/api/keywords";
+        const promises = invalidMethods.map((method) => {
+          return request(app)
+            [method](endPoint)
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("method not allowed!!!");
+            });
+        });
+        return Promise.all(promises);
+      });
+      describe("/keywords/groups", () => {
+        test("GET: 200 - returns list of keyword groups", () => {
+          return request(app)
+            .get("/api/keywords/groups")
+            .expect(200)
+            .then(({ body: { keywordGroups } }) => {
+              expect(keywordGroups).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    KeywordGroupCode: expect.any(String),
+                    KeywordGroupName: expect.any(String),
+                  }),
+                ])
+              );
+              expect(keywordGroups.length).toBe(30);
+            });
+        });
+        test("INVALID METHODS: 405 error", () => {
+          const invalidMethods = ["put", "patch", "post", "delete"];
+          const endPoint = "/api/keywords/groups";
+          const promises = invalidMethods.map((method) => {
+            return request(app)
+              [method](endPoint)
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("method not allowed!!!");
+              });
+          });
+          return Promise.all(promises);
+        });
+      });
+    });
   });
 });

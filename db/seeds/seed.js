@@ -8,7 +8,11 @@ const {
   staffExperience,
 } = require("../data/index.js");
 
-const { formatProjects, filterStaffTime } = require("../utils/dataFormatting");
+const {
+  formatProjects,
+  filterStaffTime,
+  formatKeywords,
+} = require("../utils/dataFormatting");
 
 exports.seed = function (knex) {
   let projectCodeArray = [];
@@ -22,7 +26,8 @@ exports.seed = function (knex) {
       return knex("keywordGroups")
         .insert(keywordGroupsData)
         .then(() => {
-          return knex("keywordList").insert(keywordListData);
+          const formattedKeywords = formatKeywords(keywordListData);
+          return knex("keywordList").insert(formattedKeywords);
         })
         .then(() => {
           return knex("keywordThesaurus").insert(keywordThesaurusData);

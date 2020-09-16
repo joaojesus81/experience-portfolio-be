@@ -44,3 +44,11 @@ exports.filterStaffTime = (experience, staffnos, projectcodes) => {
   });
   return filteredArray;
 };
+
+exports.formatKeywords = (list) => {
+  const formattedArray = list.map(({ ...object }) => {
+    object.KeywordGroupCode = object.KeywordCode.slice(0, 2);
+    return object;
+  });
+  return formattedArray;
+};

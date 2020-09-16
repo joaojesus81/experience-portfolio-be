@@ -326,5 +326,40 @@
         "StaffID": 37704
       }
     }
+  },
+  "GET /api/keywords": {
+    "description": "serves up an array of all keywords",
+    "queries": ["KeywordGroupCode=AE"],
+    "exampleResponse": {
+      "keywords": [
+        {
+          "KeywordCode": "AE001",
+          "Keyword": "DEVELOPMENT PROJECTS",
+          "KeywordGroupCode": "AE"
+        },
+        {
+          "KeywordCode": "AE002",
+          "Keyword": "ECONOMIC IMPACT ASSESSMENT",
+          "KeywordGroupCode": "AE"
+        },
+        { "...": "..." }
+      ]
+    }
+  },
+  "GET /api/keywords/groups": {
+    "description": "serves up an array of keyword groups",
+    "exampleResponse": {
+      "keywordGroups": [
+        {
+          "KeywordGroupCode": "AE",
+          "KeywordGroupName": "Planning"
+        },
+        {
+          "KeywordCode": "AP",
+          "Keyword": "Arup Projects keywords"
+        },
+        { "...": "..." }
+      ]
+    }
   }
 }

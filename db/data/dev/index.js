@@ -1,4 +1,4 @@
-const keywordGroupData = require("./keywordGroups");
+const keywordGroupsData = require("./keywordGroups");
 const keywordListData = require("./keywordList");
 const keywordThesaurusData = require("./keywordThesaurus");
 const projectKeywordsData = require("./projectKeywords");
@@ -7,7 +7,7 @@ const staffExperience = require("./staffExperience");
 const staffMeta = require("./staffMeta");
 
 const devData = {
-  keywordGroupData: keywordGroupData,
+  keywordGroupsData: keywordGroupsData,
   keywordListData: keywordListData,
   keywordThesaurusData: keywordThesaurusData,
   projectKeywordsData: projectKeywordsData,
