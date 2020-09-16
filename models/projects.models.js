@@ -69,22 +69,27 @@ const fetchProjects = (filters) => {
         });
       } else {
         if (!includeKeywords) return parseDecimals(projects);
-        console.log("about to do foreach");
 
-        const promiseArray = projects.map((project) => {
-          return fetchKeywordsByProjectCode(project.ProjectCode, {
-            includeRelated: true,
-          });
-        });
+        projects = parseDecimals(projects);
 
-        return Promise.all(promiseArray).then((keywords) => {
-          projects.forEach((project, index) => {
-            project.keywords = keywords[index];
-          });
-          return projects;
-        });
+        return fetchKeywords(projects);
       }
     });
+};
+
+const fetchKeywords = (projects) => {
+  const promiseArray = projects.map((project) => {
+    return fetchKeywordsByProjectCode(project.ProjectCode, {
+      includeRelated: true,
+    });
+  });
+
+  return Promise.all(promiseArray).then((keywords) => {
+    projects.forEach((project, index) => {
+      project.keywords = keywords[index];
+    });
+    return projects;
+  });
 };
 
 const fetchProjectsByStaffID = (StaffID, filters) => {
@@ -93,6 +98,11 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
   if (Object.keys(filters).includes("showDetails")) {
     showDetails = filters.showDetails;
     delete filters.showDetails;
+  }
+  let includeKeywords = false;
+  if (Object.keys(filters).includes("includeKeywords")) {
+    includeKeywords = filters.includeKeywords;
+    delete filters.includeKeywords;
   }
 
   const filterKeys = Object.keys(filters);
@@ -129,7 +139,11 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
               msg: "No matching projects found",
             });
           } else {
-            return parseDecimals(projects);
+            if (!includeKeywords) return parseDecimals(projects);
+
+            projects = parseDecimals(projects);
+
+            return fetchKeywords(projects);
           }
         });
     }

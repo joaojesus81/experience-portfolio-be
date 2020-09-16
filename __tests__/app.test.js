@@ -542,6 +542,35 @@ describe("app", () => {
               expect(projects.length).toBe(2);
             });
         });
+        test.only("GET: 200 - additional filter to include project keywords", () => {
+          return request(app)
+            .get(
+              "/api/projects/staff/37704?includeKeywords=true&ClientName=Muse Developments Ltd"
+            )
+            .expect(200)
+            .then(({ body: { projects } }) => {
+              console.log(projects);
+              expect(projects).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    ProjectCode: expect.any(Number),
+                    StaffID: expect.any(Number),
+                    TotalHrs: expect.any(Number),
+                    experience: null,
+                    experienceID: expect.any(Number),
+                    JobNameLong: expect.any(String),
+                    ClientName: expect.any(String),
+                    keywords: expect.any(Array),
+                  }),
+                ])
+              );
+              projects.forEach((project) => {
+                expect(project.StaffID).toBe(37704);
+                expect(project.ClientName).toBe("Muse Developments Ltd");
+              });
+              expect(projects.length).toBe(2);
+            });
+        });
         test("GET: 404 - staffmember doesn't exist in the database", () => {
           const apiString = `/api/projects/staff/99999`;
           return request(app)
