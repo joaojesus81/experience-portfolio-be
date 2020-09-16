@@ -1,5 +1,4 @@
 exports.up = function (knex) {
-  console.log("creating keywordThesaurus table");
   return knex.schema.createTable(
     "keywordThesaurus",
     (keywordThesaurusTable) => {
@@ -15,6 +14,5 @@ exports.up = function (knex) {
 };
 
 exports.down = function (knex) {
-  console.log("dropping keywordThesaurus table");
   return knex.schema.dropTable("keywordThesaurus");
 };

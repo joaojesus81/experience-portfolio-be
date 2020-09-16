@@ -1,5 +1,4 @@
 exports.up = function (knex) {
-  console.log("creating staff meta table");
   return knex.schema.createTable("staffMeta", (staffMetaTable) => {
     staffMetaTable.integer("StaffID").notNullable().primary();
     staffMetaTable.string("StaffName").notNullable();
@@ -22,6 +21,5 @@ exports.up = function (knex) {
 };
 
 exports.down = function (knex) {
-  console.log("dropping staff meta table");
   return knex.schema.dropTable("staffMeta");
 };

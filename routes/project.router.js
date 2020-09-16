@@ -13,6 +13,10 @@ const {
   addStaffExperienceOnProject,
 } = require("../controllers/staff.controllers");
 
+const {
+  sendKeywordsByProjectCode,
+} = require("../controllers/keywords.controllers");
+
 projectRouter
   .route("/:ProjectCode")
   .get(sendProjectByProjectCode)
@@ -24,6 +28,11 @@ projectRouter
   .route("/staff/:ProjectCode")
   .patch(updateStaffExperienceOnProject)
   .post(addStaffExperienceOnProject)
+  .all(handle405s);
+
+projectRouter
+  .route("/keywords/:ProjectCode")
+  .get(sendKeywordsByProjectCode)
   .all(handle405s);
 
 module.exports = projectRouter;

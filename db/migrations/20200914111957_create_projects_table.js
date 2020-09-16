@@ -1,5 +1,4 @@
 exports.up = function (knex) {
-  console.log("creating projects table");
   return knex.schema.createTable("projects", (projectsTable) => {
     projectsTable.integer("ProjectCode").primary().unique().notNullable();
     projectsTable.string("JobNameLong").notNullable();
@@ -31,6 +30,5 @@ exports.up = function (knex) {
 };
 
 exports.down = function (knex) {
-  console.log("dropping projects table");
   return knex.schema.dropTable("projects");
 };

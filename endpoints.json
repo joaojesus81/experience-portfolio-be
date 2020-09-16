@@ -194,6 +194,13 @@
       }
     }
   },
+  "GET /api/project/keywords/:ProjectCode": {
+    "description": "get keyword codes for a project, with optional query to also find related keywords from the keyword thesaurus",
+    "queries": ["includeRelated=false"],
+    "exampleResponse": {
+      "keywords": ["AP0054", "AP9900", "..."]
+    }
+  },
   "PATCH /api/project/:ProjectCode": {
     "description": "amend project details",
     "examplePatchObject": {

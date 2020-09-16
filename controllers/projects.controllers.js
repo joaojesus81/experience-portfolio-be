@@ -42,12 +42,9 @@ const sendProjectByProjectCode = (req, res, next) => {
 };
 
 const updateProjectDetails = (req, res, next) => {
-  console.log("in controller");
-
   const { ProjectCode } = req.params;
   const projectData = req.body;
 
-  console.log(req.body);
   patchProjectData(ProjectCode, projectData)
     .then((project) => {
       res.status(200).send({ project });

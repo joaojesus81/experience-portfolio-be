@@ -54,6 +54,7 @@ const fetchProjects = (filters) => {
     .modify((query) => {
       query.where(filters);
     })
+
     .then((projects) => {
       if (projects.length === 0) {
         return Promise.reject({
@@ -68,7 +69,6 @@ const fetchProjects = (filters) => {
 
 const fetchProjectsByStaffID = (StaffID, filters) => {
   // We need sortBy and an order.
-  console.log("in model");
   let showDetails = false;
   if (Object.keys(filters).includes("showDetails")) {
     showDetails = filters.showDetails;
@@ -78,9 +78,7 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
   const filterKeys = Object.keys(filters);
 
   return checkStaffIDExists(StaffID).then((staffExists) => {
-    console.log("in checkStaffIDExists", staffExists);
     if (!staffExists) {
-      console.log("promise.reject");
       return Promise.reject({ status: 404, msg: "StaffID not found" });
     } else {
       return knex
