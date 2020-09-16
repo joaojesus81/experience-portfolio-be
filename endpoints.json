@@ -53,6 +53,17 @@
       ]
     }
   },
+  "GET /api/projects/keywords/:StaffID": {
+    "description": "serves up an array of keywords that a staff member has worked on",
+    "queries": [
+      "accepts all properties of a project as queries, e.g 'ClientName=Muse Developments Ltd'.  Multiple queries can be included; they are matched with AND, not OR."
+    ],
+    "exampleResponse": {
+      "keywords": {
+        "keywords": ["AE0011", "AP0005", "AP0041", "..."]
+      }
+    }
+  },
   "GET /api/staff/meta": {
     "description": "fetch meta data for all staff; can be filtered by any staff meta key",
     "queries": ["GradeLevel=6", "accepts any staff meta key(s)"],
