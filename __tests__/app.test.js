@@ -372,6 +372,31 @@ describe("app", () => {
             });
           });
       });
+      test("GET: 200 - additional filter to include project keywords", () => {
+        return request(app)
+          .get(
+            "/api/projects?includeKeywords=true&ClientName=Network Rail Limited"
+          )
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                  keywords: expect.any(Array),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(2);
+            projects.forEach((project) => {
+              expect(project.ClientName).toBe("Network Rail Limited");
+            });
+          });
+      });
       test("GET: 400 - nonsense filter ", () => {
         return request(app)
           .get("/api/projects?Sam=Cool")

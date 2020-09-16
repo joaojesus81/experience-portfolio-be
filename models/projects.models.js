@@ -1,5 +1,6 @@
 const knex = require("../connection");
 const cloudinary = require("cloudinary").v2;
+const { fetchKeywordsByProjectCode } = require("./keywords.models");
 
 const checkStaffIDExists = (StaffID = 0) => {
   return knex
@@ -47,6 +48,11 @@ const parseDecimals = (projectArray) => {
 };
 
 const fetchProjects = (filters) => {
+  let includeKeywords = false;
+  if (Object.keys(filters).includes("includeKeywords")) {
+    includeKeywords = filters.includeKeywords;
+    delete filters.includeKeywords;
+  }
   return knex
     .select("*")
     .from("projects")
@@ -62,7 +68,21 @@ const fetchProjects = (filters) => {
           msg: "No matching projects found",
         });
       } else {
-        return parseDecimals(projects);
+        if (!includeKeywords) return parseDecimals(projects);
+        console.log("about to do foreach");
+
+        const promiseArray = projects.map((project) => {
+          return fetchKeywordsByProjectCode(project.ProjectCode, {
+            includeRelated: true,
+          });
+        });
+
+        return Promise.all(promiseArray).then((keywords) => {
+          projects.forEach((project, index) => {
+            project.keywords = keywords[index];
+          });
+          return projects;
+        });
       }
     });
 };

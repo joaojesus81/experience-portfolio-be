@@ -4,7 +4,10 @@
   },
   "GET /api/projects": {
     "description": "serves up an array of all projects",
-    "queries": "Accepts all properties of a project as a query, e.g: '/api/projects?ClientName=Network Rail Limited'.  Multiple queries can be included; they are matched with AND, not OR.",
+    "queries": [
+      "Accepts all properties of a project as a query, e.g: '/api/projects?ClientName=Network Rail Limited'.  Multiple queries can be included; they are matched with AND, not OR.",
+      "includeKeywords=true will mean that keyword codes are included within each project.  This can be chained onto the other queries."
+    ],
     "exampleResponse": {
       "projects": [
         {
