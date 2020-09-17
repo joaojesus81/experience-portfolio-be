@@ -110,6 +110,18 @@
       }
     }
   },
+  "POST /api/staff/login": {
+    "examplePostObject": {
+      "StaffID": 37704
+    },
+    "exampleResponse": {
+      "credentials": {
+        "ProjectManagerFor": [22398800, 22596300, 24625900, 25394200, 26766100],
+        "StaffID": 37704,
+        "GradeLevel": 6
+      }
+    }
+  },
   "GET /api/staff/meta": {
     "description": "fetch meta data for all staff; can be filtered by any staff meta key",
     "queries": ["GradeLevel=6", "accepts any staff meta key(s)"],

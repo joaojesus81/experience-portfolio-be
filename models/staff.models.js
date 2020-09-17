@@ -182,6 +182,43 @@ const postStaffImage = (StaffID, values) => {
   });
 };
 
+const fetchCredentials = (signInObj) => {
+  const { StaffID } = signInObj;
+
+  return checkStaffIDExists(StaffID).then((staffExists) => {
+    if (!staffExists) {
+      return Promise.reject({ status: 404, msg: "StaffID not found" });
+    }
+
+    const pmArray = knex
+      .from("projects")
+      .where("projects.ProjectDirectorID", StaffID)
+      .orWhere("projects.ProjectManagerID", StaffID)
+      .select("projects.ProjectCode")
+      .then((projects) => {
+        const pmArray = projects.map((project) => {
+          return project.ProjectCode;
+        });
+        pmArray.sort();
+        return pmArray;
+      });
+
+    const staffMeta = knex
+      .from("staffMeta")
+      .where("StaffID", StaffID)
+      .select("GradeLevel");
+
+    return Promise.all([pmArray, staffMeta]).then((promiseArr) => {
+      const credentials = {
+        ProjectManagerFor: promiseArr[0],
+        StaffID: StaffID,
+        GradeLevel: promiseArr[1][0].GradeLevel,
+      };
+      return credentials;
+    });
+  });
+};
+
 module.exports = {
   fetchStaffMetaByID,
   patchStaffMetaByID,
@@ -189,4 +226,5 @@ module.exports = {
   postStaffExperienceOnProject,
   postStaffImage,
   fetchStaffMeta,
+  fetchCredentials,
 };

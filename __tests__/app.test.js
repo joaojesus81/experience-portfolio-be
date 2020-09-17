@@ -35,6 +35,91 @@ describe("app", () => {
     });
 
     describe("/staff", () => {
+      describe("/staff/login", () => {
+        test("POST: 200 - returns staff credentials", () => {
+          return request(app)
+            .post("/api/staff/login")
+            .send({ StaffID: 37704 })
+            .expect(200)
+            .then(({ body: { credentials } }) => {
+              expect(credentials.StaffID).toBe(37704);
+              expect(credentials.GradeLevel).toBe(6);
+              expect(credentials.ProjectManagerFor).toEqual([
+                22398800,
+                22596300,
+                24625900,
+                25394200,
+                26766100,
+              ]);
+            });
+        });
+        test("POST: 200 - returns staff credentials if no PM projects", () => {
+          return request(app)
+            .post("/api/staff/login")
+            .send({ StaffID: 56876 })
+            .expect(200)
+            .then(({ body: { credentials } }) => {
+              expect(credentials.StaffID).toBe(56876);
+              expect(credentials.GradeLevel).toBe(4);
+              expect(credentials.ProjectManagerFor).toEqual([]);
+            });
+        });
+        test("POST: 404 - no staff_id provided", () => {
+          return request(app)
+            .post("/api/staff/login")
+            .send({
+              TotalHrs: 5,
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("StaffID not found");
+            });
+        });
+        test("POST: 404 - no body sent", () => {
+          return request(app)
+            .post("/api/staff/login")
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("StaffID not found");
+            });
+        });
+        test("POST: 400 - bad StaffID", () => {
+          return request(app)
+            .post("/api/staff/login")
+            .send({
+              StaffID: "samstyles",
+            })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("POST: 404 - non-existent StaffID", () => {
+          return request(app)
+            .post("/api/staff/login")
+            .send({
+              StaffID: 999999,
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("StaffID not found");
+            });
+        });
+        test("INVALID METHODS: 405 error", () => {
+          const invalidMethods = ["put", "patch", "get", "delete"];
+          const endPoint = "/api/staff/login";
+          const promises = invalidMethods.map((method) => {
+            return request(app)
+              [method](endPoint)
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("method not allowed!!!");
+              });
+          });
+          return Promise.all(promises);
+        });
+      });
+
       describe("/staff/meta/", () => {
         test("GET: 200 - returns a list of staff and their metadata", () => {
           return request(app)

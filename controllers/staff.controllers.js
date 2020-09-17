@@ -5,6 +5,7 @@ const {
   postStaffExperienceOnProject,
   postStaffImage,
   fetchStaffMeta,
+  fetchCredentials,
 } = require("../models/staff.models");
 
 const sendStaffMeta = (req, res, next) => {
@@ -88,6 +89,17 @@ const updateStaffPhotoByID = (req, res, next) => {
   }
 };
 
+const sendCredentials = (req, res, next) => {
+  const signInObj = req.body;
+  fetchCredentials(signInObj)
+    .then((credentials) => {
+      res.status(200).send({ credentials });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports = {
   sendStaffMetaByID,
   updateStaffMetaByID,
@@ -95,4 +107,5 @@ module.exports = {
   addStaffExperienceOnProject,
   updateStaffPhotoByID,
   sendStaffMeta,
+  sendCredentials,
 };
