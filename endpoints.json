@@ -5,24 +5,71 @@
   "GET /api/projects": {
     "description": "serves up an array of all projects",
     "queries": [
-      "Accepts all properties of a project as a query, e.g: '/api/projects?ClientName=Network Rail Limited'.  Multiple queries can be included; they are matched with AND, not OR.",
-      "includeKeywords=true will mean that keyword codes are included within each project.  This can be chained onto the other queries."
+      "Accepts all properties of a project as a query, e.g: '/api/projects?ClientName=Network Rail Limited'.  Multiple queries can be included; they are matched with AND, not OR."
     ],
     "exampleResponse": {
       "projects": [
         {
-          "ProjectCode": 22398800,
-          "StaffID": 37704,
-          "TotalHrs": 100,
-          "experience": null,
-          "experienceID": 1
+          "ProjectCode": 22473200,
+          "JobNameLong": "HOTEL LEICESTER SQUARE",
+          "StartDate": "2012-04-25T11:00:00.000Z",
+          "EndDate": "2021-12-31T12:00:00.000Z",
+          "CentreName": "Buildings NW & Yorkshire",
+          "AccountingCentreCode": 1419,
+          "PracticeName": "Building Engineering",
+          "BusinessCode": "BC10",
+          "BusinessName": "Hotels & Leisure",
+          "ProjectDirectorID": 2888,
+          "ProjectDirectorName": "Simon Nevill",
+          "ProjectManagerID": 20126,
+          "ProjectManagerName": "Neil Hooton",
+          "CountryName": "England",
+          "Town": "London",
+          "State": "GREATER LONDON",
+          "Latitude": 51.51,
+          "Longitude": -0.13,
+          "ScopeOfService": "Full structural, mechanical, electrical and public health engineering design services up to RIBA Stage E with client side role during the construction works. Extensive list of specialist services to be provided, including access consultancy.",
+          "ScopeOfWorks": [
+            "The Londoner hotel.\n\nDevelopment of a 350 bed hotel which will contain the deepest habitable-grade commercial building basement in London, on the Odeon site in Leicester Square, London. It features six levels built underground to a depth of 30m. Situated within a constrained site measuring less than 50m by 50m, 65,000m³ of clay has been excavated prior to construction, enough to fill 26 Olympic-sized swimming pools. The basement will house leisure and banqueting facilities including a two-screen cinema, with a further nine levels above ground."
+          ],
+          "Keywords": ["AP0049", "BC0001", "..."],
+          "imgURL": [],
+          "PercentComplete": 98.62,
+          "ClientID": 101939,
+          "ClientName": "Edwardian Pastoria Hotels Ltd",
+          "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22473200",
+          "Confidential": false
         },
         {
-          "ProjectCode": 246259,
-          "StaffID": 37704,
-          "TotalHrs": 200,
-          "experience": null,
-          "experienceID": 2
+          "ProjectCode": 22536300,
+          "JobNameLong": "COPENHAGEN ARENA",
+          "StartDate": "2012-06-20T11:00:00.000Z",
+          "EndDate": "2020-03-11T12:00:00.000Z",
+          "CentreName": "Buildings NW & Yorkshire",
+          "AccountingCentreCode": 1419,
+          "PracticeName": "Building Engineering",
+          "BusinessCode": "BC01",
+          "BusinessName": "Arts & Culture",
+          "ProjectDirectorID": 29952,
+          "ProjectDirectorName": "Matthew Holden",
+          "ProjectManagerID": 29952,
+          "ProjectManagerName": "Matthew Holden",
+          "CountryName": "Denmark",
+          "Town": "Copenhagen",
+          "State": "",
+          "Latitude": 55.63,
+          "Longitude": 12.57,
+          "ScopeOfService": "Engineering design including civil, structural, geotechnical, fire, facade engineering, plus acoustics, specialist lighting and sustainability consultancy. \n\nOur design for Copenhagen Arena was developed through Feasibility, Concept, Scheme and Detailed Design, providing a full set of Tender and then Construction information and as-built records. This documentation included drawings, reports and detailed specifications. All of the documentation was developed specifically to reflect the requirements of the supply chain, the third party checking team and the approving authorities. This facilitated smooth delivery and approval.",
+          "ScopeOfWorks": [
+            "Arena for concerts and sport, with a seated capacity of 12,500 people and a maximum capacity of 15,000. Situated in Orestad, between Copenhagen City Centre and Kastrup Airport."
+          ],
+          "Keywords": ["AP0005", "AP0054", "..."],
+          "imgURL": [],
+          "PercentComplete": 100,
+          "ClientID": 79557,
+          "ClientName": "3XN A/S",
+          "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22536300",
+          "Confidential": false
         }
       ]
     }
@@ -31,8 +78,7 @@
     "description": "serves up project list for an individual",
     "queries": [
       "showDetails=true will mean project details are included",
-      "OR accepts all properties of a project as queries, e.g 'ClientName=Muse Developments Ltd'.  Multiple queries can be included; they are matched with AND, not OR.",
-      "includeKeywords=true will mean that keyword codes are included within each project.  This can be chained onto the other queries."
+      "OR accepts all properties of a project as queries, e.g 'ClientName=Muse Developments Ltd'.  Multiple queries can be included; they are matched with AND, not OR."
     ],
     "exampleResponse": {
       "projects": [
@@ -159,7 +205,9 @@
         "JobTitle": "Senior Engineer",
         "GradeLevel": 6,
         "DisciplineName": "Structural Engineering",
-        "imgUrl": "https://res.cloudinary.com/gfsimages/image/upload/v1600254199/expport/staffPics/widnes_29.jpg",
+        "imgUrl": [
+          "https://res.cloudinary.com/gfsimages/image/upload/v1600254199/expport/staffPics/widnes_29.jpg"
+        ],
         "careerStart": "2007-09-05T21:00:00.000Z",
         "highLevelDescription": "Sam operates at a VERY high level",
         "valueStatement": "Sam adds lots of value",
@@ -173,7 +221,9 @@
   },
   "GET /api/project/:ProjectCode": {
     "description": "get project details by project code",
-    "queries": ["StaffID=37704"],
+    "queries": [
+      "StaffID=37704 also includes a staff member's experience and time on the project"
+    ],
     "exampleResponse": {
       "project": {
         "ProjectCode": 22398800,
@@ -191,27 +241,27 @@
         "ProjectManagerName": "Samuel Styles",
         "CountryName": "England",
         "Town": "Warrington",
-        "ScopeOfService": "Multi-disciplinary appointment, initially in support of bid, then project delivery if Muse are successful.",
-        "ScopeOfWorks": "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+        "State": "CHESHIRE",
         "Latitude": 53.39,
         "Longitude": -2.6,
-        "State": "CHESHIRE",
+        "ScopeOfService": "Multi-disciplinary appointment, initially in support of bid, then project delivery if Muse are successful.",
+        "ScopeOfWorks": [
+          "Mixed use development in central Warrington, for the Bridge Street Quarter."
+        ],
+        "Keywords": ["AP0054", "AP9900", "..."],
+        "imgURL": [
+          "https://res.cloudinary.com/gfsimages/image/upload/v1600263185/expport/projectPics/IMG_0945.jpg"
+        ],
         "PercentComplete": 100,
         "ClientID": 11276,
         "ClientName": "Muse Developments Ltd",
         "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
-        "Confidential": true,
-        "imageURL": null,
-        "StaffID": 37704,
-        "TotalHrs": 3730.75,
-        "experience": null,
-        "experienceID": 1
+        "Confidential": true
       }
     }
   },
   "GET /api/project/keywords/:ProjectCode": {
-    "description": "get keyword codes for a project, with optional query to also find related keywords from the keyword thesaurus",
-    "queries": ["includeRelated=false"],
+    "description": "get keyword codes for a project, including the related keywords from the keyword thesaurus",
     "exampleResponse": {
       "keywords": ["AP0054", "AP9900", "..."]
     }
@@ -221,7 +271,10 @@
     "examplePatchObject": {
       "JobNameLong": "Warrington Time Square",
       "ScopeOfService": "Multi-disciplinary appointment.",
-      "Confidential": false
+      "Confidential": false,
+      "ScopeOfWorks": "Great new scope of works",
+      "imgURL": "www.newimage,com",
+      "Keywords": "ZZZ001"
     },
     "exampleResponse": {
       "project": {
@@ -240,21 +293,24 @@
         "ProjectManagerName": "Samuel Styles",
         "CountryName": "England",
         "Town": "Warrington",
-        "ScopeOfService": "Multi-disciplinary appointment.",
-        "ScopeOfWorks": "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+        "State": "CHESHIRE",
         "Latitude": 53.39,
         "Longitude": -2.6,
-        "State": "CHESHIRE",
+        "ScopeOfService": "Multi-disciplinary appointment.",
+        "ScopeOfWorks": [
+          "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+          "Great new scope of works"
+        ],
+        "Keywords": ["AP0054", "AP9900", "..."],
+        "imgURL": [
+          "https://res.cloudinary.com/gfsimages/image/upload/v1600263185/expport/projectPics/IMG_0945.jpg",
+          "www.newimage,com"
+        ],
         "PercentComplete": 100,
         "ClientID": 11276,
         "ClientName": "Muse Developments Ltd",
         "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
-        "Confidential": false,
-        "imageURL": null,
-        "StaffID": 37704,
-        "TotalHrs": 3730.75,
-        "experience": "Sam worked really hard on this project.",
-        "experienceID": 1
+        "Confidential": false
       }
     }
   },
@@ -282,13 +338,18 @@
         "Latitude": 53.39,
         "Longitude": -2.6,
         "ScopeOfService": "Multi-disciplinary appointment.",
-        "ScopeOfWorks": "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+        "ScopeOfWorks": [
+          "Mixed use development in central Warrington, for the Bridge Street Quarter."
+        ],
         "PercentComplete": 100,
         "ClientID": 11276,
         "ClientName": "Muse Developments Ltd",
         "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
         "Confidential": false,
-        "imageURL": "https://res.cloudinary.com/gfsimages/image/upload/v1600262593/expport/projectPics/widnes_29.jpg"
+        "imgURL": [
+          "https://res.cloudinary.com/gfsimages/image/upload/v1600262593/expport/projectPics/widnes_29.jpg"
+        ],
+        "Keywords": ["AP0054", "AP9900", "..."]
       }
     }
   },
@@ -325,7 +386,7 @@
         "ClientName": "Muse Developments Ltd",
         "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
         "Confidential": true,
-        "imageURL": null,
+        "imgURL": [],
         "StaffID": 37704,
         "TotalHrs": 3730.75,
         "experience": "Sam worked really hard on this project.",

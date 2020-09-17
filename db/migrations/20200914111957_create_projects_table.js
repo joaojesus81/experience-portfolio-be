@@ -19,13 +19,16 @@ exports.up = function (knex) {
     projectsTable.decimal("Latitude");
     projectsTable.decimal("Longitude");
     projectsTable.text("ScopeOfService");
-    projectsTable.text("ScopeOfWorks");
+    //&&&projectsTable.text("ScopeOfWorks");
+    projectsTable.specificType("ScopeOfWorks", "text[]");
+    projectsTable.specificType("Keywords", "text[]");
+    projectsTable.specificType("imgURL", "text[]");
     projectsTable.decimal("PercentComplete");
     projectsTable.integer("ClientID");
     projectsTable.string("ClientName");
     projectsTable.string("ProjectURL");
     projectsTable.boolean("Confidential");
-    projectsTable.string("imgURL");
+    //&&&projectsTable.string("imgURL");
   });
 };
 

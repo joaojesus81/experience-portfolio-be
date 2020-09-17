@@ -33,74 +33,36 @@ const fetchKeywordGroups = () => {
 };
 
 const fetchKeywords = (filters) => {
+  const filterKeys = Object.keys(filters);
   return knex
     .select("*")
     .from("keywordList")
     .modify((query) => {
-      query.where(filters);
+      if (filterKeys.length > 0) {
+        query.where(filters);
+      }
     })
     .returning("*");
-};
-
-const uniqueArray = (array) => {
-  const seen = {};
-  return array.filter(function (item) {
-    return seen.hasOwnProperty(item) ? false : (seen[item] = true);
-  });
-};
-
-const fetchRelatedKeywords = (keywordArray) => {
-  return knex
-    .select("KeywordCode", "RelatedKeywordCode")
-    .from("keywordThesaurus")
-    .whereIn("keywordThesaurus.KeywordCode", keywordArray)
-    .then((relatedKeywordArray) => {
-      const allKeywords = [];
-      relatedKeywordArray.forEach((keyword) => {
-        allKeywords.push(keyword.KeywordCode);
-        allKeywords.push(keyword.RelatedKeywordCode);
-      });
-      const uniqueKeywords = uniqueArray(allKeywords);
-      uniqueKeywords.sort();
-      return uniqueKeywords;
-    });
 };
 
 const fetchKeywordsByProjectCode = (ProjectCode, filters) => {
   return checkProjectCodeExists(ProjectCode).then((projectExists) => {
     if (!projectExists)
       return Promise.reject({ status: 404, msg: "ProjectCode not found" });
-    const { includeRelated } = filters;
 
     return knex
-      .select("KeywordCode")
-      .from("projectKeywords")
-      .where("projectKeywords.ProjectCode", ProjectCode)
-      .orderBy("KeywordCode", "asc")
-      .then((keywordArray) => {
-        const keywords = keywordArray.map((keywordObject) => {
-          return keywordObject.KeywordCode;
-        });
-        return keywords;
-      })
-      .then((keywordArray) => {
-        if (includeRelated) {
-          return fetchRelatedKeywords(keywordArray);
-        } else return keywordArray;
+      .select("Keywords")
+      .from("projects")
+      .where("ProjectCode", ProjectCode)
+      .orderBy("Keywords", "asc")
+      .then((keywords) => {
+        keywordsObj = { keywords: keywords[0].Keywords };
+        return keywordsObj;
       });
   });
 };
 
 const fetchKeywordsByStaffID = (StaffID, filters) => {
-  let showDetails = false;
-  if (Object.keys(filters).includes("showDetails")) {
-    showDetails = filters.showDetails;
-    delete filters.showDetails;
-  }
-  if (Object.keys(filters).includes("includeKeywords")) {
-    delete filters.includeKeywords;
-  }
-
   const filterKeys = Object.keys(filters);
 
   return checkStaffIDExists(StaffID).then((staffExists) => {
@@ -110,17 +72,12 @@ const fetchKeywordsByStaffID = (StaffID, filters) => {
       return knex
         .select("*")
         .from("staffExperience")
-        .modify((query) => {
-          if (showDetails || filterKeys.length > 0) {
-            query
-              .leftJoin(
-                "projects",
-                "staffExperience.ProjectCode",
-                "projects.ProjectCode"
-              )
-              .orderBy("projects.ProjectCode", "asc");
-          }
-        })
+        .leftJoin(
+          "projects",
+          "staffExperience.ProjectCode",
+          "projects.ProjectCode"
+        )
+        .orderBy("projects.ProjectCode", "asc")
         .modify((query) => {
           if (filterKeys.length > 0) {
             query.where(filters);
@@ -135,50 +92,20 @@ const fetchKeywordsByStaffID = (StaffID, filters) => {
               msg: "No matching projects found",
             });
           } else {
-            const promiseArray = projects.map((project) => {
-              return fetchKeywordsByProjectCode(project.ProjectCode, {
-                includeRelated: true,
+            const keywordsArr = [];
+
+            projects.forEach((project) => {
+              const keywords = project.Keywords;
+              keywords.forEach((keyword) => {
+                if (!keywordsArr.includes(keyword)) keywordsArr.push(keyword);
               });
             });
-
-            return Promise.all(promiseArray).then((keywords) => {
-              const flattenedArray = [].concat(...keywords);
-              const uniqueKeywords = uniqueArray(flattenedArray);
-
-              uniqueKeywords.sort();
-
-              return uniqueKeywords;
-            });
+            keywordsArr.sort();
+            return keywordsArr;
           }
         });
     }
   });
-};
-
-const fetchKeywordsByStaffIDDBQuery = (StaffID, filters) => {
-  const filterKeys = Object.keys(filters);
-
-  return knex
-    .select("*")
-    .from("staffExperience")
-    .modify((query) => {
-      if (filterKeys.length > 0) {
-        query
-          .leftJoin(
-            "projects",
-            "staffExperience.ProjectCode",
-            "projects.ProjectCode"
-          )
-          .orderBy("projects.ProjectCode", "asc");
-      }
-    })
-    .modify((query) => {
-      if (filterKeys.length > 0) {
-        query.where(filters);
-      }
-    })
-    .where("staffExperience.StaffID", StaffID)
-    .returning("*");
 };
 
 module.exports = {

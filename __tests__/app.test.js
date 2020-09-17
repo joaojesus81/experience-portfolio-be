@@ -376,31 +376,6 @@ describe("app", () => {
             });
           });
       });
-      test("GET: 200 - additional filter to include project keywords", () => {
-        return request(app)
-          .get(
-            "/api/projects?includeKeywords=true&ClientName=Muse Developments Ltd"
-          )
-          .expect(200)
-          .then(({ body: { projects } }) => {
-            expect(projects).toEqual(
-              expect.arrayContaining([
-                expect.objectContaining({
-                  ProjectCode: expect.any(Number),
-                  JobNameLong: expect.any(String),
-                  PracticeName: expect.any(String),
-                  Confidential: expect.any(Boolean),
-                  ClientName: expect.any(String),
-                  keywords: expect.any(Array),
-                }),
-              ])
-            );
-            expect(projects.length).toBe(2);
-            projects.forEach((project) => {
-              expect(project.ClientName).toBe("Muse Developments Ltd");
-            });
-          });
-      });
       test("GET: 400 - nonsense filter ", () => {
         return request(app)
           .get("/api/projects?Sam=Cool")
@@ -537,35 +512,6 @@ describe("app", () => {
                     experienceID: expect.any(Number),
                     JobNameLong: expect.any(String),
                     ClientName: expect.any(String),
-                  }),
-                ])
-              );
-              projects.forEach((project) => {
-                expect(project.StaffID).toBe(37704);
-                expect(project.ClientName).toBe("Muse Developments Ltd");
-              });
-              expect(projects.length).toBe(2);
-            });
-        });
-        test("GET: 200 - additional filter to include project keywords", () => {
-          return request(app)
-            .get(
-              "/api/projects/staff/37704?includeKeywords=true&ClientName=Muse Developments Ltd"
-            )
-            .expect(200)
-            .then(({ body: { projects } }) => {
-              console.log(projects);
-              expect(projects).toEqual(
-                expect.arrayContaining([
-                  expect.objectContaining({
-                    ProjectCode: expect.any(Number),
-                    StaffID: expect.any(Number),
-                    TotalHrs: expect.any(Number),
-                    experience: null,
-                    experienceID: expect.any(Number),
-                    JobNameLong: expect.any(String),
-                    ClientName: expect.any(String),
-                    keywords: expect.any(Array),
                   }),
                 ])
               );
@@ -766,8 +712,9 @@ describe("app", () => {
                 Town: "Warrington",
                 ScopeOfService:
                   "Multi-disciplinary appointment, initially in support of bid, then project delivery if Muse are successful.",
-                ScopeOfWorks:
+                ScopeOfWorks: [
                   "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+                ],
                 Latitude: 53.39,
                 Longitude: -2.6,
                 State: "CHESHIRE",
@@ -777,7 +724,56 @@ describe("app", () => {
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
                 Confidential: true,
-                imgURL: null,
+                imgURL: [],
+                Keywords: [
+                  "AP0054",
+                  "AP9900",
+                  "BC0001",
+                  "BC0004",
+                  "BP9900",
+                  "CT0010",
+                  "CT9900",
+                  "DI0001",
+                  "DI0004",
+                  "DI0007",
+                  "DI0008",
+                  "DI0010",
+                  "DI0056",
+                  "DI0058",
+                  "DI0070",
+                  "DI0079",
+                  "DI9900",
+                  "IP0001",
+                  "MA0005",
+                  "MA9900",
+                  "MI0052",
+                  "MI0135",
+                  "MI0205",
+                  "MI0209",
+                  "MI0285",
+                  "MI0289",
+                  "MI0292",
+                  "MI0310",
+                  "MI0311",
+                  "MI0334",
+                  "MI0348",
+                  "MI0418",
+                  "MI0419",
+                  "MI0577",
+                  "MI0956",
+                  "MI9900",
+                  "MS0022",
+                  "MS9900",
+                  "MT0298",
+                  "MT9900",
+                  "MW0019",
+                  "MW0032",
+                  "MW9900",
+                  "PS0039",
+                  "PS0054",
+                  "PS5001",
+                  "PS9900",
+                ],
               });
             });
         });
@@ -804,8 +800,9 @@ describe("app", () => {
                 Town: "Warrington",
                 ScopeOfService:
                   "Multi-disciplinary appointment, initially in support of bid, then project delivery if Muse are successful.",
-                ScopeOfWorks:
+                ScopeOfWorks: [
                   "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+                ],
                 Latitude: 53.39,
                 Longitude: -2.6,
                 State: "CHESHIRE",
@@ -815,11 +812,60 @@ describe("app", () => {
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
                 Confidential: true,
-                imgURL: null,
+                imgURL: [],
                 StaffID: 37704,
                 TotalHrs: 3730.75,
                 experience: null,
                 experienceID: expect.any(Number),
+                Keywords: [
+                  "AP0054",
+                  "AP9900",
+                  "BC0001",
+                  "BC0004",
+                  "BP9900",
+                  "CT0010",
+                  "CT9900",
+                  "DI0001",
+                  "DI0004",
+                  "DI0007",
+                  "DI0008",
+                  "DI0010",
+                  "DI0056",
+                  "DI0058",
+                  "DI0070",
+                  "DI0079",
+                  "DI9900",
+                  "IP0001",
+                  "MA0005",
+                  "MA9900",
+                  "MI0052",
+                  "MI0135",
+                  "MI0205",
+                  "MI0209",
+                  "MI0285",
+                  "MI0289",
+                  "MI0292",
+                  "MI0310",
+                  "MI0311",
+                  "MI0334",
+                  "MI0348",
+                  "MI0418",
+                  "MI0419",
+                  "MI0577",
+                  "MI0956",
+                  "MI9900",
+                  "MS0022",
+                  "MS9900",
+                  "MT0298",
+                  "MT9900",
+                  "MW0019",
+                  "MW0032",
+                  "MW9900",
+                  "PS0039",
+                  "PS0054",
+                  "PS5001",
+                  "PS9900",
+                ],
               });
             });
         });
@@ -882,8 +928,9 @@ describe("app", () => {
                 CountryName: "England",
                 Town: "Warrington",
                 ScopeOfService: "Multi-disciplinary appointment.",
-                ScopeOfWorks:
+                ScopeOfWorks: [
                   "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+                ],
                 Latitude: 53.39,
                 Longitude: -2.6,
                 State: "CHESHIRE",
@@ -893,7 +940,153 @@ describe("app", () => {
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
                 Confidential: false,
-                imgURL: null,
+                imgURL: [],
+                Keywords: [
+                  "AP0054",
+                  "AP9900",
+                  "BC0001",
+                  "BC0004",
+                  "BP9900",
+                  "CT0010",
+                  "CT9900",
+                  "DI0001",
+                  "DI0004",
+                  "DI0007",
+                  "DI0008",
+                  "DI0010",
+                  "DI0056",
+                  "DI0058",
+                  "DI0070",
+                  "DI0079",
+                  "DI9900",
+                  "IP0001",
+                  "MA0005",
+                  "MA9900",
+                  "MI0052",
+                  "MI0135",
+                  "MI0205",
+                  "MI0209",
+                  "MI0285",
+                  "MI0289",
+                  "MI0292",
+                  "MI0310",
+                  "MI0311",
+                  "MI0334",
+                  "MI0348",
+                  "MI0418",
+                  "MI0419",
+                  "MI0577",
+                  "MI0956",
+                  "MI9900",
+                  "MS0022",
+                  "MS9900",
+                  "MT0298",
+                  "MT9900",
+                  "MW0019",
+                  "MW0032",
+                  "MW9900",
+                  "PS0039",
+                  "PS0054",
+                  "PS5001",
+                  "PS9900",
+                ],
+              });
+            });
+        });
+        test("PATCH: 200 - amending also works on items that are in an array", () => {
+          return request(app)
+            .patch("/api/project/22398800")
+            .send({
+              JobNameLong: "Warrington Time Square",
+              ScopeOfService: "Multi-disciplinary appointment.",
+              Confidential: false,
+              ScopeOfWorks: "Great new scope of works",
+              imgURL: "www.newimage,com",
+              Keywords: "ZZZ001",
+            })
+            .expect(200)
+            .then(({ body: { project } }) => {
+              expect(project).toEqual({
+                ProjectCode: 22398800,
+                JobNameLong: "WARRINGTON TIME SQUARE",
+                StartDate: "2012-03-23T12:00:00.000Z",
+                EndDate: "2020-08-30T11:00:00.000Z",
+                CentreName: "Buildings NW & Yorkshire",
+                AccountingCentreCode: 1419,
+                PracticeName: "Building Engineering",
+                BusinessCode: "BC03",
+                BusinessName: "Property",
+                ProjectDirectorID: 29952,
+                ProjectDirectorName: "Matthew Holden",
+                ProjectManagerID: 37704,
+                ProjectManagerName: "Samuel Styles",
+                CountryName: "England",
+                Town: "Warrington",
+                ScopeOfService: "Multi-disciplinary appointment.",
+                ScopeOfWorks: [
+                  "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+                  "Great new scope of works",
+                ],
+                Latitude: 53.39,
+                Longitude: -2.6,
+                State: "CHESHIRE",
+                PercentComplete: 100,
+                ClientID: 11276,
+                ClientName: "Muse Developments Ltd",
+                ProjectURL:
+                  "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
+                Confidential: false,
+                imgURL: ["www.newimage,com"],
+                Keywords: [
+                  "AP0054",
+                  "AP9900",
+                  "BC0001",
+                  "BC0004",
+                  "BP9900",
+                  "CT0010",
+                  "CT9900",
+                  "DI0001",
+                  "DI0004",
+                  "DI0007",
+                  "DI0008",
+                  "DI0010",
+                  "DI0056",
+                  "DI0058",
+                  "DI0070",
+                  "DI0079",
+                  "DI9900",
+                  "IP0001",
+                  "MA0005",
+                  "MA9900",
+                  "MI0052",
+                  "MI0135",
+                  "MI0205",
+                  "MI0209",
+                  "MI0285",
+                  "MI0289",
+                  "MI0292",
+                  "MI0310",
+                  "MI0311",
+                  "MI0334",
+                  "MI0348",
+                  "MI0418",
+                  "MI0419",
+                  "MI0577",
+                  "MI0956",
+                  "MI9900",
+                  "MS0022",
+                  "MS9900",
+                  "MT0298",
+                  "MT9900",
+                  "MW0019",
+                  "MW0032",
+                  "MW9900",
+                  "PS0039",
+                  "PS0054",
+                  "PS5001",
+                  "PS9900",
+                  "ZZZ001",
+                ],
               });
             });
         });
@@ -965,39 +1158,6 @@ describe("app", () => {
         test("GET: 200 - get keywords for a project", () => {
           return request(app)
             .get("/api/project/keywords/22398800")
-            .expect(200)
-            .then(({ body: { keywords } }) => {
-              expect(keywords).toEqual([
-                "AP0054",
-                "BC0004",
-                "CT0010",
-                "DI0001",
-                "DI0004",
-                "DI0007",
-                "DI0008",
-                "DI0010",
-                "DI0056",
-                "DI0058",
-                "DI0079",
-                "MA0005",
-                "MI0205",
-                "MI0285",
-                "MI0292",
-                "MI0311",
-                "MI0348",
-                "MI0419",
-                "MI0577",
-                "MT0298",
-                "MW0019",
-                "PS0054",
-                "PS5001",
-              ]);
-              expect(keywords.length).toBe(23);
-            });
-        });
-        test("GET: 200 - get keywords for a project including query for related keywords", () => {
-          return request(app)
-            .get("/api/project/keywords/22398800?includeRelated=true")
             .expect(200)
             .then(({ body: { keywords } }) => {
               expect(keywords).toEqual([
@@ -1082,312 +1242,330 @@ describe("app", () => {
           return Promise.all(promises);
         });
       });
-    });
 
-    describe("/project/staff/:ProjectCode", () => {
-      test("PATCH: 200 - add staff experience to project", () => {
-        return request(app)
-          .patch("/api/project/staff/22398800?StaffID=37704")
-          .send({ experience: "Sam worked really hard on this project." })
-          .expect(200)
-          .then(({ body: { project } }) => {
-            expect(project).toEqual({
-              ProjectCode: 22398800,
-              JobNameLong: "WARRINGTON TOWN CENTRE REDEVELOPMENT",
-              StartDate: "2012-03-23T12:00:00.000Z",
-              EndDate: "2020-08-30T11:00:00.000Z",
-              CentreName: "Buildings NW & Yorkshire",
-              AccountingCentreCode: 1419,
-              PracticeName: "Building Engineering",
-              BusinessCode: "BC03",
-              BusinessName: "Property",
-              ProjectDirectorID: 29952,
-              ProjectDirectorName: "Matthew Holden",
-              ProjectManagerID: 37704,
-              ProjectManagerName: "Samuel Styles",
-              CountryName: "England",
-              Town: "Warrington",
-              ScopeOfService:
-                "Multi-disciplinary appointment, initially in support of bid, then project delivery if Muse are successful.",
-              ScopeOfWorks:
-                "Mixed use development in central Warrington, for the Bridge Street Quarter.",
-              Latitude: 53.39,
-              Longitude: -2.6,
-              State: "CHESHIRE",
-              PercentComplete: 100,
-              ClientID: 11276,
-              ClientName: "Muse Developments Ltd",
-              ProjectURL:
-                "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
-              Confidential: true,
-              imgURL: null,
-              StaffID: 37704,
-              TotalHrs: 3730.75,
-              experience: "Sam worked really hard on this project.",
-              experienceID: expect.any(Number),
+      describe("/project/staff/:ProjectCode", () => {
+        test("PATCH: 200 - add staff experience to project", () => {
+          return request(app)
+            .patch("/api/project/staff/22398800?StaffID=37704")
+            .send({ experience: "Sam worked really hard on this project." })
+            .expect(200)
+            .then(({ body: { project } }) => {
+              expect(project).toEqual({
+                ProjectCode: 22398800,
+                JobNameLong: "WARRINGTON TOWN CENTRE REDEVELOPMENT",
+                StartDate: "2012-03-23T12:00:00.000Z",
+                EndDate: "2020-08-30T11:00:00.000Z",
+                CentreName: "Buildings NW & Yorkshire",
+                AccountingCentreCode: 1419,
+                PracticeName: "Building Engineering",
+                BusinessCode: "BC03",
+                BusinessName: "Property",
+                ProjectDirectorID: 29952,
+                ProjectDirectorName: "Matthew Holden",
+                ProjectManagerID: 37704,
+                ProjectManagerName: "Samuel Styles",
+                CountryName: "England",
+                Town: "Warrington",
+                ScopeOfService:
+                  "Multi-disciplinary appointment, initially in support of bid, then project delivery if Muse are successful.",
+                ScopeOfWorks: [
+                  "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+                ],
+                Latitude: 53.39,
+                Longitude: -2.6,
+                State: "CHESHIRE",
+                PercentComplete: 100,
+                ClientID: 11276,
+                ClientName: "Muse Developments Ltd",
+                ProjectURL:
+                  "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
+                Confidential: true,
+                imgURL: [],
+                StaffID: 37704,
+                TotalHrs: 3730.75,
+                experience: "Sam worked really hard on this project.",
+                experienceID: expect.any(Number),
+                Keywords: [
+                  "AP0054",
+                  "AP9900",
+                  "BC0001",
+                  "BC0004",
+                  "BP9900",
+                  "CT0010",
+                  "CT9900",
+                  "DI0001",
+                  "DI0004",
+                  "DI0007",
+                  "DI0008",
+                  "DI0010",
+                  "DI0056",
+                  "DI0058",
+                  "DI0070",
+                  "DI0079",
+                  "DI9900",
+                  "IP0001",
+                  "MA0005",
+                  "MA9900",
+                  "MI0052",
+                  "MI0135",
+                  "MI0205",
+                  "MI0209",
+                  "MI0285",
+                  "MI0289",
+                  "MI0292",
+                  "MI0310",
+                  "MI0311",
+                  "MI0334",
+                  "MI0348",
+                  "MI0418",
+                  "MI0419",
+                  "MI0577",
+                  "MI0956",
+                  "MI9900",
+                  "MS0022",
+                  "MS9900",
+                  "MT0298",
+                  "MT9900",
+                  "MW0019",
+                  "MW0032",
+                  "MW9900",
+                  "PS0039",
+                  "PS0054",
+                  "PS5001",
+                  "PS9900",
+                ],
+              });
             });
-          });
-      });
-      test("PATCH: 404 - no staff_id provided", () => {
-        return request(app)
-          .patch("/api/project/staff/25397800")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("No staff id provided!!!");
-          });
-      });
-      test("PATCH: 404 - cannot patch staff experience if no time row exists", () => {
-        return request(app)
-          .patch("/api/project/staff/25397800?StaffID=37704")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe(
-              "No staff time booked to project - use add experience instead!!!"
-            );
-          });
-      });
-      test("PATCH: 404 - staffmember doesn't exist in the database", () => {
-        return request(app)
-          .patch("/api/project/staff/25397800?StaffID=99999")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("StaffID not found");
-          });
-      });
-      test("PATCH: 400 - bad StaffID", () => {
-        return request(app)
-          .patch("/api/project/staff/25397800?StaffID=samstyles")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("bad request to db!!!");
-          });
-      });
-      test("PATCH: 400 - non-existent attribute", () => {
-        return request(app)
-          .patch("/api/project/staff/25397800?StaffID=37704")
-          .send({
-            newPic: "www.samstyles.com",
-          })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("bad request to db!!!");
-          });
-      });
-      test("PATCH: 404 - ProjectCode doesn't exist in the database", () => {
-        return request(app)
-          .patch("/api/project/staff/9999999?StaffID=37704")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("ProjectCode not found");
-          });
-      });
-      test("PATCH: 404 - bad ProjectCode", () => {
-        return request(app)
-          .patch("/api/project/staff/999999?StaffID=37704")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("ProjectCode not found");
-          });
-      });
-      test("POST: 201 - adds staff experience  if no time row exists", () => {
-        return request(app)
-          .post("/api/project/staff/25397800?StaffID=37704")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(200)
-          .then(({ body: { experience } }) => {
-            expect(experience).toEqual({
+        });
+        test("PATCH: 404 - no staff_id provided", () => {
+          return request(app)
+            .patch("/api/project/staff/25397800")
+            .send({
               TotalHrs: 5,
               experience: "Sam worked really hard on this project.",
-              experienceID: expect.any(Number),
-              ProjectCode: 25397800,
-              StaffID: 37704,
-            });
-          });
-      });
-      test("POST: 404 - no staff_id provided", () => {
-        return request(app)
-          .post("/api/project/staff/25397800")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("No staff id provided!!!");
-          });
-      });
-      test("POST: 400 - bad StaffID", () => {
-        return request(app)
-          .post("/api/project/staff/25397800?StaffID=samstyles")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("bad request to db!!!");
-          });
-      });
-      test("POST: 404 - staffmember doesn't exist in the database", () => {
-        return request(app)
-          .post("/api/project/staff/25397800?StaffID=99999")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("StaffID not found");
-          });
-      });
-      test("POST: 404 - experience or TotalHrs missing", () => {
-        return request(app)
-          .post("/api/project/staff/25397800?StaffID=37704")
-          .send({
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("Missing attributes!!!");
-          });
-      });
-      test("POST: 404 - ProjectCode doesn't exist in the database", () => {
-        return request(app)
-          .post("/api/project/staff/9999999?StaffID=37704")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("ProjectCode not found");
-          });
-      });
-      test("POST: 404 - bad ProjectCode", () => {
-        return request(app)
-          .post("/api/project/staff/999999?StaffID=37704")
-          .send({
-            TotalHrs: 5,
-            experience: "Sam worked really hard on this project.",
-          })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("ProjectCode not found");
-          });
-      });
-      test("INVALID METHODS: 405 error", () => {
-        const invalidMethods = ["get", "put", "delete"];
-        const endPoint = "/api/project/staff/25397800";
-        const promises = invalidMethods.map((method) => {
-          return request(app)
-            [method](endPoint)
-            .expect(405)
+            })
+            .expect(404)
             .then(({ body: { msg } }) => {
-              expect(msg).toBe("method not allowed!!!");
+              expect(msg).toBe("No staff id provided!!!");
             });
         });
-        return Promise.all(promises);
+        test("PATCH: 404 - cannot patch staff experience if no time row exists", () => {
+          return request(app)
+            .patch("/api/project/staff/25397800?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe(
+                "No staff time booked to project - use add experience instead!!!"
+              );
+            });
+        });
+        test("PATCH: 404 - staffmember doesn't exist in the database", () => {
+          return request(app)
+            .patch("/api/project/staff/25397800?StaffID=99999")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("StaffID not found");
+            });
+        });
+        test("PATCH: 400 - bad StaffID", () => {
+          return request(app)
+            .patch("/api/project/staff/25397800?StaffID=samstyles")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("PATCH: 400 - non-existent attribute", () => {
+          return request(app)
+            .patch("/api/project/staff/25397800?StaffID=37704")
+            .send({
+              newPic: "www.samstyles.com",
+            })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("PATCH: 404 - ProjectCode doesn't exist in the database", () => {
+          return request(app)
+            .patch("/api/project/staff/9999999?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
+        test("PATCH: 404 - bad ProjectCode", () => {
+          return request(app)
+            .patch("/api/project/staff/999999?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
+        test("POST: 201 - adds staff experience  if no time row exists", () => {
+          return request(app)
+            .post("/api/project/staff/25397800?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(200)
+            .then(({ body: { experience } }) => {
+              expect(experience).toEqual({
+                TotalHrs: 5,
+                experience: "Sam worked really hard on this project.",
+                experienceID: expect.any(Number),
+                ProjectCode: 25397800,
+                StaffID: 37704,
+              });
+            });
+        });
+        test("POST: 404 - no staff_id provided", () => {
+          return request(app)
+            .post("/api/project/staff/25397800")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("No staff id provided!!!");
+            });
+        });
+        test("POST: 400 - bad StaffID", () => {
+          return request(app)
+            .post("/api/project/staff/25397800?StaffID=samstyles")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("POST: 404 - staffmember doesn't exist in the database", () => {
+          return request(app)
+            .post("/api/project/staff/25397800?StaffID=99999")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("StaffID not found");
+            });
+        });
+        test("POST: 404 - experience or TotalHrs missing", () => {
+          return request(app)
+            .post("/api/project/staff/25397800?StaffID=37704")
+            .send({
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("Missing attributes!!!");
+            });
+        });
+        test("POST: 404 - ProjectCode doesn't exist in the database", () => {
+          return request(app)
+            .post("/api/project/staff/9999999?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
+        test("POST: 404 - bad ProjectCode", () => {
+          return request(app)
+            .post("/api/project/staff/999999?StaffID=37704")
+            .send({
+              TotalHrs: 5,
+              experience: "Sam worked really hard on this project.",
+            })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("ProjectCode not found");
+            });
+        });
+        test("INVALID METHODS: 405 error", () => {
+          const invalidMethods = ["get", "put", "delete"];
+          const endPoint = "/api/project/staff/25397800";
+          const promises = invalidMethods.map((method) => {
+            return request(app)
+              [method](endPoint)
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("method not allowed!!!");
+              });
+          });
+          return Promise.all(promises);
+        });
       });
     });
-  });
 
-  describe("/keywords", () => {
-    test("GET: 200 - returns list of keywords, ", () => {
-      return request(app)
-        .get("/api/keywords")
-        .expect(200)
-        .then(({ body: { keywords } }) => {
-          expect(keywords).toEqual(
-            expect.arrayContaining([
-              expect.objectContaining({
-                KeywordCode: expect.any(String),
-                Keyword: expect.any(String),
-                KeywordGroupCode: expect.any(String),
-              }),
-            ])
-          );
-        });
-    });
-    test("GET: 200 - returns list of keywords, can be filtered by group ", () => {
-      return request(app)
-        .get("/api/keywords?KeywordGroupCode=AE")
-        .expect(200)
-        .then(({ body: { keywords } }) => {
-          expect(keywords).toEqual(
-            expect.arrayContaining([
-              expect.objectContaining({
-                KeywordCode: expect.any(String),
-                Keyword: expect.any(String),
-                KeywordGroupCode: expect.any(String),
-              }),
-            ])
-          );
-          keywords.forEach((keyword) => {
-            expect(keyword.KeywordGroupCode).toBe("AE");
-          });
-        });
-    });
-    test("INVALID METHODS: 405 error", () => {
-      const invalidMethods = ["put", "delete", "patch", "post"];
-      const endPoint = "/api/keywords";
-      const promises = invalidMethods.map((method) => {
+    describe("/keywords", () => {
+      test("GET: 200 - returns list of keywords, ", () => {
         return request(app)
-          [method](endPoint)
-          .expect(405)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("method not allowed!!!");
-          });
-      });
-      return Promise.all(promises);
-    });
-
-    describe("/keywords/groups", () => {
-      test("GET: 200 - returns list of keyword groups", () => {
-        return request(app)
-          .get("/api/keywords/groups")
+          .get("/api/keywords")
           .expect(200)
-          .then(({ body: { keywordGroups } }) => {
-            expect(keywordGroups).toEqual(
+          .then(({ body: { keywords } }) => {
+            expect(keywords).toEqual(
               expect.arrayContaining([
                 expect.objectContaining({
+                  KeywordCode: expect.any(String),
+                  Keyword: expect.any(String),
                   KeywordGroupCode: expect.any(String),
-                  KeywordGroupName: expect.any(String),
                 }),
               ])
             );
-            expect(keywordGroups.length).toBe(30);
+          });
+      });
+      test("GET: 200 - returns list of keywords, can be filtered by group ", () => {
+        return request(app)
+          .get("/api/keywords?KeywordGroupCode=AE")
+          .expect(200)
+          .then(({ body: { keywords } }) => {
+            expect(keywords).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  KeywordCode: expect.any(String),
+                  Keyword: expect.any(String),
+                  KeywordGroupCode: expect.any(String),
+                }),
+              ])
+            );
+            keywords.forEach((keyword) => {
+              expect(keyword.KeywordGroupCode).toBe("AE");
+            });
           });
       });
       test("INVALID METHODS: 405 error", () => {
-        const invalidMethods = ["put", "patch", "post", "delete"];
-        const endPoint = "/api/keywords/groups";
+        const invalidMethods = ["put", "delete", "patch", "post"];
+        const endPoint = "/api/keywords";
         const promises = invalidMethods.map((method) => {
           return request(app)
             [method](endPoint)
@@ -1397,6 +1575,38 @@ describe("app", () => {
             });
         });
         return Promise.all(promises);
+      });
+
+      describe("/keywords/groups", () => {
+        test("GET: 200 - returns list of keyword groups", () => {
+          return request(app)
+            .get("/api/keywords/groups")
+            .expect(200)
+            .then(({ body: { keywordGroups } }) => {
+              expect(keywordGroups).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    KeywordGroupCode: expect.any(String),
+                    KeywordGroupName: expect.any(String),
+                  }),
+                ])
+              );
+              expect(keywordGroups.length).toBe(30);
+            });
+        });
+        test("INVALID METHODS: 405 error", () => {
+          const invalidMethods = ["put", "patch", "post", "delete"];
+          const endPoint = "/api/keywords/groups";
+          const promises = invalidMethods.map((method) => {
+            return request(app)
+              [method](endPoint)
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("method not allowed!!!");
+              });
+          });
+          return Promise.all(promises);
+        });
       });
     });
   });

@@ -52,11 +52,14 @@ const validateStaffExperience = (ProjectCode, StaffID) => {
 };
 
 const fetchStaffMeta = (filters) => {
+  const filterKeys = Object.keys(filters);
   return knex
     .select("*")
     .from("staffMeta")
     .modify((query) => {
-      query.where(filters);
+      if (filterKeys.length > 0) {
+        query.where(filters);
+      }
     })
     .then((staffMeta) => {
       if (staffMeta.length === 0) {

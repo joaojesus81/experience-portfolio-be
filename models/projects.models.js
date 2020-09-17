@@ -1,6 +1,5 @@
 const knex = require("../connection");
 const cloudinary = require("cloudinary").v2;
-const { fetchKeywordsByProjectCode } = require("./keywords.models");
 
 const checkStaffIDExists = (StaffID = 0) => {
   return knex
@@ -48,17 +47,15 @@ const parseDecimals = (projectArray) => {
 };
 
 const fetchProjects = (filters) => {
-  let includeKeywords = false;
-  if (Object.keys(filters).includes("includeKeywords")) {
-    includeKeywords = filters.includeKeywords;
-    delete filters.includeKeywords;
-  }
+  const filterKeys = Object.keys(filters);
   return knex
     .select("*")
     .from("projects")
     .returning("*")
     .modify((query) => {
-      query.where(filters);
+      if (filterKeys.length > 0) {
+        query.where(filters);
+      }
     })
 
     .then((projects) => {
@@ -68,41 +65,17 @@ const fetchProjects = (filters) => {
           msg: "No matching projects found",
         });
       } else {
-        if (!includeKeywords) return parseDecimals(projects);
-
-        projects = parseDecimals(projects);
-
-        return fetchKeywords(projects);
+        return parseDecimals(projects);
       }
     });
-};
-
-const fetchKeywords = (projects) => {
-  const promiseArray = projects.map((project) => {
-    return fetchKeywordsByProjectCode(project.ProjectCode, {
-      includeRelated: true,
-    });
-  });
-
-  return Promise.all(promiseArray).then((keywords) => {
-    projects.forEach((project, index) => {
-      project.keywords = keywords[index];
-    });
-    return projects;
-  });
 };
 
 const fetchProjectsByStaffID = (StaffID, filters) => {
   // We need sortBy and an order.
   let showDetails = false;
   if (Object.keys(filters).includes("showDetails")) {
-    showDetails = filters.showDetails;
+    if (filters.showDetails === "true") showDetails = true;
     delete filters.showDetails;
-  }
-  let includeKeywords = false;
-  if (Object.keys(filters).includes("includeKeywords")) {
-    includeKeywords = filters.includeKeywords;
-    delete filters.includeKeywords;
   }
 
   const filterKeys = Object.keys(filters);
@@ -139,11 +112,7 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
               msg: "No matching projects found",
             });
           } else {
-            if (!includeKeywords) return parseDecimals(projects);
-
-            projects = parseDecimals(projects);
-
-            return fetchKeywords(projects);
+            return parseDecimals(projects);
           }
         });
     }
@@ -191,16 +160,28 @@ const fetchProjectByProjectCode = (ProjectCode, StaffID) => {
 
 const patchProjectData = (ProjectCode, projectData) => {
   const columnsToUpdate = Object.keys(projectData);
-
   if (columnsToUpdate.includes("JobNameLong"))
     projectData.JobNameLong = projectData.JobNameLong.toUpperCase();
   if (columnsToUpdate.includes("State"))
     projectData.State = projectData.State.toUpperCase();
 
+  columnsToUpdate.forEach((column) => {
+    if (
+      column === "ScopeOfWorks" ||
+      column === "imgURL" ||
+      column === "Keywords"
+    ) {
+      projectData[column] = knex.raw(`array_append("${column}", ?)`, [
+        `${projectData[column]}`,
+      ]);
+    }
+  });
+
   return knex
+    .select("*")
     .from("projects")
     .where("projects.ProjectCode", ProjectCode)
-    .update(projectData, columnsToUpdate)
+    .update(projectData)
     .then((projects) => {
       if (projects.length === 0) {
         return Promise.reject({ status: 404, msg: "ProjectCode not found" });

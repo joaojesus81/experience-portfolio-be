@@ -1,4 +1,4 @@
-exports.formatProjects = (list) => {
+exports.formatProjects = (list, projectKeywordsData, keywordThesaurusData) => {
   function createDate(str1) {
     // str1 format should be dd/mm/yyyy.
     const dt1 = parseInt(str1.substring(0, 2));
@@ -8,7 +8,51 @@ exports.formatProjects = (list) => {
     return date1;
   }
 
+  //&&&
+  function filterProjectKeywords(ProjectCode, projectKeywordsData) {
+    const filteredArray = projectKeywordsData.filter((keyword) => {
+      return keyword.ProjectCode === ProjectCode;
+    });
+
+    const codeArray = filteredArray.map((item) => {
+      return item.KeywordCode;
+    });
+
+    const relatedArray = findRelatedKeywords(codeArray, keywordThesaurusData);
+
+    return relatedArray;
+  }
+
+  function findRelatedKeywords(codeArray, keywordThesaurusData) {
+    const relatedArray = [...codeArray];
+    codeArray.forEach((keyword) => {
+      const relatedRows = keywordThesaurusData.filter((row) => {
+        return row.KeywordCode === keyword;
+      });
+
+      const relatedWords = relatedRows.map((row) => {
+        return row.RelatedKeywordCode;
+      });
+
+      relatedWords.forEach((keyword) => {
+        if (!relatedArray.includes(keyword)) relatedArray.push(keyword);
+      });
+    });
+
+    relatedArray.sort();
+    return relatedArray;
+  }
+  //&&&
+
   const formattedArray = list.map(({ ...object }) => {
+    ///&&&
+    const projectKeywords = filterProjectKeywords(
+      object.ProjectCode,
+      projectKeywordsData,
+      keywordThesaurusData
+    );
+    //&&&
+
     const StartDate = createDate(object.StartDate);
     const EndDate = createDate(object.EndDate);
     object.StartDate = StartDate;
@@ -21,6 +65,11 @@ exports.formatProjects = (list) => {
     if (object.PercentComplete === "") object.PercentComplete = null;
     if (object.ClientID === "") object.ClientID = null;
     if (object.Confidential === "") object.Confidential = null;
+    //&&&
+    object.ScopeOfWorks = [object.ScopeOfWorks];
+    object.imgURL = [];
+    object.Keywords = projectKeywords;
+    //&&&
 
     return object;
   });

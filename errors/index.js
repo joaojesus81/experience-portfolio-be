@@ -7,6 +7,7 @@ exports.handle404s = (req, res, next) => {
 };
 
 exports.handlePSQLErrors = (err, req, res, next) => {
+  console.log(err);
   if (
     err.code === "42703" || //undefined column
     err.code === "23502" || //not null violation

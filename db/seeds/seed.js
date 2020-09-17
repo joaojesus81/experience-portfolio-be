@@ -33,7 +33,13 @@ exports.seed = function (knex) {
           return knex("keywordThesaurus").insert(keywordThesaurusData);
         })
         .then(() => {
-          const formattedProjects = formatProjects(projectsData);
+          //&&&const formattedProjects = formatProjects(projectsData);
+          const formattedProjects = formatProjects(
+            projectsData,
+            projectKeywordsData,
+            keywordThesaurusData
+          );
+
           return knex("projects")
             .insert(formattedProjects)
             .returning("ProjectCode");

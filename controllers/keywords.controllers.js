@@ -32,7 +32,7 @@ const sendKeywordsByProjectCode = (req, res, next) => {
 
   fetchKeywordsByProjectCode(ProjectCode, filters)
     .then((keywords) => {
-      res.status(200).send({ keywords });
+      res.status(200).send(keywords);
     })
     .catch((err) => {
       next(err);
