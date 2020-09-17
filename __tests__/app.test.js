@@ -483,6 +483,75 @@ describe("app", () => {
         return Promise.all(promises);
       });
 
+      describe("/projects/staff", () => {
+        test("POST: 200 - when passed a list of projects, returns a list of staff who have worked on those projects", () => {
+          return request(app)
+            .post("/api/projects/staff")
+            .send({ Projects: [24625900, 22398800, 26766100] })
+            .expect(200)
+            .then(({ body: { staffList } }) => {
+              expect(staffList).toEqual([
+                { StaffID: 37704, TotalHrs: 5384.5, ProjectCount: 3 },
+                { StaffID: 56876, TotalHrs: 3094.5, ProjectCount: 1 },
+              ]);
+            });
+        });
+        test("POST: 200 - accepts queries on staff", () => {
+          return request(app)
+            .post("/api/projects/staff?GradeLevel=6")
+            .send({ Projects: [24625900, 22398800, 26766100] })
+            .expect(200)
+            .then(({ body: { staffList } }) => {
+              expect(staffList).toEqual([
+                { StaffID: 37704, TotalHrs: 5384.5, ProjectCount: 3 },
+              ]);
+            });
+        });
+        test("POST: 200 - works with other filters", () => {
+          return request(app)
+            .post("/api/projects/staff?LocationName=Manchester Office")
+            .send({ Projects: [24625900, 22398800, 26766100, 24675700] })
+            .expect(200)
+            .then(({ body: { staffList } }) => {
+              expect(staffList).toEqual([
+                { StaffID: 37704, TotalHrs: 5393.25, ProjectCount: 4 },
+                { StaffID: 56876, TotalHrs: 4318.25, ProjectCount: 2 },
+              ]);
+            });
+        });
+        test("POST: 400 - no projects provided", () => {
+          return request(app)
+            .post("/api/projects/staff")
+            .send({})
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("No projects provided!!!");
+            });
+        });
+        test("POST: 400 - bad project ID provided", () => {
+          return request(app)
+            .post("/api/projects/staff")
+            .send({ Projects: ["samstyles", 24625900] })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("bad request to db!!!");
+            });
+        });
+        test("INVALID METHODS: 405 error", () => {
+          const invalidMethods = ["put", "patch", "get", "delete"];
+          const endPoint = "/api/projects/staff";
+          const promises = invalidMethods.map((method) => {
+            return request(app)
+              [method](endPoint)
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("method not allowed!!!");
+              });
+          });
+          return Promise.all(promises);
+        });
+      });
+
       describe("/projects/staff/:StaffID", () => {
         test("GET: 200 - check staffmember exists and fetch project list for an individual", () => {
           return request(app)
@@ -646,6 +715,7 @@ describe("app", () => {
           return Promise.all(promises);
         });
       });
+
       describe("/projects/keywords/:StaffID", () => {
         test("GET: 200 - get keywords for staff projects", () => {
           return request(app)

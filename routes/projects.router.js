@@ -11,7 +11,11 @@ const {
   sendKeywordsByStaffID,
 } = require("../controllers/keywords.controllers");
 
+const { sendStaffForProjects } = require("../controllers/staff.controllers");
+
 projectsRouter.route("/").get(sendProjects).all(handle405s);
+
+projectsRouter.route("/staff").post(sendStaffForProjects).all(handle405s);
 
 projectsRouter
   .route("/staff/:StaffID")

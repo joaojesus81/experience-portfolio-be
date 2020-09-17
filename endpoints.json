@@ -74,6 +74,29 @@
       ]
     }
   },
+  "POST /api/projects/staff": {
+    "description": "when passed a list of projects, returns a list of staff who have worked on those projects",
+    "queries": [
+      "accepts all properties of staffMeta as queries, e.g 'GradeLevel=5'.  Multiple queries can be included; they are matched with AND, not OR."
+    ],
+    "examplePostObject": {
+      "Projects": [24625900, 22398800, 26766100]
+    },
+    "exampleResponse": {
+      "staffList": [
+        {
+          "StaffID": 37704,
+          "TotalHrs": 5384.5,
+          "ProjectCount": 3
+        },
+        {
+          "StaffID": 56876,
+          "TotalHrs": 3094.5,
+          "ProjectCount": 1
+        }
+      ]
+    }
+  },
   "GET /api/projects/staff/:StaffID": {
     "description": "serves up project list for an individual",
     "queries": [

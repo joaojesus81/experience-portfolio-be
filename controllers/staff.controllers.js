@@ -6,6 +6,7 @@ const {
   postStaffImage,
   fetchStaffMeta,
   fetchCredentials,
+  fetchStaffForProjects,
 } = require("../models/staff.models");
 
 const sendStaffMeta = (req, res, next) => {
@@ -100,6 +101,24 @@ const sendCredentials = (req, res, next) => {
     });
 };
 
+const sendStaffForProjects = (req, res, next) => {
+  const { Projects } = req.body;
+  const filters = req.query;
+
+  if (Projects) {
+    fetchStaffForProjects(Projects, filters)
+      .then((staffList) => {
+        res.status(200).send({ staffList });
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } else {
+    err = { status: 400, msg: "No projects provided!!!" };
+    next(err);
+  }
+};
+
 module.exports = {
   sendStaffMetaByID,
   updateStaffMetaByID,
@@ -108,4 +127,5 @@ module.exports = {
   updateStaffPhotoByID,
   sendStaffMeta,
   sendCredentials,
+  sendStaffForProjects,
 };

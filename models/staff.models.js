@@ -219,6 +219,36 @@ const fetchCredentials = (signInObj) => {
   });
 };
 
+const fetchStaffForProjects = (Projects, filters) => {
+  const filterKeys = Object.keys(filters);
+
+  return knex
+    .select("staffExperience.StaffID")
+    .from("staffExperience")
+    .whereIn("ProjectCode", Projects)
+    .groupBy("staffExperience.StaffID")
+    .sum("TotalHrs as TotalHrs")
+    .count("staffExperience.StaffID as ProjectCount")
+    .orderBy("ProjectCount", "desc")
+    .leftJoin("staffMeta", "staffExperience.StaffID", "staffMeta.StaffID")
+    .modify((query) => {
+      if (filterKeys.length > 0) {
+        query.where(filters);
+      }
+    })
+    .then((staffExperience) => {
+      if (staffExperience.length === 0) {
+        return Promise.reject({ status: 404, msg: "No Staff found" });
+      } else {
+        staffExperience.forEach((experience) => {
+          experience.TotalHrs = parseFloat(experience.TotalHrs);
+          experience.ProjectCount = parseInt(experience.ProjectCount);
+        });
+        return staffExperience;
+      }
+    });
+};
+
 module.exports = {
   fetchStaffMetaByID,
   patchStaffMetaByID,
@@ -227,4 +257,5 @@ module.exports = {
   postStaffImage,
   fetchStaffMeta,
   fetchCredentials,
+  fetchStaffForProjects,
 };
