@@ -72,6 +72,7 @@ const addStaffExperienceOnProject = (req, res, next) => {
 const updateStaffPhotoByID = (req, res, next) => {
   if (req.files) {
     const values = Object.values(req.files);
+
     const { StaffID } = req.params;
 
     postStaffImage(StaffID, values)

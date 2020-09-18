@@ -197,7 +197,7 @@
     }
   },
   "PATCH /api/staff/meta/:StaffID": {
-    "description": "updates staff metadata for an individual.  Array values can be updated by sending the entire array as part of the patch object - see example below.  For imgURL, use POST or DELETE.",
+    "description": "updates staff metadata for an individual.  Array values can be updated by sending the entire array as part of the patch object - see example below.",
     "examplePatchObject": {
       "imgURL": "www.samstyles.com",
       "careerStart": "2007-09-05T21:00:00.000Z",
@@ -385,6 +385,45 @@
         "imgURL": [
           "https://res.cloudinary.com/gfsimages/image/upload/v1600262593/expport/projectPics/widnes_29.jpg"
         ],
+        "Keywords": ["AP0054", "AP9900", "..."]
+      }
+    }
+  },
+  "DELETE /api/project/:ProjectCode": {
+    "description": "deletes a photo for a project",
+    "examplePostObject": {
+      "imgURL": "https://res.cloudinary.com/gfsimages/image/upload/v1600262593/expport/projectPics/widnes_29.jpg"
+    },
+    "exampleResponse": {
+      "project": {
+        "ProjectCode": 22398800,
+        "JobNameLong": "WARRINGTON TIME SQUARE",
+        "StartDate": "2012-03-23T12:00:00.000Z",
+        "EndDate": "2020-08-30T11:00:00.000Z",
+        "CentreName": "Buildings NW & Yorkshire",
+        "AccountingCentreCode": 1419,
+        "PracticeName": "Building Engineering",
+        "BusinessCode": "BC03",
+        "BusinessName": "Property",
+        "ProjectDirectorID": 29952,
+        "ProjectDirectorName": "Matthew Holden",
+        "ProjectManagerID": 37704,
+        "ProjectManagerName": "Samuel Styles",
+        "CountryName": "England",
+        "Town": "Warrington",
+        "State": "CHESHIRE",
+        "Latitude": 53.39,
+        "Longitude": -2.6,
+        "ScopeOfService": "Multi-disciplinary appointment.",
+        "ScopeOfWorks": [
+          "Mixed use development in central Warrington, for the Bridge Street Quarter."
+        ],
+        "PercentComplete": 100,
+        "ClientID": 11276,
+        "ClientName": "Muse Developments Ltd",
+        "ProjectURL": "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
+        "Confidential": false,
+        "imgURL": [],
         "Keywords": ["AP0054", "AP9900", "..."]
       }
     }

@@ -166,13 +166,15 @@ const patchProjectData = (ProjectCode, projectData) => {
     projectData.State = projectData.State.toUpperCase();
   if (columnsToUpdate.includes("Keywords")) delete projectData.Keywords;
   if (columnsToUpdate.includes("imgURL")) {
-    if (
-      !Array.isArray(columnsToUpdate.imgURL) ||
-      columnsToUpdate.imgURL.length === 1
+    if (!Array.isArray(projectData.imgURL)) {
+      delete projectData.imgURL;
+    } else if (
+      projectData.imgURL.length === 1 &&
+      projectData.imgURL[0] !== "sent by upload"
     ) {
       delete projectData.imgURL;
     } else {
-      const lastItem = columnsToUpdate.imgURL.pop();
+      const lastItem = projectData.imgURL.pop();
       if (lastItem !== "sent by upload") {
         delete projectData.imgURL;
       }
@@ -200,7 +202,8 @@ const postProjectImage = (ProjectCode, values) => {
 
     const image = values[0];
 
-    const imageName = image.name.replace(/\.[^/.]+$/, "");
+    const imageName = `${ProjectCode}-${image.name.replace(/\.[^/.]+$/, "")}`;
+
     const options = {
       upload_preset: "expportpreset",
       folder: "expport/projectPics",
@@ -215,14 +218,15 @@ const postProjectImage = (ProjectCode, values) => {
 };
 
 const deleteProjectImage = (imgURL) => {
-  return cloudinary.uploader
-    .destroy(imgURL, function (result) {
+  const lastSlash = imgURL.lastIndexOf("/");
+  const fileName = imgURL.slice(lastSlash + 1);
+  const imageName = fileName.replace(/\.[^/.]+$/, "");
+  return cloudinary.uploader.destroy(
+    `expport/projectPics/${imageName}`,
+    function (result) {
       return result;
-    })
-    .then((result) => {
-      console.log(result);
-      return result;
-    });
+    }
+  );
 };
 
 module.exports = {
