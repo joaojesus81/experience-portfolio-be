@@ -12,6 +12,7 @@ const {
   formatProjects,
   filterStaffTime,
   formatKeywords,
+  formatStaffMeta,
 } = require("../utils/dataFormatting");
 
 exports.seed = function (knex) {
@@ -49,7 +50,10 @@ exports.seed = function (knex) {
           return knex("projectKeywords").insert(projectKeywordsData);
         })
         .then(() => {
-          return knex("staffMeta").insert(staffMeta).returning("StaffID");
+          const formatttedStaffMeta = formatStaffMeta(staffMeta);
+          return knex("staffMeta")
+            .insert(formatttedStaffMeta)
+            .returning("StaffID");
         })
         .then((staffIDArray) => {
           const formattedStaff = filterStaffTime(

@@ -164,10 +164,10 @@
           "nationality": null,
           "highLevelDescription": null,
           "valueStatement": null,
-          "qualifications": null,
-          "professionalAssociations": null,
-          "committees": null,
-          "publications": null
+          "qualifications": [],
+          "professionalAssociations": [],
+          "committees": [],
+          "publications": []
         }
       ]
     }
@@ -189,10 +189,10 @@
         "nationality": null,
         "highLevelDescription": null,
         "valueStatement": null,
-        "qualifications": null,
-        "professionalAssociations": null,
-        "committees": null,
-        "publications": null
+        "qualifications": [],
+        "professionalAssociations": [],
+        "committees": [],
+        "publications": []
       }
     }
   },
@@ -203,7 +203,8 @@
       "careerStart": "2007-09-05T21:00:00.000Z",
       "highLevelDescription": "Sam operates at a VERY high level",
       "valueStatement": "Sam adds lots of value",
-      "nationality": "British"
+      "nationality": "British",
+      "professionalAssociations": ["Qualification 1", "Qualification 2"]
     },
     "exampleResponse": {
       "staffMeta": {
@@ -220,10 +221,10 @@
         "highLevelDescription": "Sam operates at a VERY high level",
         "valueStatement": "Sam adds lots of value",
         "nationality": "British",
-        "qualifications": null,
-        "professionalAssociations": null,
-        "committees": null,
-        "publications": null
+        "qualifications": [],
+        "professionalAssociations": ["Qualification 1", "Qualification 2"],
+        "committees": [],
+        "publications": []
       }
     }
   },
@@ -247,10 +248,10 @@
         "highLevelDescription": "Sam operates at a VERY high level",
         "valueStatement": "Sam adds lots of value",
         "nationality": "British",
-        "qualifications": null,
-        "professionalAssociations": null,
-        "committees": null,
-        "publications": null
+        "qualifications": [],
+        "professionalAssociations": [],
+        "committees": [],
+        "publications": []
       }
     }
   },

@@ -11,10 +11,10 @@ exports.up = function (knex) {
     staffMetaTable.string("imgURL");
     staffMetaTable.timestamp("careerStart");
     staffMetaTable.string("nationality");
-    staffMetaTable.string("qualifications");
-    staffMetaTable.string("professionalAssociations");
-    staffMetaTable.string("committees");
-    staffMetaTable.text("publications");
+    staffMetaTable.specificType("qualifications", "text[]");
+    staffMetaTable.specificType("professionalAssociations", "text[]");
+    staffMetaTable.specificType("committees", "text[]");
+    staffMetaTable.specificType("publications", "text[]");
     staffMetaTable.string("highLevelDescription");
     staffMetaTable.string("valueStatement");
   });

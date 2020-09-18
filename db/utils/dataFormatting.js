@@ -101,3 +101,14 @@ exports.formatKeywords = (list) => {
   });
   return formattedArray;
 };
+
+exports.formatStaffMeta = (list) => {
+  const formattedArray = list.map(({ ...object }) => {
+    object.qualifications = [];
+    object.professionalAssociations = [];
+    object.committees = [];
+    object.publications = [];
+    return object;
+  });
+  return formattedArray;
+};

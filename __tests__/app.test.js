@@ -209,10 +209,10 @@ describe("app", () => {
                   nationality: null,
                   highLevelDescription: null,
                   valueStatement: null,
-                  qualifications: null,
-                  professionalAssociations: null,
-                  committees: null,
-                  publications: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
                 });
               });
           });
@@ -253,10 +253,10 @@ describe("app", () => {
                   nationality: "British",
                   highLevelDescription: null,
                   valueStatement: null,
-                  qualifications: null,
-                  professionalAssociations: null,
-                  committees: null,
-                  publications: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
                 });
               });
           });
@@ -286,10 +286,50 @@ describe("app", () => {
                   highLevelDescription: "Sam operates at a VERY high level",
                   valueStatement: "Sam adds lots of value",
                   nationality: "British",
-                  qualifications: null,
-                  professionalAssociations: null,
-                  committees: null,
-                  publications: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
+                });
+              });
+          });
+          test("PATCH: 200 - update StaffMeta - works with array attributes", () => {
+            return request(app)
+              .patch("/api/staff/meta/37704")
+              .send({
+                imgURL: "www.samstyles.com",
+                careerStart: "2007-09-05T21:00:00.000Z",
+                highLevelDescription: "Sam operates at a VERY high level",
+                valueStatement: "Sam adds lots of value",
+                nationality: "British",
+                professionalAssociations: [
+                  "Qualification 1",
+                  "Qualification 2",
+                ],
+              })
+              .expect(200)
+              .then(({ body: { staffMeta } }) => {
+                expect(staffMeta).toEqual({
+                  StaffID: 37704,
+                  StaffName: "Samuel Styles",
+                  Email: "Sam.Styles@arup.com",
+                  LocationName: "Manchester Office",
+                  StartDate: "2007-09-05T23:00:00.000Z",
+                  JobTitle: "Senior Engineer",
+                  GradeLevel: 6,
+                  DisciplineName: "Structural Engineering",
+                  imgURL: "www.samstyles.com",
+                  careerStart: "2007-09-05T21:00:00.000Z",
+                  highLevelDescription: "Sam operates at a VERY high level",
+                  valueStatement: "Sam adds lots of value",
+                  nationality: "British",
+                  qualifications: [],
+                  professionalAssociations: [
+                    "Qualification 1",
+                    "Qualification 2",
+                  ],
+                  committees: [],
+                  publications: [],
                 });
               });
           });
