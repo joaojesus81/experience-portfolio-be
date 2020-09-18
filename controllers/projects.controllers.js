@@ -4,6 +4,7 @@ const {
   patchProjectData,
   fetchProjects,
   postProjectImage,
+  deleteProjectImage,
 } = require("../models/projects.models");
 
 const sendProjects = (req, res, next) => {
@@ -59,12 +60,28 @@ const updateProjectImage = (req, res, next) => {
     const values = Object.values(req.files);
     const { ProjectCode } = req.params;
 
-    postProjectImage(ProjectCode, values)
-      .then((uploadedFileURL) => {
-        const projectData = { imgURL: uploadedFileURL };
-        patchProjectData(ProjectCode, projectData).then((project) => {
+    const promiseArray = [
+      postProjectImage(ProjectCode, values),
+      fetchProjectByProjectCode(ProjectCode),
+    ];
+
+    return Promise.all(promiseArray)
+      .then((promiseArr) => {
+        const uploadedFileURL = promiseArr[0];
+        const imageURLs = promiseArr[1].imgURL;
+
+        if (!imageURLs.includes(uploadedFileURL)) {
+          const projectData = { imgURL: uploadedFileURL };
+
+          //check if exists; if not, append.
+          //How do we remove one?  We should delete it from the db and amend the array accordingly.
+          return patchProjectData(ProjectCode, projectData).then((project) => {
+            res.status(201).send({ project });
+          });
+        } else {
+          const project = promiseArr[1];
           res.status(201).send({ project });
-        });
+        }
       })
       .catch((err) => {
         next(err);
@@ -75,10 +92,27 @@ const updateProjectImage = (req, res, next) => {
   }
 };
 
+const removeProjectImage = (req, res, next) => {
+  const { ProjectCode } = req.params;
+  const { imgURL } = req.body;
+
+  deleteProjectImage(imgURL)
+    .then((message) => {
+      console.log(message, "message");
+      return fetchProjectByProjectCode(ProjectCode).then((project) => {
+        res.status(200).send({ project });
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports = {
   sendProjectsByStaffID,
   sendProjectByProjectCode,
   updateProjectDetails,
   sendProjects,
   updateProjectImage,
+  removeProjectImage,
 };

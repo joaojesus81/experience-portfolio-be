@@ -164,18 +164,8 @@ const patchProjectData = (ProjectCode, projectData) => {
     projectData.JobNameLong = projectData.JobNameLong.toUpperCase();
   if (columnsToUpdate.includes("State"))
     projectData.State = projectData.State.toUpperCase();
-
-  columnsToUpdate.forEach((column) => {
-    if (
-      column === "ScopeOfWorks" ||
-      column === "imgURL" ||
-      column === "Keywords"
-    ) {
-      projectData[column] = knex.raw(`array_append("${column}", ?)`, [
-        `${projectData[column]}`,
-      ]);
-    }
-  });
+  if (columnsToUpdate.includes("imgURL")) delete projectData.imgURL;
+  if (columnsToUpdate.includes("Keywords")) delete projectData.Keywords;
 
   return knex
     .select("*")
@@ -212,10 +202,22 @@ const postProjectImage = (ProjectCode, values) => {
   });
 };
 
+const deleteProjectImage = (imgURL) => {
+  return cloudinary.uploader
+    .destroy(imgURL, function (result) {
+      return result;
+    })
+    .then((result) => {
+      console.log(result);
+      return result;
+    });
+};
+
 module.exports = {
   fetchProjectsByStaffID,
   fetchProjectByProjectCode,
   patchProjectData,
   fetchProjects,
   postProjectImage,
+  deleteProjectImage,
 };

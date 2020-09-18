@@ -6,6 +6,7 @@ const {
   sendProjectByProjectCode,
   updateProjectDetails,
   updateProjectImage,
+  removeProjectImage,
 } = require("../controllers/projects.controllers");
 
 const {
@@ -22,6 +23,7 @@ projectRouter
   .get(sendProjectByProjectCode)
   .patch(updateProjectDetails)
   .post(updateProjectImage)
+  .delete(removeProjectImage)
   .all(handle405s);
 
 projectRouter

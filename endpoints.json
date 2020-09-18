@@ -159,7 +159,7 @@
           "JobTitle": "Senior Engineer",
           "GradeLevel": 6,
           "DisciplineName": "Structural Engineering",
-          "imgUrl": null,
+          "imgURL": null,
           "careerStart": null,
           "nationality": null,
           "highLevelDescription": null,
@@ -184,7 +184,7 @@
         "JobTitle": "Senior Engineer",
         "GradeLevel": 6,
         "DisciplineName": "Structural Engineering",
-        "imgUrl": null,
+        "imgURL": null,
         "careerStart": null,
         "nationality": null,
         "highLevelDescription": null,
@@ -197,9 +197,9 @@
     }
   },
   "PATCH /api/staff/meta/:StaffID": {
-    "description": "updates staff metadata for an individual",
+    "description": "updates staff metadata for an individual.  Array values can be updated by sending the entire array as part of the patch object - see example below.  For imgURL, use POST or DELETE.",
     "examplePatchObject": {
-      "imgUrl": "www.samstyles.com",
+      "imgURL": "www.samstyles.com",
       "careerStart": "2007-09-05T21:00:00.000Z",
       "highLevelDescription": "Sam operates at a VERY high level",
       "valueStatement": "Sam adds lots of value",
@@ -216,7 +216,7 @@
         "JobTitle": "Senior Engineer",
         "GradeLevel": 6,
         "DisciplineName": "Structural Engineering",
-        "imgUrl": "www.samstyles.com",
+        "imgURL": "www.samstyles.com",
         "careerStart": "2007-09-05T21:00:00.000Z",
         "highLevelDescription": "Sam operates at a VERY high level",
         "valueStatement": "Sam adds lots of value",
@@ -241,7 +241,7 @@
         "JobTitle": "Senior Engineer",
         "GradeLevel": 6,
         "DisciplineName": "Structural Engineering",
-        "imgUrl": [
+        "imgURL": [
           "https://res.cloudinary.com/gfsimages/image/upload/v1600254199/expport/staffPics/widnes_29.jpg"
         ],
         "careerStart": "2007-09-05T21:00:00.000Z",
@@ -303,14 +303,15 @@
     }
   },
   "PATCH /api/project/:ProjectCode": {
-    "description": "amend project details",
+    "description": "amend project details. ScopeOfWorks can be updated by sending the entire array as part of the patch object - see example below.  For imgURL, use POST or DELETE.  Keywords cannot be patched, these need to be changed on the Arup system",
     "examplePatchObject": {
       "JobNameLong": "Warrington Time Square",
       "ScopeOfService": "Multi-disciplinary appointment.",
       "Confidential": false,
-      "ScopeOfWorks": "Great new scope of works",
-      "imgURL": "www.newimage,com",
-      "Keywords": "ZZZ001"
+      "ScopeOfWorks": [
+        "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+        "Great new scope of works"
+      ]
     },
     "exampleResponse": {
       "project": {
@@ -339,8 +340,7 @@
         ],
         "Keywords": ["AP0054", "AP9900", "..."],
         "imgURL": [
-          "https://res.cloudinary.com/gfsimages/image/upload/v1600263185/expport/projectPics/IMG_0945.jpg",
-          "www.newimage,com"
+          "https://res.cloudinary.com/gfsimages/image/upload/v1600263185/expport/projectPics/IMG_0945.jpg"
         ],
         "PercentComplete": 100,
         "ClientID": 11276,

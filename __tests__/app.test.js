@@ -1188,16 +1188,17 @@ describe("app", () => {
               });
             });
         });
-        test("PATCH: 200 - amending also works on items that are in an array", () => {
+        test.only("PATCH: 200 - amending also works on ScopeOfWorks array", () => {
           return request(app)
             .patch("/api/project/22398800")
             .send({
               JobNameLong: "Warrington Time Square",
               ScopeOfService: "Multi-disciplinary appointment.",
               Confidential: false,
-              ScopeOfWorks: "Great new scope of works",
-              imgURL: "www.newimage,com",
-              Keywords: "ZZZ001",
+              ScopeOfWorks: [
+                "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+                "Great new scope of works",
+              ],
             })
             .expect(200)
             .then(({ body: { project } }) => {
@@ -1231,7 +1232,7 @@ describe("app", () => {
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
                 Confidential: false,
-                imgURL: ["www.newimage,com"],
+                imgURL: [],
                 Keywords: [
                   "AP0054",
                   "AP9900",
@@ -1280,7 +1281,105 @@ describe("app", () => {
                   "PS0054",
                   "PS5001",
                   "PS9900",
-                  "ZZZ001",
+                ],
+              });
+            });
+        });
+        test.only("PATCH: 200 - requests to patch imgURL and keywords are ignored", () => {
+          return request(app)
+            .patch("/api/project/22398800")
+            .send({
+              JobNameLong: "Warrington Time Square",
+              ScopeOfService: "Multi-disciplinary appointment.",
+              Confidential: false,
+              imgURL: "www.newimage,com",
+              ScopeOfWorks: [
+                "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+                "Great new scope of works",
+              ],
+              Keywords: "ZZZ001",
+            })
+            .expect(200)
+            .then(({ body: { project } }) => {
+              expect(project).toEqual({
+                ProjectCode: 22398800,
+                JobNameLong: "WARRINGTON TIME SQUARE",
+                StartDate: "2012-03-23T12:00:00.000Z",
+                EndDate: "2020-08-30T11:00:00.000Z",
+                CentreName: "Buildings NW & Yorkshire",
+                AccountingCentreCode: 1419,
+                PracticeName: "Building Engineering",
+                BusinessCode: "BC03",
+                BusinessName: "Property",
+                ProjectDirectorID: 29952,
+                ProjectDirectorName: "Matthew Holden",
+                ProjectManagerID: 37704,
+                ProjectManagerName: "Samuel Styles",
+                CountryName: "England",
+                Town: "Warrington",
+                ScopeOfService: "Multi-disciplinary appointment.",
+                ScopeOfWorks: [
+                  "Mixed use development in central Warrington, for the Bridge Street Quarter.",
+                  "Great new scope of works",
+                ],
+                Latitude: 53.39,
+                Longitude: -2.6,
+                State: "CHESHIRE",
+                PercentComplete: 100,
+                ClientID: 11276,
+                ClientName: "Muse Developments Ltd",
+                ProjectURL:
+                  "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
+                Confidential: false,
+                imgURL: [],
+                Keywords: [
+                  "AP0054",
+                  "AP9900",
+                  "BC0001",
+                  "BC0004",
+                  "BP9900",
+                  "CT0010",
+                  "CT9900",
+                  "DI0001",
+                  "DI0004",
+                  "DI0007",
+                  "DI0008",
+                  "DI0010",
+                  "DI0056",
+                  "DI0058",
+                  "DI0070",
+                  "DI0079",
+                  "DI9900",
+                  "IP0001",
+                  "MA0005",
+                  "MA9900",
+                  "MI0052",
+                  "MI0135",
+                  "MI0205",
+                  "MI0209",
+                  "MI0285",
+                  "MI0289",
+                  "MI0292",
+                  "MI0310",
+                  "MI0311",
+                  "MI0334",
+                  "MI0348",
+                  "MI0418",
+                  "MI0419",
+                  "MI0577",
+                  "MI0956",
+                  "MI9900",
+                  "MS0022",
+                  "MS9900",
+                  "MT0298",
+                  "MT9900",
+                  "MW0019",
+                  "MW0032",
+                  "MW9900",
+                  "PS0039",
+                  "PS0054",
+                  "PS5001",
+                  "PS9900",
                 ],
               });
             });
@@ -1322,7 +1421,7 @@ describe("app", () => {
               expect(msg).toBe("bad request to db!!!");
             });
         });
-        // test("POST: 200 - add Projectimage and update imgURL", () => { //tested using insomnia });
+        // test("POST: 200 - add Projectimage and update imgURL (if it is new)", () => { //tested using insomnia });
         test("POST: 400 - cannot be used to post anything other than a file", () => {
           return request(app)
             .post("/api/project/22398800")
@@ -1334,8 +1433,9 @@ describe("app", () => {
         });
         // test("POST: 404 - file rejected by cloudinary", () => { //tested using insomnia });
         // test("POST: 400 - bad ProjectCode", () => { //tested using insomnia });
+        // test("DELETE: 204 - removes image from Cloudinary", () => {//tested using Insomnia});
         test("INVALID METHODS: 405 error", () => {
-          const invalidMethods = ["put", "delete"];
+          const invalidMethods = ["put"];
           const endPoint = "/api/project/25397800";
           const promises = invalidMethods.map((method) => {
             return request(app)
