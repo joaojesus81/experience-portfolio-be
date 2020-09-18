@@ -164,8 +164,20 @@ const patchProjectData = (ProjectCode, projectData) => {
     projectData.JobNameLong = projectData.JobNameLong.toUpperCase();
   if (columnsToUpdate.includes("State"))
     projectData.State = projectData.State.toUpperCase();
-  if (columnsToUpdate.includes("imgURL")) delete projectData.imgURL;
   if (columnsToUpdate.includes("Keywords")) delete projectData.Keywords;
+  if (columnsToUpdate.includes("imgURL")) {
+    if (
+      !Array.isArray(columnsToUpdate.imgURL) ||
+      columnsToUpdate.imgURL.length === 1
+    ) {
+      delete projectData.imgURL;
+    } else {
+      const lastItem = columnsToUpdate.imgURL.pop();
+      if (lastItem !== "sent by upload") {
+        delete projectData.imgURL;
+      }
+    }
+  }
 
   return knex
     .select("*")

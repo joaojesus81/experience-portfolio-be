@@ -1188,7 +1188,7 @@ describe("app", () => {
               });
             });
         });
-        test.only("PATCH: 200 - amending also works on ScopeOfWorks array", () => {
+        test("PATCH: 200 - amending also works on ScopeOfWorks array", () => {
           return request(app)
             .patch("/api/project/22398800")
             .send({
@@ -1285,7 +1285,7 @@ describe("app", () => {
               });
             });
         });
-        test.only("PATCH: 200 - requests to patch imgURL and keywords are ignored", () => {
+        test("PATCH: 200 - requests to patch imgURL and keywords are ignored", () => {
           return request(app)
             .patch("/api/project/22398800")
             .send({

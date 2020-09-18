@@ -59,7 +59,6 @@ const updateProjectImage = (req, res, next) => {
   if (req.files) {
     const values = Object.values(req.files);
     const { ProjectCode } = req.params;
-
     const promiseArray = [
       postProjectImage(ProjectCode, values),
       fetchProjectByProjectCode(ProjectCode),
@@ -71,10 +70,10 @@ const updateProjectImage = (req, res, next) => {
         const imageURLs = promiseArr[1].imgURL;
 
         if (!imageURLs.includes(uploadedFileURL)) {
-          const projectData = { imgURL: uploadedFileURL };
-
-          //check if exists; if not, append.
-          //How do we remove one?  We should delete it from the db and amend the array accordingly.
+          imageURLs.push(uploadedFileURL);
+          //This next line tells patchProjectData that it is ok to patch the imgURLs
+          imageURLs.push("sent by upload");
+          const projectData = { imgURL: imageURLs };
           return patchProjectData(ProjectCode, projectData).then((project) => {
             res.status(201).send({ project });
           });
