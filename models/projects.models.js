@@ -74,7 +74,8 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
   // We need sortBy and an order.
   let showDetails = false;
   if (Object.keys(filters).includes("showDetails")) {
-    if (filters.showDetails === "true") showDetails = true;
+    if (filters.showDetails === "true" || filters.showDetails === true)
+      showDetails = true;
     delete filters.showDetails;
   }
 
