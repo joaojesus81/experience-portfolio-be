@@ -108,9 +108,60 @@ const fetchKeywordsByStaffID = (StaffID, filters) => {
   });
 };
 
+const fetchKeywordsFromCodes = (keywordsArray) => {
+  return knex
+    .select("*")
+    .from("keywordList")
+    .leftJoin(
+      "keywordGroups",
+      "keywordList.KeywordGroupCode",
+      "keywordGroups.KeywordGroupCode"
+    )
+    .whereIn("KeywordCode", keywordsArray);
+};
+
+const fetchKeywordGroupsByStaffID = (StaffID, filters) => {
+  return fetchKeywordsByStaffID(StaffID, filters).then((keywordsArray) => {
+    return fetchKeywordsFromCodes(keywordsArray).then((keywordsArray) => {
+      if (keywordsArray.length === 0) {
+        return Promise.reject({
+          status: 200,
+          msg: "No matching projects found",
+        });
+      } else {
+        const keywordGroups = {};
+
+        keywordsArray.forEach((keyword) => {
+          keywordGroups[keyword.KeywordGroupCode] = {
+            KeywordGroupName: keyword.KeywordGroupName,
+            Keywords: [],
+            KeywordCodes: [],
+          };
+        });
+
+        keywordsArray.forEach((keyword) => {
+          keywordGroups[keyword.KeywordGroupCode] = {
+            KeywordGroupName: keyword.KeywordGroupName,
+            Keywords: [
+              ...keywordGroups[keyword.KeywordGroupCode].Keywords,
+              keyword.Keyword,
+            ],
+            KeywordCodes: [
+              ...keywordGroups[keyword.KeywordGroupCode].KeywordCodes,
+              keyword.KeywordCode,
+            ],
+          };
+        });
+        return keywordGroups;
+      }
+    });
+  });
+};
+
 module.exports = {
   fetchKeywordGroups,
   fetchKeywords,
   fetchKeywordsByProjectCode,
   fetchKeywordsByStaffID,
+  fetchKeywordGroupsByStaffID,
 };

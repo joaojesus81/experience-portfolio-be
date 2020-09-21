@@ -1902,6 +1902,80 @@ describe("app", () => {
           });
           return Promise.all(promises);
         });
+
+        describe("/keywords/groups/:StaffID", () => {
+          test("GET: 200 - returns list of keywords that a staff member has worked on, separated into groups", () => {
+            return request(app)
+              .get("/api/keywords/groups/37704")
+              .expect(200)
+              .then(({ body: { keywords } }) => {
+                console.log(keywords);
+                expect(keywords).toEqual(
+                  expect.objectContaining({
+                    AE: expect.objectContaining({
+                      KeywordGroupName: expect.any(String),
+                      Keywords: expect.arrayContaining([expect.any(String)]),
+                      KeywordCodes: expect.arrayContaining([
+                        expect.any(String),
+                      ]),
+                    }),
+                  })
+                );
+                expect(Object.keys(keywords).length).toBe(23);
+              });
+          });
+          test("GET: 200 - accepts queries", () => {
+            return request(app)
+              .get(
+                "/api/keywords/groups/37704?ClientName=Muse Developments Ltd"
+              )
+              .expect(200)
+              .then(({ body: { keywords } }) => {
+                console.log(keywords);
+                expect(keywords).toEqual(
+                  expect.objectContaining({
+                    MS: expect.objectContaining({
+                      KeywordGroupName: expect.any(String),
+                      Keywords: expect.arrayContaining([expect.any(String)]),
+                      KeywordCodes: expect.arrayContaining([
+                        expect.any(String),
+                      ]),
+                    }),
+                  })
+                );
+                expect(Object.keys(keywords).length).toBe(12);
+              });
+          });
+          test("GET: 400 - bad staff_id", () => {
+            return request(app)
+              .get("/api/keywords/groups/samstyles")
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("bad request to db!!!");
+              });
+          });
+          test("GET: 404 - staff_id not found", () => {
+            return request(app)
+              .get("/api/keywords/groups/99999")
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("StaffID not found");
+              });
+          });
+          test("INVALID METHODS: 405 error", () => {
+            const invalidMethods = ["put", "patch", "post", "delete"];
+            const endPoint = "/api/keywords/groups/37704";
+            const promises = invalidMethods.map((method) => {
+              return request(app)
+                [method](endPoint)
+                .expect(405)
+                .then(({ body: { msg } }) => {
+                  expect(msg).toBe("method not allowed!!!");
+                });
+            });
+            return Promise.all(promises);
+          });
+        });
       });
     });
   });

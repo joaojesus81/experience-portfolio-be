@@ -3,6 +3,7 @@ const {
   fetchKeywords,
   fetchKeywordsByProjectCode,
   fetchKeywordsByStaffID,
+  fetchKeywordGroupsByStaffID,
 } = require("../models/keywords.models");
 
 const sendKeywordGroups = (req, res, next) => {
@@ -52,9 +53,23 @@ const sendKeywordsByStaffID = (req, res, next) => {
     });
 };
 
+const sendKeywordGroupsByStaffID = (req, res, next) => {
+  const { StaffID } = req.params;
+  const filters = req.query;
+
+  fetchKeywordGroupsByStaffID(StaffID, filters)
+    .then((keywords) => {
+      res.status(200).send({ keywords });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports = {
   sendKeywordGroups,
   sendKeywords,
   sendKeywordsByProjectCode,
   sendKeywordsByStaffID,
+  sendKeywordGroupsByStaffID,
 };

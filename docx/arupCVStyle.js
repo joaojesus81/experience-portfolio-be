@@ -36,10 +36,7 @@ const generateFromUrl = async (req, res, next) => {
   const data = await response.buffer();
   const b64 = data.toString("base64");
 
-  console.log("here");
   const image1 = Media.addImage(doc, b64);
-
-  console.log("here now");
 
   const staffMetaKeys = Object.keys(staffMeta);
 
