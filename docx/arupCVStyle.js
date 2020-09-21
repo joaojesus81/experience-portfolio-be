@@ -45,7 +45,6 @@ const generateFromUrl = async (req, res, next) => {
     bottom: { style: BorderStyle.NIL },
     left: { style: BorderStyle.NIL },
     right: { style: BorderStyle.NIL },
-    // insideH: { style: BorderStyle.NIL },
   };
 
   const staffMetaArray = [];

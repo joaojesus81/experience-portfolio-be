@@ -117,6 +117,7 @@ const fetchKeywordsFromCodes = (keywordsArray) => {
       "keywordList.KeywordGroupCode",
       "keywordGroups.KeywordGroupCode"
     )
+    .orderBy("keywordList.Keyword")
     .whereIn("KeywordCode", keywordsArray);
 };
 
@@ -152,6 +153,7 @@ const fetchKeywordGroupsByStaffID = (StaffID, filters) => {
             ],
           };
         });
+
         return keywordGroups;
       }
     });
