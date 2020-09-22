@@ -63,8 +63,37 @@ const checkKeywordFilters = (filters) => {
   return { KeywordQueryType: KeywordQueryType, keywordFilters: keywordFilters };
 };
 
+const checkDateFilters = (filters) => {
+  let StartDateAfter = "";
+  let EndDateBefore = "";
+  let EndDateAfter = "";
+
+  if (filters.hasOwnProperty("StartDateAfter")) {
+    console.log(StartDateAfter, "StartDateAfter");
+    StartDateAfter = filters.StartDateAfter;
+    delete filters.StartDateAfter;
+  }
+  if (filters.hasOwnProperty("EndDateBefore")) {
+    EndDateBefore = filters.EndDateBefore;
+    delete filters.EndDateBefore;
+  }
+  if (filters.hasOwnProperty("EndDateAfter")) {
+    EndDateAfter = filters.EndDateAfter;
+    delete filters.EndDateAfter;
+  }
+
+  return {
+    StartDateAfter: StartDateAfter,
+    EndDateBefore: EndDateBefore,
+    EndDateAfter: EndDateAfter,
+  };
+};
+
 const fetchProjects = (filters) => {
   const { KeywordQueryType, keywordFilters } = checkKeywordFilters(filters);
+  const { StartDateAfter, EndDateBefore, EndDateAfter } = checkDateFilters(
+    filters
+  );
 
   const filterKeys = Object.keys(filters);
 
@@ -82,6 +111,15 @@ const fetchProjects = (filters) => {
         } else {
           query.where("Keywords", "@>", keywordFilters);
         }
+      }
+      if (StartDateAfter !== "") {
+        query.where("StartDate", ">", StartDateAfter);
+      }
+      if (EndDateBefore !== "") {
+        query.where("EndDate", "<", EndDateBefore);
+      }
+      if (EndDateAfter !== "") {
+        query.where("EndDate", ">", EndDateAfter);
       }
     })
 

@@ -62,7 +62,10 @@ exports.formatProjects = (list, projectKeywordsData, keywordThesaurusData) => {
     if (object.PercentComplete === "") object.PercentComplete = null;
     if (object.ClientID === "") object.ClientID = null;
     if (object.Confidential === "") object.Confidential = null;
-    if (/confidential/i.test(object.ScopeOfWorks)) {
+    if (
+      /confidential/i.test(object.ScopeOfWorks) ||
+      /confidential/i.test(object.JobNameLong)
+    ) {
       object.Confidential = true;
     }
     object.ScopeOfWorks = [object.ScopeOfWorks];

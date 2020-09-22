@@ -603,6 +603,102 @@ describe("app", () => {
             });
           });
       });
+
+      test("GET: 200 - returns a list of all projects filtered by startdate", () => {
+        return request(app)
+          .get("/api/projects?StartDateAfter=2019-01-01")
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(4);
+            projects.forEach((project) => {
+              expect(parseInt(project.StartDate.slice(0, 4)) >= 2019).toBe(
+                true
+              );
+            });
+          });
+      });
+      test("GET: 200 - returns a list of all projects filtered by enddate before", () => {
+        return request(app)
+          .get("/api/projects?EndDateBefore=2020-01-01")
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(6);
+            projects.forEach((project) => {
+              expect(parseInt(project.EndDate.slice(0, 4)) < 2020).toBe(true);
+            });
+          });
+      });
+      test("GET: 200 - returns a list of all projects filtered by enddate after", () => {
+        return request(app)
+          .get("/api/projects?EndDateAfter=2021-01-01")
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(10);
+            projects.forEach((project) => {
+              expect(parseInt(project.EndDate.slice(0, 4)) > 2020).toBe(true);
+            });
+          });
+      });
+      test("GET: 200 - returns a list of all projects filtered by startDate after and endddate before", () => {
+        return request(app)
+          .get(
+            "/api/projects?EndDateBefore=2021-01-01&StartDateAfter=2018-01-01"
+          )
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            console.log(projects);
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(6);
+            projects.forEach((project) => {
+              expect(parseInt(project.EndDate.slice(0, 4)) < 2021).toBe(true);
+              expect(parseInt(project.StartDate.slice(0, 4)) > 2017).toBe(true);
+            });
+          });
+      });
+
       test("GET: 400 - nonsense filter ", () => {
         return request(app)
           .get("/api/projects?Sam=Cool")
@@ -626,7 +722,7 @@ describe("app", () => {
       });
 
       describe("/projects/staff", () => {
-        test.only("GET: 200 - responds with an array of staff", () => {
+        test("GET: 200 - responds with an array of staff", () => {
           return request(app)
             .get("/api/projects/staff")
             .expect(200)
