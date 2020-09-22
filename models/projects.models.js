@@ -63,10 +63,11 @@ const checkKeywordFilters = (filters) => {
   return { KeywordQueryType: KeywordQueryType, keywordFilters: keywordFilters };
 };
 
-const checkDateFilters = (filters) => {
+const checkNumericalFilters = (filters) => {
   let StartDateAfter = "";
   let EndDateBefore = "";
   let EndDateAfter = "";
+  let PercentComplete = null;
 
   if (filters.hasOwnProperty("StartDateAfter")) {
     console.log(StartDateAfter, "StartDateAfter");
@@ -81,19 +82,27 @@ const checkDateFilters = (filters) => {
     EndDateAfter = filters.EndDateAfter;
     delete filters.EndDateAfter;
   }
+  if (filters.hasOwnProperty("PercentComplete")) {
+    PercentComplete = filters.PercentComplete;
+    delete filters.PercentComplete;
+  }
 
   return {
     StartDateAfter: StartDateAfter,
     EndDateBefore: EndDateBefore,
     EndDateAfter: EndDateAfter,
+    PercentComplete: PercentComplete,
   };
 };
 
 const fetchProjects = (filters) => {
   const { KeywordQueryType, keywordFilters } = checkKeywordFilters(filters);
-  const { StartDateAfter, EndDateBefore, EndDateAfter } = checkDateFilters(
-    filters
-  );
+  const {
+    StartDateAfter,
+    EndDateBefore,
+    EndDateAfter,
+    PercentComplete,
+  } = checkNumericalFilters(filters);
 
   const filterKeys = Object.keys(filters);
 
@@ -121,6 +130,9 @@ const fetchProjects = (filters) => {
       if (EndDateAfter !== "") {
         query.where("EndDate", ">", EndDateAfter);
       }
+      if (PercentComplete !== null) {
+        query.where("PercentComplete", ">=", PercentComplete);
+      }
     })
 
     .then((projects) => {
@@ -139,9 +151,12 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
   // We need sortBy and an order.
   const { KeywordQueryType, keywordFilters } = checkKeywordFilters(filters);
 
-  const { StartDateAfter, EndDateBefore, EndDateAfter } = checkDateFilters(
-    filters
-  );
+  const {
+    StartDateAfter,
+    EndDateBefore,
+    EndDateAfter,
+    PercentComplete,
+  } = checkNumericalFilters(filters);
 
   let showDetails = false;
   if (Object.keys(filters).includes("showDetails")) {
@@ -164,7 +179,8 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
             showDetails ||
             filterKeys.length > 0 ||
             keywordFilters.length > 0 ||
-            (StartDateAfter + EndDateBefore + EndDateAfter).length > 0
+            (StartDateAfter + EndDateBefore + EndDateAfter + PercentComplete)
+              .length > 0
           ) {
             query
               .leftJoin(
@@ -194,6 +210,9 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
           }
           if (EndDateAfter !== "") {
             query.where("projects.EndDate", ">", EndDateAfter);
+          }
+          if (PercentComplete !== null) {
+            query.where("projects.PercentComplete", ">=", PercentComplete);
           }
         })
         .where("staffExperience.StaffID", StaffID)

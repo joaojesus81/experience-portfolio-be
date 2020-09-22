@@ -600,7 +600,28 @@ describe("app", () => {
             });
           });
       });
-
+      test("GET: 200 - can be filtered by Percent Complete", () => {
+        return request(app)
+          .get("/api/projects?PercentComplete=90")
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(30);
+            projects.forEach((project) => {
+              expect(project.PercentComplete >= 90).toBe(true);
+            });
+          });
+      });
       test("GET: 200 - returns a list of all projects filtered by startdate", () => {
         return request(app)
           .get("/api/projects?StartDateAfter=2019-01-01")
@@ -1095,7 +1116,31 @@ describe("app", () => {
               expect(projects.length).toBe(2);
             });
         });
-
+        test("GET: 200 - can be filtered by Percent Complete", () => {
+          return request(app)
+            .get("/api/projects/staff/37704?PercentComplete=90")
+            .expect(200)
+            .then(({ body: { projects } }) => {
+              expect(projects).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    ProjectCode: expect.any(Number),
+                    StaffID: expect.any(Number),
+                    TotalHrs: expect.any(Number),
+                    experience: null,
+                    experienceID: expect.any(Number),
+                    JobNameLong: expect.any(String),
+                    ClientName: expect.any(String),
+                  }),
+                ])
+              );
+              expect(projects.length).toBe(14);
+              projects.forEach((project) => {
+                expect(project.StaffID).toBe(37704);
+                expect(project.PercentComplete >= 90).toBe(true);
+              });
+            });
+        });
         test("GET: 200 - works with multiple keywords (using AND)", () => {
           return request(app)
             .get("/api/projects/staff/37704?Keywords=AP0054;MI0054")
