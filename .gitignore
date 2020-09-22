@@ -2,4 +2,3 @@ node_modules
 knexfile.js
 db/data
 .env
-docx/sandbox

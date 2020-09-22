@@ -11,7 +11,8 @@
       "By default, keywords will be matched using 'AND' logic (i.e. all keywords must match for the project to be returned.",
       "To match keywords using 'OR' logic, chain the additional query: '&KeywordQueryType=OR'",
       "Keyword queries can be combined with project queries; this will use 'AND' logic (i.e. all project filters must be met, AND the relevant keyword logic).  The keyword logic WILL - respect the KeywordQueryType 'OR' operator.",
-      "Accepts queries on project dates: EndDateAfter=2020-01-01; EndDateBefore=2021-01-01; StartDateAfter=2018-01-01;"
+      "Accepts queries on project dates: EndDateAfter=2020-01-01; EndDateBefore=2021-01-01; StartDateAfter=2018-01-01;",
+      "includeConfidential=true will mean that results include confidential projects - otherwise these are excluded"
     ],
     "exampleResponse": {
       "projects": [
@@ -113,7 +114,8 @@
       "By default, keywords will be matched using 'AND' logic (i.e. all keywords must match for the project to be returned.",
       "To match keywords using 'OR' logic, chain the additional query: '&KeywordQueryType=OR'",
       "Keyword queries can be combined with project queries; this will use 'AND' logic (i.e. all project filters must be met, AND the relevant keyword logic).  The keyword logic WILL - respect the KeywordQueryType 'OR' operator.",
-      "Accepts queries on project dates: EndDateAfter=2020-01-01; EndDateBefore=2021-01-01; StartDateAfter=2018-01-01;"
+      "Accepts queries on project dates: EndDateAfter=2020-01-01; EndDateBefore=2021-01-01; StartDateAfter=2018-01-01;",
+      "includeConfidential=true will mean that results include confidential projects - otherwise these are excluded"
     ],
     "exampleResponse": {
       "staffList": [
@@ -192,7 +194,9 @@
       "Multiple Keywords can be queried using 'Keyword=AP00054;AP00099",
       "By default, keywords will be matched using 'AND' logic (i.e. all keywords must match for the project to be returned.",
       "To match keywords using 'OR' logic, chain the additional query: '&KeywordQueryType=OR'",
-      "Keyword queries can be combined with project queries; this will use 'AND' logic (i.e. all project filters must be met, AND the relevant keyword logic).  The keyword logic WILL - respect the KeywordQueryType 'OR' operator."
+      "Keyword queries can be combined with project queries; this will use 'AND' logic (i.e. all project filters must be met, AND the relevant keyword logic).  The keyword logic WILL - respect the KeywordQueryType 'OR' operator.",
+      "Accepts queries on project dates: EndDateAfter=2020-01-01; EndDateBefore=2021-01-01; StartDateAfter=2018-01-01;",
+      "includeConfidential=true will mean that results include confidential projects - otherwise these are excluded"
     ],
     "exampleResponse": {
       "projects": [
