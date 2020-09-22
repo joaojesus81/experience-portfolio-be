@@ -33,6 +33,7 @@ const generateFromUrl = async (req, res, next) => {
   const requestURL =
     "https://res.cloudinary.com/gfsimages/image/upload/v1600426601/expport/staffPics/IMG_0945.jpg";
   const response = await fetch(requestURL);
+  console.log(response, "response");
   const data = await response.buffer();
   const b64 = data.toString("base64");
 

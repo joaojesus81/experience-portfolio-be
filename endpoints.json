@@ -5,7 +5,12 @@
   "GET /api/projects": {
     "description": "serves up an array of all projects",
     "queries": [
-      "Accepts all properties of a project as a query, e.g: '/api/projects?ClientName=Network Rail Limited'.  Multiple queries can be included; they are matched with AND, not OR."
+      "Accepts all properties of a project as a query, e.g: '/api/projects?ClientName=Network Rail Limited'.  Multiple project queries can be included; they are matched with AND, not OR.",
+      "Keywords can be queried using 'Keyword=AP00054'",
+      "Multiple Keywords can be queried using 'Keyword=AP00054;AP00099",
+      "By default, keywords will be matched using 'AND' logic (i.e. all keywords must match for the project to be returned.",
+      "To match keywords using 'OR' logic, chain the additional query: '&KeywordQueryType=OR'",
+      "Keyword queries can be combined with project queries; this will use 'AND' logic (i.e. all project filters must be met, AND the relevant keyword logic).  The keyword logic WILL - respect the KeywordQueryType 'OR' operator."
     ],
     "exampleResponse": {
       "projects": [
@@ -101,7 +106,12 @@
     "description": "serves up project list for an individual",
     "queries": [
       "showDetails=true will mean project details are included",
-      "OR accepts all properties of a project as queries, e.g 'ClientName=Muse Developments Ltd'.  Multiple queries can be included; they are matched with AND, not OR."
+      "OR accepts all properties of a project as queries, e.g 'ClientName=Muse Developments Ltd'.  Multiple queries can be included; they are matched with AND, not OR.",
+      "Keywords can be queried using 'Keyword=AP00054'",
+      "Multiple Keywords can be queried using 'Keyword=AP00054;AP00099",
+      "By default, keywords will be matched using 'AND' logic (i.e. all keywords must match for the project to be returned.",
+      "To match keywords using 'OR' logic, chain the additional query: '&KeywordQueryType=OR'",
+      "Keyword queries can be combined with project queries; this will use 'AND' logic (i.e. all project filters must be met, AND the relevant keyword logic).  The keyword logic WILL - respect the KeywordQueryType 'OR' operator."
     ],
     "exampleResponse": {
       "projects": [
@@ -430,7 +440,7 @@
   },
   "PATCH /api/project/staff/:ProjectCode": {
     "description": "add staff experience to project",
-    "queries": ["StaffID=37704"],
+    "mandatory query": ["?StaffID=37704"],
     "examplePatchObject": {
       "experience": "Sam worked really hard on this project."
     },

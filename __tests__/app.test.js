@@ -501,6 +501,108 @@ describe("app", () => {
             });
           });
       });
+      test("GET: 200 - can be filtered by keyword", () => {
+        return request(app)
+          .get("/api/projects?Keywords=AP0054")
+          .expect(200)
+
+          .then(({ body: { projects } }) => {
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(22);
+            projects.forEach((project) => {
+              expect(project.Keywords.includes("AP0054")).toBe(true);
+            });
+          });
+      });
+      test("GET: 200 - works with multiple keywords (using AND)", () => {
+        return request(app)
+          .get("/api/projects?Keywords=AP0054;MI0054")
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            console.log(projects);
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(9);
+            projects.forEach((project) => {
+              expect(project.Keywords.includes("AP0054")).toBe(true);
+              expect(project.Keywords.includes("MI0054")).toBe(true);
+            });
+          });
+      });
+      test("GET: 200 - works with multiple keywords (using OR)", () => {
+        return request(app)
+          .get("/api/projects?Keywords=CT0019;MI0054&KeywordQueryType=OR")
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            console.log(projects);
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(12);
+            projects.forEach((project) => {
+              expect(
+                project.Keywords.includes("MI0054") ||
+                  project.Keywords.includes("CT0019")
+              ).toBeTruthy();
+            });
+          });
+      });
+      test("GET: 200 - works with multiple keywords (using AND) and also other queries", () => {
+        return request(app)
+          .get(
+            "/api/projects?Keywords=AP0054;MI0054&ClientName=Citylabs 4.0 Limited"
+          )
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            console.log(projects);
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                  ClientName: expect.any(String),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(1);
+            projects.forEach((project) => {
+              expect(project.Keywords.includes("AP0054")).toBe(true);
+              expect(project.Keywords.includes("MI0054")).toBe(true);
+              expect(project.ClientName.includes("Citylabs 4.0 Limited")).toBe(
+                true
+              );
+            });
+          });
+      });
       test("GET: 400 - nonsense filter ", () => {
         return request(app)
           .get("/api/projects?Sam=Cool")
@@ -716,6 +818,95 @@ describe("app", () => {
               expect(projects.length).toBe(2);
             });
         });
+
+        test("GET: 200 - works with multiple keywords (using AND)", () => {
+          return request(app)
+            .get("/api/projects/staff/37704?Keywords=AP0054;MI0054")
+            .expect(200)
+            .then(({ body: { projects } }) => {
+              console.log(projects);
+              expect(projects).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    ProjectCode: expect.any(Number),
+                    StaffID: expect.any(Number),
+                    TotalHrs: expect.any(Number),
+                    experience: null,
+                    experienceID: expect.any(Number),
+                    JobNameLong: expect.any(String),
+                    ClientName: expect.any(String),
+                  }),
+                ])
+              );
+              projects.forEach((project) => {
+                expect(project.Keywords.includes("AP0054")).toBe(true);
+                expect(project.Keywords.includes("MI0054")).toBe(true);
+              });
+              expect(projects.length).toBe(7);
+            });
+        });
+        test("GET: 200 - works with multiple keywords (using OR)", () => {
+          return request(app)
+            .get(
+              "/api/projects/staff/37704?Keywords=CT0019;MI0054&KeywordQueryType=OR"
+            )
+            .expect(200)
+            .then(({ body: { projects } }) => {
+              console.log(projects);
+              expect(projects).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    ProjectCode: expect.any(Number),
+                    StaffID: expect.any(Number),
+                    TotalHrs: expect.any(Number),
+                    experience: null,
+                    experienceID: expect.any(Number),
+                    JobNameLong: expect.any(String),
+                    ClientName: expect.any(String),
+                  }),
+                ])
+              );
+              projects.forEach((project) => {
+                expect(
+                  project.Keywords.includes("MI0054") ||
+                    project.Keywords.includes("CT0019")
+                ).toBeTruthy();
+              });
+              expect(projects.length).toBe(8);
+            });
+        });
+        test("GET: 200 - works with multiple keywords (using AND) and also other queries", () => {
+          return request(app)
+            .get(
+              "/api/projects/staff/37704?Keywords=AP0054;MI0054&ClientName=Citylabs 4.0 Limited"
+            )
+            .expect(200)
+            .then(({ body: { projects } }) => {
+              console.log(projects);
+              expect(projects).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    ProjectCode: expect.any(Number),
+                    StaffID: expect.any(Number),
+                    TotalHrs: expect.any(Number),
+                    experience: null,
+                    experienceID: expect.any(Number),
+                    JobNameLong: expect.any(String),
+                    ClientName: expect.any(String),
+                  }),
+                ])
+              );
+              projects.forEach((project) => {
+                expect(project.Keywords.includes("AP0054")).toBe(true);
+                expect(project.Keywords.includes("MI0054")).toBe(true);
+                expect(
+                  project.ClientName.includes("Citylabs 4.0 Limited")
+                ).toBe(true);
+              });
+              expect(projects.length).toBe(1);
+            });
+        });
+
         test("GET: 404 - staffmember doesn't exist in the database", () => {
           const apiString = `/api/projects/staff/99999`;
           return request(app)

@@ -9,6 +9,7 @@ const {
 
 const sendProjects = (req, res, next) => {
   const filters = req.query;
+
   fetchProjects(filters)
     .then((projects) => {
       res.status(200).send({ projects });

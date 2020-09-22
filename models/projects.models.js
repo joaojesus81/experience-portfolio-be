@@ -46,8 +46,28 @@ const parseDecimals = (projectArray) => {
   return formatttedProjects;
 };
 
+const checkKeywordFilters = (filters) => {
+  let keywordFilters = [];
+  let KeywordQueryType = "";
+
+  if (filters.hasOwnProperty("Keywords")) {
+    keywordFilters = filters.Keywords.split(";");
+    delete filters.Keywords;
+    if (filters.hasOwnProperty("KeywordQueryType")) {
+      KeywordQueryType = filters.KeywordQueryType;
+      delete filters.KeywordQueryType;
+    } else {
+      KeywordQueryType = "AND";
+    }
+  }
+  return { KeywordQueryType: KeywordQueryType, keywordFilters: keywordFilters };
+};
+
 const fetchProjects = (filters) => {
+  const { KeywordQueryType, keywordFilters } = checkKeywordFilters(filters);
+
   const filterKeys = Object.keys(filters);
+
   return knex
     .select("*")
     .from("projects")
@@ -55,6 +75,13 @@ const fetchProjects = (filters) => {
     .modify((query) => {
       if (filterKeys.length > 0) {
         query.where(filters);
+      }
+      if (keywordFilters.length > 0) {
+        if (KeywordQueryType === "OR" && keywordFilters.length > 1) {
+          query.where("Keywords", "&&", keywordFilters);
+        } else {
+          query.where("Keywords", "@>", keywordFilters);
+        }
       }
     })
 
@@ -72,6 +99,8 @@ const fetchProjects = (filters) => {
 
 const fetchProjectsByStaffID = (StaffID, filters) => {
   // We need sortBy and an order.
+  const { KeywordQueryType, keywordFilters } = checkKeywordFilters(filters);
+
   let showDetails = false;
   if (Object.keys(filters).includes("showDetails")) {
     if (filters.showDetails === "true" || filters.showDetails === true)
@@ -89,7 +118,11 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
         .select("*")
         .from("staffExperience")
         .modify((query) => {
-          if (showDetails || filterKeys.length > 0) {
+          if (
+            showDetails ||
+            filterKeys.length > 0 ||
+            keywordFilters.length > 0
+          ) {
             query
               .leftJoin(
                 "projects",
@@ -102,6 +135,13 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
         .modify((query) => {
           if (filterKeys.length > 0) {
             query.where(filters);
+          }
+          if (keywordFilters.length > 0) {
+            if (KeywordQueryType === "OR" && keywordFilters.length > 1) {
+              query.where("projects.Keywords", "&&", keywordFilters);
+            } else {
+              query.where("projects.Keywords", "@>", keywordFilters);
+            }
           }
         })
         .where("staffExperience.StaffID", StaffID)
