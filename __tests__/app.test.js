@@ -626,6 +626,192 @@ describe("app", () => {
       });
 
       describe("/projects/staff", () => {
+        test.only("GET: 200 - responds with an array of staff", () => {
+          return request(app)
+            .get("/api/projects/staff")
+            .expect(200)
+            .then(({ body: { staffList } }) => {
+              console.log(staffList);
+              expect(staffList).toEqual([
+                {
+                  StaffID: 37704,
+                  StaffName: "Samuel Styles",
+                  Email: "Sam.Styles@arup.com",
+                  LocationName: "Manchester Office",
+                  StartDate: "2007-09-05T23:00:00.000Z",
+                  JobTitle: "Senior Engineer",
+                  GradeLevel: 6,
+                  DisciplineName: "Structural Engineering",
+                  imgURL: null,
+                  careerStart: null,
+                  nationality: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
+                  highLevelDescription: null,
+                  valueStatement: null,
+                  TotalHrs: 9453.75,
+                  ProjectCount: 17,
+                },
+                {
+                  StaffID: 59754,
+                  StaffName: "Joao Jesus",
+                  Email: "Joao.Jesus@arup.com",
+                  LocationName: "Liverpool Office",
+                  StartDate: "2015-11-09T00:00:00.000Z",
+                  JobTitle: "Senior Technician",
+                  GradeLevel: 5,
+                  DisciplineName: "Building Services - Electrical",
+                  imgURL: null,
+                  careerStart: null,
+                  nationality: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
+                  highLevelDescription: null,
+                  valueStatement: null,
+                  TotalHrs: 6920.25,
+                  ProjectCount: 16,
+                },
+                {
+                  StaffID: 56876,
+                  StaffName: "Alex Robu",
+                  Email: "Alex.Robu@arup.com",
+                  LocationName: "Manchester Office",
+                  StartDate: "2014-09-03T23:00:00.000Z",
+                  JobTitle: "Engineer",
+                  GradeLevel: 4,
+                  DisciplineName: "Rail",
+                  imgURL: null,
+                  careerStart: null,
+                  nationality: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
+                  highLevelDescription: null,
+                  valueStatement: null,
+                  TotalHrs: 7300.5,
+                  ProjectCount: 11,
+                },
+              ]);
+            });
+        });
+        test("GET: 200 - responds with an array of staff who meet the project filters", () => {
+          return request(app)
+            .get("/api/projects/staff?ClientName=Network Rail Limited")
+            .expect(200)
+            .then(({ body: { staffList } }) => {
+              expect(staffList).toEqual([
+                {
+                  StaffID: 56876,
+                  StaffName: "Alex Robu",
+                  Email: "Alex.Robu@arup.com",
+                  LocationName: "Manchester Office",
+                  StartDate: "2014-09-03T23:00:00.000Z",
+                  JobTitle: "Engineer",
+                  GradeLevel: 4,
+                  DisciplineName: "Rail",
+                  imgURL: null,
+                  careerStart: null,
+                  nationality: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
+                  highLevelDescription: null,
+                  valueStatement: null,
+                  TotalHrs: 2256.5,
+                  ProjectCount: 2,
+                },
+              ]);
+            });
+        });
+
+        test("GET: 200 - responds with an array of staff, works with keyword filters", () => {
+          return request(app)
+            .get("/api/projects/staff?Keywords=BC0018")
+            .expect(200)
+            .then(({ body: { staffList } }) => {
+              expect(staffList).toEqual([
+                {
+                  StaffID: 59754,
+                  StaffName: "Joao Jesus",
+                  Email: "Joao.Jesus@arup.com",
+                  LocationName: "Liverpool Office",
+                  StartDate: "2015-11-09T00:00:00.000Z",
+                  JobTitle: "Senior Technician",
+                  GradeLevel: 5,
+                  DisciplineName: "Building Services - Electrical",
+                  imgURL: null,
+                  careerStart: null,
+                  nationality: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
+                  highLevelDescription: null,
+                  valueStatement: null,
+                  TotalHrs: 5584.25,
+                  ProjectCount: 6,
+                },
+                {
+                  StaffID: 37704,
+                  StaffName: "Samuel Styles",
+                  Email: "Sam.Styles@arup.com",
+                  LocationName: "Manchester Office",
+                  StartDate: "2007-09-05T23:00:00.000Z",
+                  JobTitle: "Senior Engineer",
+                  GradeLevel: 6,
+                  DisciplineName: "Structural Engineering",
+                  imgURL: null,
+                  careerStart: null,
+                  nationality: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
+                  highLevelDescription: null,
+                  valueStatement: null,
+                  TotalHrs: 545,
+                  ProjectCount: 1,
+                },
+              ]);
+            });
+        });
+        test("GET: 200 - responds with an array of staff, works with staff filters", () => {
+          return request(app)
+            .get("/api/projects/staff?Keywords=BC0018&GradeLevel=5")
+            .expect(200)
+            .then(({ body: { staffList } }) => {
+              expect(staffList).toEqual([
+                {
+                  StaffID: 59754,
+                  StaffName: "Joao Jesus",
+                  Email: "Joao.Jesus@arup.com",
+                  LocationName: "Liverpool Office",
+                  StartDate: "2015-11-09T00:00:00.000Z",
+                  JobTitle: "Senior Technician",
+                  GradeLevel: 5,
+                  DisciplineName: "Building Services - Electrical",
+                  imgURL: null,
+                  careerStart: null,
+                  nationality: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
+                  highLevelDescription: null,
+                  valueStatement: null,
+                  TotalHrs: 5584.25,
+                  ProjectCount: 6,
+                },
+              ]);
+            });
+        });
+
         test("POST: 200 - when passed a list of projects, returns a list of staff who have worked on those projects", () => {
           return request(app)
             .post("/api/projects/staff")
@@ -680,7 +866,7 @@ describe("app", () => {
             });
         });
         test("INVALID METHODS: 405 error", () => {
-          const invalidMethods = ["put", "patch", "get", "delete"];
+          const invalidMethods = ["put", "patch", "delete"];
           const endPoint = "/api/projects/staff";
           const promises = invalidMethods.map((method) => {
             return request(app)

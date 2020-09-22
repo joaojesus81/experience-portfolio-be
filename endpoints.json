@@ -102,6 +102,85 @@
       ]
     }
   },
+  "GET /api/projects/staff": {
+    "description": "serves up an array of staff, including relevant experience, who meet the filters",
+    "queries": [
+      "Accepts all properties of a project as a query, e.g: '/api/projects?ClientName=Network Rail Limited'.  Multiple project queries can be included; they are matched with AND, not OR.",
+      "Also accepts the following staff queries: StaffName, LocationName, JobTitle, GradeLevel,DisciplineName.  These can be combined with other queries.",
+      "Keywords can be queried using 'Keyword=AP00054'",
+      "Multiple Keywords can be queried using 'Keyword=AP00054;AP00099",
+      "By default, keywords will be matched using 'AND' logic (i.e. all keywords must match for the project to be returned.",
+      "To match keywords using 'OR' logic, chain the additional query: '&KeywordQueryType=OR'",
+      "Keyword queries can be combined with project queries; this will use 'AND' logic (i.e. all project filters must be met, AND the relevant keyword logic).  The keyword logic WILL - respect the KeywordQueryType 'OR' operator."
+    ],
+    "exampleResponse": {
+      "staffList": [
+        {
+          "StaffID": 37704,
+          "StaffName": "Samuel Styles",
+          "Email": "Sam.Styles@arup.com",
+          "LocationName": "Manchester Office",
+          "StartDate": "2007-09-05T23:00:00.000Z",
+          "JobTitle": "Senior Engineer",
+          "GradeLevel": 6,
+          "DisciplineName": "Structural Engineering",
+          "imgURL": null,
+          "careerStart": null,
+          "nationality": null,
+          "qualifications": [],
+          "professionalAssociations": [],
+          "committees": [],
+          "publications": [],
+          "highLevelDescription": null,
+          "valueStatement": null,
+          "TotalHrs": 9453.75,
+          "ProjectCount": 17
+        },
+        {
+          "StaffID": 59754,
+          "StaffName": "Joao Jesus",
+          "Email": "Joao.Jesus@arup.com",
+          "LocationName": "Liverpool Office",
+          "StartDate": "2015-11-09T00:00:00.000Z",
+          "JobTitle": "Senior Technician",
+          "GradeLevel": 5,
+          "DisciplineName": "Building Services - Electrical",
+          "imgURL": null,
+          "careerStart": null,
+          "nationality": null,
+          "qualifications": [],
+          "professionalAssociations": [],
+          "committees": [],
+          "publications": [],
+          "highLevelDescription": null,
+          "valueStatement": null,
+          "TotalHrs": 6920.25,
+          "ProjectCount": 16
+        },
+        {
+          "StaffID": 56876,
+          "StaffName": "Alex Robu",
+          "Email": "Alex.Robu@arup.com",
+          "LocationName": "Manchester Office",
+          "StartDate": "2014-09-03T23:00:00.000Z",
+          "JobTitle": "Engineer",
+          "GradeLevel": 4,
+          "DisciplineName": "Rail",
+          "imgURL": null,
+          "careerStart": null,
+          "nationality": null,
+          "qualifications": [],
+          "professionalAssociations": [],
+          "committees": [],
+          "publications": [],
+          "highLevelDescription": null,
+          "valueStatement": null,
+          "TotalHrs": 7300.5,
+          "ProjectCount": 11
+        }
+      ]
+    }
+  },
   "GET /api/projects/staff/:StaffID": {
     "description": "serves up project list for an individual",
     "queries": [

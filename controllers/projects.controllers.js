@@ -7,6 +7,11 @@ const {
   deleteProjectImage,
 } = require("../models/projects.models");
 
+const {
+  fetchStaffForProjects,
+  fetchStaffMetaByID,
+} = require("../models/staff.models");
+
 const sendProjects = (req, res, next) => {
   const filters = req.query;
 
@@ -140,6 +145,67 @@ const removeProjectImage = (req, res, next) => {
     });
 };
 
+const removeStaffFilters = (filters) => {
+  const filterArr = Object.keys(filters);
+  const staffMetaFilters = [
+    "StaffName",
+    "LocationName",
+    "JobTitle",
+    "GradeLevel",
+    "DisciplineName",
+  ];
+  const staffFilters = {};
+
+  filterArr.forEach((filterName) => {
+    if (staffMetaFilters.includes(filterName)) {
+      staffFilters[filterName] = filters[filterName];
+      delete filters[filterName];
+    }
+  });
+  return staffFilters;
+};
+
+const sendStaffListForProjects = (req, res, next) => {
+  const filters = req.query;
+  const staffFilters = removeStaffFilters(filters);
+
+  fetchProjects(filters)
+    .then((projects) => {
+      console.log(projects);
+      const projectsArr = projects.map((project) => {
+        return project.ProjectCode;
+      });
+      console.log(projectsArr, "projectsArr");
+      fetchStaffForProjects(projectsArr, staffFilters).then((staff) => {
+        console.log(staff);
+
+        const promiseArr = staff.map((staff) => {
+          return fetchStaffMetaByID(staff.StaffID);
+        });
+
+        return Promise.all(promiseArr)
+          .then((staffMetaArr) => {
+            console.log(staffMetaArr);
+            const staffArr = staffMetaArr.map((staffMeta, index) => {
+              return {
+                ...staffMeta,
+                TotalHrs: staff[index].TotalHrs,
+                ProjectCount: staff[index].ProjectCount,
+              };
+            });
+            console.log(staffArr);
+            return staffArr;
+          })
+          .then((staffList) => {
+            res.status(200).send({ staffList });
+          });
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports = {
   sendProjectsByStaffID,
   sendProjectByProjectCode,
@@ -147,4 +213,5 @@ module.exports = {
   sendProjects,
   updateProjectImage,
   removeProjectImage,
+  sendStaffListForProjects,
 };

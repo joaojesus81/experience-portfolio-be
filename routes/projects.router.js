@@ -5,6 +5,7 @@ const { handle405s } = require("../errors");
 const {
   sendProjectsByStaffID,
   sendProjects,
+  sendStaffListForProjects,
 } = require("../controllers/projects.controllers");
 
 const {
@@ -15,7 +16,11 @@ const { sendStaffForProjects } = require("../controllers/staff.controllers");
 
 projectsRouter.route("/").get(sendProjects).all(handle405s);
 
-projectsRouter.route("/staff").post(sendStaffForProjects).all(handle405s);
+projectsRouter
+  .route("/staff")
+  .get(sendStaffListForProjects)
+  .post(sendStaffForProjects)
+  .all(handle405s);
 
 projectsRouter
   .route("/staff/:StaffID")
