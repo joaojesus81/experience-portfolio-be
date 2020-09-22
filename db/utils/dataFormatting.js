@@ -42,16 +42,13 @@ exports.formatProjects = (list, projectKeywordsData, keywordThesaurusData) => {
     relatedArray.sort();
     return relatedArray;
   }
-  //&&&
 
   const formattedArray = list.map(({ ...object }) => {
-    ///&&&
     const projectKeywords = filterProjectKeywords(
       object.ProjectCode,
       projectKeywordsData,
       keywordThesaurusData
     );
-    //&&&
 
     const StartDate = createDate(object.StartDate);
     const EndDate = createDate(object.EndDate);
@@ -65,11 +62,12 @@ exports.formatProjects = (list, projectKeywordsData, keywordThesaurusData) => {
     if (object.PercentComplete === "") object.PercentComplete = null;
     if (object.ClientID === "") object.ClientID = null;
     if (object.Confidential === "") object.Confidential = null;
-    //&&&
+    if (/confidential/i.test(object.ScopeOfWorks)) {
+      object.Confidential = true;
+    }
     object.ScopeOfWorks = [object.ScopeOfWorks];
     object.imgURL = [];
     object.Keywords = projectKeywords;
-    //&&&
 
     return object;
   });
