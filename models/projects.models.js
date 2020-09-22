@@ -63,14 +63,14 @@ const checkKeywordFilters = (filters) => {
   return { KeywordQueryType: KeywordQueryType, keywordFilters: keywordFilters };
 };
 
-const checkNumericalFilters = (filters) => {
+const checkFilters = (filters) => {
   let StartDateAfter = "";
   let EndDateBefore = "";
   let EndDateAfter = "";
   let PercentComplete = null;
+  let includeConfidential = false;
 
   if (filters.hasOwnProperty("StartDateAfter")) {
-    console.log(StartDateAfter, "StartDateAfter");
     StartDateAfter = filters.StartDateAfter;
     delete filters.StartDateAfter;
   }
@@ -86,12 +86,17 @@ const checkNumericalFilters = (filters) => {
     PercentComplete = filters.PercentComplete;
     delete filters.PercentComplete;
   }
+  if (filters.hasOwnProperty("includeConfidential")) {
+    includeConfidential = filters.includeConfidential;
+    delete filters.includeConfidential;
+  }
 
   return {
     StartDateAfter: StartDateAfter,
     EndDateBefore: EndDateBefore,
     EndDateAfter: EndDateAfter,
     PercentComplete: PercentComplete,
+    includeConfidential: includeConfidential,
   };
 };
 
@@ -102,7 +107,8 @@ const fetchProjects = (filters) => {
     EndDateBefore,
     EndDateAfter,
     PercentComplete,
-  } = checkNumericalFilters(filters);
+    includeConfidential,
+  } = checkFilters(filters);
 
   const filterKeys = Object.keys(filters);
 
@@ -133,6 +139,9 @@ const fetchProjects = (filters) => {
       if (PercentComplete !== null) {
         query.where("PercentComplete", ">=", PercentComplete);
       }
+      if (includeConfidential === false) {
+        query.where("Confidential", false);
+      }
     })
 
     .then((projects) => {
@@ -156,7 +165,8 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
     EndDateBefore,
     EndDateAfter,
     PercentComplete,
-  } = checkNumericalFilters(filters);
+    includeConfidential,
+  } = checkFilters(filters);
 
   let showDetails = false;
   if (Object.keys(filters).includes("showDetails")) {
@@ -180,7 +190,8 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
             filterKeys.length > 0 ||
             keywordFilters.length > 0 ||
             (StartDateAfter + EndDateBefore + EndDateAfter + PercentComplete)
-              .length > 0
+              .length > 0 ||
+            includeConfidential !== true
           ) {
             query
               .leftJoin(
@@ -213,6 +224,9 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
           }
           if (PercentComplete !== null) {
             query.where("projects.PercentComplete", ">=", PercentComplete);
+          }
+          if (includeConfidential === false) {
+            query.where("projects.Confidential", false);
           }
         })
         .where("staffExperience.StaffID", StaffID)

@@ -4,7 +4,7 @@ const projectsRouter = require("./projects.router");
 const projectRouter = require("./project.router");
 const keywordsRouter = require("./keywords.router");
 const sendAPIs = require("../controllers/apis.controllers");
-const { generateCV } = require("../docx/docxApp");
+const { generateCV } = require("../docx/sandbox/docxApp");
 const { generateFromUrl } = require("../docx/arupCVStyle");
 
 const { handle405s } = require("../errors");

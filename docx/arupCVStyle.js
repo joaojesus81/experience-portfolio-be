@@ -26,14 +26,11 @@ const generateFromUrl = async (req, res, next) => {
 
   const projects = await fetchProjectsByStaffID(StaffID, { showDetails: true });
   const staffMeta = await fetchStaffMetaByID(StaffID);
-  console.log(staffMeta, "staffMeta");
 
   const doc = new Document();
 
-  const requestURL =
-    "https://res.cloudinary.com/gfsimages/image/upload/v1600426601/expport/staffPics/IMG_0945.jpg";
+  const requestURL = staffMeta.imgURL;
   const response = await fetch(requestURL);
-  console.log(response, "response");
   const data = await response.buffer();
   const b64 = data.toString("base64");
 
@@ -167,8 +164,6 @@ const generateFromUrl = async (req, res, next) => {
     borders: removeBorders,
   });
 
-  console.log("past the table now");
-
   const projectsTable = new Table({
     rows: projectsTableEntries,
     width: {
@@ -243,7 +238,6 @@ const generateFromUrl = async (req, res, next) => {
     children: [containerTable],
     borders: removeBorders,
   });
-  console.log("before packer");
 
   Packer.toBuffer(doc).then((buffer) => {
     fs.writeFileSync(`${StaffID}.docx`, buffer);

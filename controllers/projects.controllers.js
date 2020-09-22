@@ -171,21 +171,16 @@ const sendStaffListForProjects = (req, res, next) => {
 
   fetchProjects(filters)
     .then((projects) => {
-      console.log(projects);
       const projectsArr = projects.map((project) => {
         return project.ProjectCode;
       });
-      console.log(projectsArr, "projectsArr");
       fetchStaffForProjects(projectsArr, staffFilters).then((staff) => {
-        console.log(staff);
-
         const promiseArr = staff.map((staff) => {
           return fetchStaffMetaByID(staff.StaffID);
         });
 
         return Promise.all(promiseArr)
           .then((staffMetaArr) => {
-            console.log(staffMetaArr);
             const staffArr = staffMetaArr.map((staffMeta, index) => {
               return {
                 ...staffMeta,
@@ -193,7 +188,6 @@ const sendStaffListForProjects = (req, res, next) => {
                 ProjectCount: staff[index].ProjectCount,
               };
             });
-            console.log(staffArr);
             return staffArr;
           })
           .then((staffList) => {

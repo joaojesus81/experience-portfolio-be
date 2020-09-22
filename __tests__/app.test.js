@@ -415,7 +415,7 @@ describe("app", () => {
     });
 
     describe("/projects", () => {
-      test("GET: 200 - returns a list of all projects", () => {
+      test("GET: 200 - returns a list of all projects; confidential ones are not included", () => {
         return request(app)
           .get("/api/projects")
           .expect(200)
@@ -430,6 +430,28 @@ describe("app", () => {
                 }),
               ])
             );
+            projects.forEach((project) => {
+              expect(project.Confidential).toBe(false);
+            });
+            expect(projects.length).toBe(30);
+          });
+      });
+      test("GET: 200 - returns a list of all projects; including confidential ones when requested.", () => {
+        return request(app)
+          .get("/api/projects?includeConfidential=true")
+          .expect(200)
+          .then(({ body: { projects } }) => {
+            expect(projects).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  ProjectCode: expect.any(Number),
+                  JobNameLong: expect.any(String),
+                  PracticeName: expect.any(String),
+                  Confidential: expect.any(Boolean),
+                }),
+              ])
+            );
+            expect(projects.length).toBe(32);
           });
       });
       test("GET: 200 - returns a list of all projects filtered by ClientName", () => {
@@ -456,7 +478,9 @@ describe("app", () => {
       });
       test("GET: 200 - filter also accepts other properties", () => {
         return request(app)
-          .get("/api/projects?PracticeName=Building Engineering")
+          .get(
+            "/api/projects?PracticeName=Building Engineering&includeConfidential=true"
+          )
           .expect(200)
           .then(({ body: { projects } }) => {
             expect(projects).toEqual(
@@ -470,7 +494,7 @@ describe("app", () => {
                 }),
               ])
             );
-            expect(projects.length).toBe(31);
+            expect(projects.length).toBe(29);
             projects.forEach((project) => {
               expect(project.PracticeName).toBe("Building Engineering");
             });
@@ -518,7 +542,7 @@ describe("app", () => {
                 }),
               ])
             );
-            expect(projects.length).toBe(22);
+            expect(projects.length).toBe(21);
             projects.forEach((project) => {
               expect(project.Keywords.includes("AP0054")).toBe(true);
             });
@@ -602,7 +626,7 @@ describe("app", () => {
       });
       test("GET: 200 - can be filtered by Percent Complete", () => {
         return request(app)
-          .get("/api/projects?PercentComplete=90")
+          .get("/api/projects?PercentComplete=90&includeConfidential=true")
           .expect(200)
           .then(({ body: { projects } }) => {
             expect(projects).toEqual(
@@ -616,7 +640,7 @@ describe("app", () => {
                 }),
               ])
             );
-            expect(projects.length).toBe(30);
+            expect(projects.length).toBe(28);
             projects.forEach((project) => {
               expect(project.PercentComplete >= 90).toBe(true);
             });
@@ -624,7 +648,9 @@ describe("app", () => {
       });
       test("GET: 200 - returns a list of all projects filtered by startdate", () => {
         return request(app)
-          .get("/api/projects?StartDateAfter=2019-01-01")
+          .get(
+            "/api/projects?StartDateAfter=2019-01-01&includeConfidential=true"
+          )
           .expect(200)
           .then(({ body: { projects } }) => {
             expect(projects).toEqual(
@@ -693,7 +719,7 @@ describe("app", () => {
       test("GET: 200 - returns a list of all projects filtered by startDate after and endddate before", () => {
         return request(app)
           .get(
-            "/api/projects?EndDateBefore=2021-01-01&StartDateAfter=2018-01-01"
+            "/api/projects?EndDateBefore=2021-01-01&StartDateAfter=2018-01-01&includeConfidential=true"
           )
           .expect(200)
           .then(({ body: { projects } }) => {
@@ -741,7 +767,7 @@ describe("app", () => {
       describe("/projects/staff", () => {
         test("GET: 200 - responds with an array of staff", () => {
           return request(app)
-            .get("/api/projects/staff")
+            .get("/api/projects/staff?includeConfidential=true")
             .expect(200)
             .then(({ body: { staffList } }) => {
               expect(staffList).toEqual([
@@ -784,8 +810,8 @@ describe("app", () => {
                   publications: [],
                   highLevelDescription: null,
                   valueStatement: null,
-                  TotalHrs: 6920.25,
-                  ProjectCount: 16,
+                  TotalHrs: 4310.5,
+                  ProjectCount: 14,
                 },
                 {
                   StaffID: 56876,
@@ -844,7 +870,7 @@ describe("app", () => {
 
         test("GET: 200 - responds with an array of staff, works with keyword filters", () => {
           return request(app)
-            .get("/api/projects/staff?Keywords=BC0018")
+            .get("/api/projects/staff?Keywords=BC0018&includeConfidential=true")
             .expect(200)
             .then(({ body: { staffList } }) => {
               expect(staffList).toEqual([
@@ -866,8 +892,8 @@ describe("app", () => {
                   publications: [],
                   highLevelDescription: null,
                   valueStatement: null,
-                  TotalHrs: 5584.25,
-                  ProjectCount: 6,
+                  TotalHrs: 2998.25,
+                  ProjectCount: 5,
                 },
                 {
                   StaffID: 37704,
@@ -895,7 +921,9 @@ describe("app", () => {
         });
         test("GET: 200 - responds with an array of staff, works with staff filters", () => {
           return request(app)
-            .get("/api/projects/staff?Keywords=BC0018&GradeLevel=5")
+            .get(
+              "/api/projects/staff?Keywords=BC0018&GradeLevel=5&includeConfidential=true"
+            )
             .expect(200)
             .then(({ body: { staffList } }) => {
               expect(staffList).toEqual([
@@ -917,8 +945,8 @@ describe("app", () => {
                   publications: [],
                   highLevelDescription: null,
                   valueStatement: null,
-                  TotalHrs: 5584.25,
-                  ProjectCount: 6,
+                  TotalHrs: 2998.25,
+                  ProjectCount: 5,
                 },
               ]);
             });
@@ -1014,9 +1042,34 @@ describe("app", () => {
               });
             });
         });
+        test("GET: 200 - check staffmember exists and fetch project details for an individual; doesn't include confidential projects", () => {
+          return request(app)
+            .get("/api/projects/staff/37704")
+            .expect(200)
+            .then(({ body: { projects } }) => {
+              expect(projects).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    ProjectCode: expect.any(Number),
+                    StaffID: expect.any(Number),
+                    TotalHrs: expect.any(Number),
+                    experience: null,
+                    experienceID: expect.any(Number),
+                    JobNameLong: expect.any(String),
+                    ClientName: expect.any(String),
+                  }),
+                ])
+              );
+              expect(projects.length).toBe(16);
+              projects.forEach((project) => {
+                expect(project.StaffID).toBe(37704);
+                expect(project.Confidential).toBe(false);
+              });
+            });
+        });
         test("GET: 200 - check staffmember exists and fetch project details for an individual", () => {
           return request(app)
-            .get("/api/projects/staff/37704?showDetails=true")
+            .get("/api/projects/staff/37704?includeConfidential=true")
             .expect(200)
             .then(({ body: { projects } }) => {
               expect(projects).toEqual(
@@ -1134,7 +1187,7 @@ describe("app", () => {
                   }),
                 ])
               );
-              expect(projects.length).toBe(14);
+              expect(projects.length).toBe(13);
               projects.forEach((project) => {
                 expect(project.StaffID).toBe(37704);
                 expect(project.PercentComplete >= 90).toBe(true);
@@ -1228,7 +1281,7 @@ describe("app", () => {
         test("GET: 200 - returns a list of projects filtered by startDate after and endddate before", () => {
           return request(app)
             .get(
-              "/api/projects/staff/37704?EndDateBefore=2022-01-01&StartDateAfter=2018-01-01"
+              "/api/projects/staff/37704?EndDateBefore=2022-01-01&StartDateAfter=2018-01-01&includeConfidential=true"
             )
             .expect(200)
             .then(({ body: { projects } }) => {
@@ -1455,7 +1508,7 @@ describe("app", () => {
                 ClientName: "Muse Developments Ltd",
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
-                Confidential: true,
+                Confidential: false,
                 imgURL: [],
                 Keywords: [
                   "AP0054",
@@ -1543,7 +1596,7 @@ describe("app", () => {
                 ClientName: "Muse Developments Ltd",
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
-                Confidential: true,
+                Confidential: false,
                 imgURL: [],
                 StaffID: 37704,
                 TotalHrs: 3730.75,
@@ -2111,7 +2164,7 @@ describe("app", () => {
                 ClientName: "Muse Developments Ltd",
                 ProjectURL:
                   "http://projects.intranet.arup.com/?layout=projects.proj.view&jp=OA&jn=22398800",
-                Confidential: true,
+                Confidential: false,
                 imgURL: [],
                 StaffID: 37704,
                 TotalHrs: 3730.75,
