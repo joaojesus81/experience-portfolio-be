@@ -139,6 +139,10 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
   // We need sortBy and an order.
   const { KeywordQueryType, keywordFilters } = checkKeywordFilters(filters);
 
+  const { StartDateAfter, EndDateBefore, EndDateAfter } = checkDateFilters(
+    filters
+  );
+
   let showDetails = false;
   if (Object.keys(filters).includes("showDetails")) {
     if (filters.showDetails === "true" || filters.showDetails === true)
@@ -159,7 +163,8 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
           if (
             showDetails ||
             filterKeys.length > 0 ||
-            keywordFilters.length > 0
+            keywordFilters.length > 0 ||
+            (StartDateAfter + EndDateBefore + EndDateAfter).length > 0
           ) {
             query
               .leftJoin(
@@ -180,6 +185,15 @@ const fetchProjectsByStaffID = (StaffID, filters) => {
             } else {
               query.where("projects.Keywords", "@>", keywordFilters);
             }
+          }
+          if (StartDateAfter !== "") {
+            query.where("projects.StartDate", ">", StartDateAfter);
+          }
+          if (EndDateBefore !== "") {
+            query.where("projects.EndDate", "<", EndDateBefore);
+          }
+          if (EndDateAfter !== "") {
+            query.where("projects.EndDate", ">", EndDateAfter);
           }
         })
         .where("staffExperience.StaffID", StaffID)

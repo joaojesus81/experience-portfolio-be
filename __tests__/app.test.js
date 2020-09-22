@@ -529,7 +529,6 @@ describe("app", () => {
           .get("/api/projects?Keywords=AP0054;MI0054")
           .expect(200)
           .then(({ body: { projects } }) => {
-            console.log(projects);
             expect(projects).toEqual(
               expect.arrayContaining([
                 expect.objectContaining({
@@ -553,7 +552,6 @@ describe("app", () => {
           .get("/api/projects?Keywords=CT0019;MI0054&KeywordQueryType=OR")
           .expect(200)
           .then(({ body: { projects } }) => {
-            console.log(projects);
             expect(projects).toEqual(
               expect.arrayContaining([
                 expect.objectContaining({
@@ -581,7 +579,6 @@ describe("app", () => {
           )
           .expect(200)
           .then(({ body: { projects } }) => {
-            console.log(projects);
             expect(projects).toEqual(
               expect.arrayContaining([
                 expect.objectContaining({
@@ -679,7 +676,6 @@ describe("app", () => {
           )
           .expect(200)
           .then(({ body: { projects } }) => {
-            console.log(projects);
             expect(projects).toEqual(
               expect.arrayContaining([
                 expect.objectContaining({
@@ -727,7 +723,6 @@ describe("app", () => {
             .get("/api/projects/staff")
             .expect(200)
             .then(({ body: { staffList } }) => {
-              console.log(staffList);
               expect(staffList).toEqual([
                 {
                   StaffID: 37704,
@@ -1106,7 +1101,6 @@ describe("app", () => {
             .get("/api/projects/staff/37704?Keywords=AP0054;MI0054")
             .expect(200)
             .then(({ body: { projects } }) => {
-              console.log(projects);
               expect(projects).toEqual(
                 expect.arrayContaining([
                   expect.objectContaining({
@@ -1134,7 +1128,6 @@ describe("app", () => {
             )
             .expect(200)
             .then(({ body: { projects } }) => {
-              console.log(projects);
               expect(projects).toEqual(
                 expect.arrayContaining([
                   expect.objectContaining({
@@ -1164,7 +1157,6 @@ describe("app", () => {
             )
             .expect(200)
             .then(({ body: { projects } }) => {
-              console.log(projects);
               expect(projects).toEqual(
                 expect.arrayContaining([
                   expect.objectContaining({
@@ -1186,6 +1178,33 @@ describe("app", () => {
                 ).toBe(true);
               });
               expect(projects.length).toBe(1);
+            });
+        });
+        test("GET: 200 - returns a list of projects filtered by startDate after and endddate before", () => {
+          return request(app)
+            .get(
+              "/api/projects/staff/37704?EndDateBefore=2022-01-01&StartDateAfter=2018-01-01"
+            )
+            .expect(200)
+            .then(({ body: { projects } }) => {
+              expect(projects).toEqual(
+                expect.arrayContaining([
+                  expect.objectContaining({
+                    ProjectCode: expect.any(Number),
+                    JobNameLong: expect.any(String),
+                    PracticeName: expect.any(String),
+                    Confidential: expect.any(Boolean),
+                    ClientName: expect.any(String),
+                  }),
+                ])
+              );
+              expect(projects.length).toBe(2);
+              projects.forEach((project) => {
+                expect(parseInt(project.EndDate.slice(0, 4)) < 2022).toBe(true);
+                expect(parseInt(project.StartDate.slice(0, 4)) > 2017).toBe(
+                  true
+                );
+              });
             });
         });
 
@@ -2382,7 +2401,6 @@ describe("app", () => {
               .get("/api/keywords/groups/37704")
               .expect(200)
               .then(({ body: { keywords } }) => {
-                console.log(keywords);
                 expect(keywords).toEqual(
                   expect.objectContaining({
                     AE: expect.objectContaining({
@@ -2404,7 +2422,6 @@ describe("app", () => {
               )
               .expect(200)
               .then(({ body: { keywords } }) => {
-                console.log(keywords);
                 expect(keywords).toEqual(
                   expect.objectContaining({
                     MS: expect.objectContaining({
