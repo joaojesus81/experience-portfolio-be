@@ -2461,6 +2461,38 @@ describe("app", () => {
         });
         return Promise.all(promises);
       });
+      describe("/keywords/allgroups", () => {
+        test("GET: 200 - returns list of keywords in a group object, similar to staff keywords", () => {
+          return request(app)
+            .get("/api/keywords/allgroups")
+            .expect(200)
+            .then(({ body: { keywords } }) => {
+              expect(keywords).toEqual(
+                expect.objectContaining({
+                  AE: expect.objectContaining({
+                    KeywordGroupName: expect.any(String),
+                    Keywords: expect.arrayContaining([expect.any(String)]),
+                    KeywordCodes: expect.arrayContaining([expect.any(String)]),
+                  }),
+                })
+              );
+              expect(Object.keys(keywords).length).toBe(30);
+            });
+        });
+        test("INVALID METHODS: 405 error", () => {
+          const invalidMethods = ["put", "patch", "post", "delete"];
+          const endPoint = "/api/keywords/allgroups";
+          const promises = invalidMethods.map((method) => {
+            return request(app)
+              [method](endPoint)
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("method not allowed!!!");
+              });
+          });
+          return Promise.all(promises);
+        });
+      });
 
       describe("/keywords/groups", () => {
         test("GET: 200 - returns list of keyword groups", () => {
@@ -2492,7 +2524,6 @@ describe("app", () => {
           });
           return Promise.all(promises);
         });
-
         describe("/keywords/groups/:StaffID", () => {
           test("GET: 200 - returns list of keywords that a staff member has worked on, separated into groups", () => {
             return request(app)

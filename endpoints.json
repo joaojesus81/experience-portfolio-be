@@ -599,6 +599,33 @@
       ]
     }
   },
+  "GET /api/keywords/allgroups": {
+    "description": "serves up an array of all keywords, grouped by keyword category (similar to /api/keywords/groups/:StaffID, but with all keywords)",
+    "exampleResponse": {
+      "keywords": {
+        "AP": {
+          "KeywordGroupName": "Arup Projects keywords",
+          "Keywords": ["LAT & LONG UPDATE FROM ARUP PROJECTS", "AP KEYWORDS"],
+          "KeywordCodes": ["AP0054", "AP9900"]
+        },
+        "BC": {
+          "KeywordGroupName": "Business codes",
+          "Keywords": [
+            "BUSINESS CODES KEYWORD",
+            "BUSINESS CODE - COMMERCIAL",
+            "BUSINESS CODE - RESIDENTIAL"
+          ],
+          "KeywordCodes": ["BC0001", "BC0004", "BC0016"]
+        },
+        "BP": {
+          "KeywordGroupName": "Buildings projects",
+          "Keywords": ["BUILDINGS PROJECTS"],
+          "KeywordCodes": ["BP9900"]
+        },
+        "...": {}
+      }
+    }
+  },
   "GET /api/keywords/groups": {
     "description": "serves up an array of keyword groups",
     "exampleResponse": {

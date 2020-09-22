@@ -32,7 +32,7 @@ const fetchKeywordGroups = () => {
   return knex.select("*").from("keywordGroups").returning("*");
 };
 
-const fetchKeywords = (filters) => {
+const fetchKeywords = (filters = {}) => {
   const filterKeys = Object.keys(filters);
   return knex
     .select("*")
@@ -160,10 +160,51 @@ const fetchKeywordGroupsByStaffID = (StaffID, filters) => {
   });
 };
 
+const fetchAllKeywordsByGroup = () => {
+  return knex
+    .select("*")
+    .from("keywordList")
+    .leftJoin(
+      "keywordGroups",
+      "keywordList.KeywordGroupCode",
+      "keywordGroups.KeywordGroupCode"
+    )
+    .orderBy("keywordList.Keyword")
+    .returning("*")
+    .then((keywordsArray) => {
+      const keywordGroups = {};
+
+      keywordsArray.forEach((keyword) => {
+        keywordGroups[keyword.KeywordGroupCode] = {
+          KeywordGroupName: keyword.KeywordGroupName,
+          Keywords: [],
+          KeywordCodes: [],
+        };
+      });
+
+      keywordsArray.forEach((keyword) => {
+        keywordGroups[keyword.KeywordGroupCode] = {
+          KeywordGroupName: keyword.KeywordGroupName,
+          Keywords: [
+            ...keywordGroups[keyword.KeywordGroupCode].Keywords,
+            keyword.Keyword,
+          ],
+          KeywordCodes: [
+            ...keywordGroups[keyword.KeywordGroupCode].KeywordCodes,
+            keyword.KeywordCode,
+          ],
+        };
+      });
+
+      return keywordGroups;
+    });
+};
+
 module.exports = {
   fetchKeywordGroups,
   fetchKeywords,
   fetchKeywordsByProjectCode,
   fetchKeywordsByStaffID,
   fetchKeywordGroupsByStaffID,
+  fetchAllKeywordsByGroup,
 };
