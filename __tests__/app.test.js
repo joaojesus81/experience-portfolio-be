@@ -333,6 +333,37 @@ describe("app", () => {
                 });
               });
           });
+          test("PATCH: 200 - patch high level description", () => {
+            return request(app)
+              .patch("/api/staff/meta/37704")
+              .send({
+                highLevelDescription:
+                  "Sam joined Arup North West’s Building Engineering Group as a Structural Engineer in 2007.  He has lead multi-disciplinary design teams in building engineering projects, and worked as part of large multi-disciplinary design teams on major sports and infrastructure developments. During his time at Arup, he has been responsible for the design of structural elements in reinforced concrete and steel and has demonstrated an ability to use a range of advanced analysis techniques.   Recently Sam has played a major role as Arup’s project manager for the redevelopment of Warrington Bridge Street Quarter, including acting as lead structural engineer and managing Arup’s multi-disciplinary appointment.",
+              })
+              .expect(200)
+              .then(({ body: { staffMeta } }) => {
+                expect(staffMeta).toEqual({
+                  StaffID: 37704,
+                  StaffName: "Samuel Styles",
+                  Email: "Sam.Styles@arup.com",
+                  LocationName: "Manchester Office",
+                  StartDate: "2007-09-05T23:00:00.000Z",
+                  JobTitle: "Senior Engineer",
+                  GradeLevel: 6,
+                  DisciplineName: "Structural Engineering",
+                  imgURL: null,
+                  careerStart: null,
+                  nationality: null,
+                  highLevelDescription:
+                    "Sam joined Arup North West’s Building Engineering Group as a Structural Engineer in 2007.  He has lead multi-disciplinary design teams in building engineering projects, and worked as part of large multi-disciplinary design teams on major sports and infrastructure developments. During his time at Arup, he has been responsible for the design of structural elements in reinforced concrete and steel and has demonstrated an ability to use a range of advanced analysis techniques.   Recently Sam has played a major role as Arup’s project manager for the redevelopment of Warrington Bridge Street Quarter, including acting as lead structural engineer and managing Arup’s multi-disciplinary appointment.",
+                  valueStatement: null,
+                  qualifications: [],
+                  professionalAssociations: [],
+                  committees: [],
+                  publications: [],
+                });
+              });
+          });
           test("PATCH: 422 - cannot update StaffID", () => {
             return request(app)
               .patch("/api/staff/meta/37704")
@@ -868,7 +899,7 @@ describe("app", () => {
             });
         });
 
-        test("GET: 200 - responds with an array of staff, works with keyword filters", () => {
+        test("GET: 200 - responds with an array of staff, works with keyword filters, also includes an array of the projects that meet the criteria.", () => {
           return request(app)
             .get("/api/projects/staff?Keywords=BC0018&includeConfidential=true")
             .expect(200)

@@ -15,8 +15,8 @@ exports.up = function (knex) {
     staffMetaTable.specificType("professionalAssociations", "text[]");
     staffMetaTable.specificType("committees", "text[]");
     staffMetaTable.specificType("publications", "text[]");
-    staffMetaTable.string("highLevelDescription");
-    staffMetaTable.string("valueStatement");
+    staffMetaTable.text("highLevelDescription");
+    staffMetaTable.text("valueStatement");
   });
 };
 
