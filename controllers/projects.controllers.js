@@ -188,10 +188,11 @@ const sendStaffListForProjects = (req, res, next) => {
                 ProjectCount: staff[index].ProjectCount,
               };
             });
-            return staffArr;
+
+            return { staffList: staffArr, projects: projectsArr };
           })
-          .then((staffList) => {
-            res.status(200).send({ staffList });
+          .then((staffPortfolio) => {
+            res.status(200).send({ staffPortfolio });
           });
       });
     })

@@ -769,8 +769,8 @@ describe("app", () => {
           return request(app)
             .get("/api/projects/staff?includeConfidential=true")
             .expect(200)
-            .then(({ body: { staffList } }) => {
-              expect(staffList).toEqual([
+            .then(({ body: { staffPortfolio } }) => {
+              expect(staffPortfolio.staffList).toEqual([
                 {
                   StaffID: 37704,
                   StaffName: "Samuel Styles",
@@ -841,8 +841,8 @@ describe("app", () => {
           return request(app)
             .get("/api/projects/staff?ClientName=Network Rail Limited")
             .expect(200)
-            .then(({ body: { staffList } }) => {
-              expect(staffList).toEqual([
+            .then(({ body: { staffPortfolio } }) => {
+              expect(staffPortfolio.staffList).toEqual([
                 {
                   StaffID: 56876,
                   StaffName: "Alex Robu",
@@ -872,8 +872,8 @@ describe("app", () => {
           return request(app)
             .get("/api/projects/staff?Keywords=BC0018&includeConfidential=true")
             .expect(200)
-            .then(({ body: { staffList } }) => {
-              expect(staffList).toEqual([
+            .then(({ body: { staffPortfolio } }) => {
+              expect(staffPortfolio.staffList).toEqual([
                 {
                   StaffID: 59754,
                   StaffName: "Joao Jesus",
@@ -917,6 +917,14 @@ describe("app", () => {
                   ProjectCount: 1,
                 },
               ]);
+              expect(staffPortfolio.projects).toEqual([
+                24032900,
+                25397800,
+                25875000,
+                27029100,
+                27143100,
+                27303800,
+              ]);
             });
         });
         test("GET: 200 - responds with an array of staff, works with staff filters", () => {
@@ -925,8 +933,8 @@ describe("app", () => {
               "/api/projects/staff?Keywords=BC0018&GradeLevel=5&includeConfidential=true"
             )
             .expect(200)
-            .then(({ body: { staffList } }) => {
-              expect(staffList).toEqual([
+            .then(({ body: { staffPortfolio } }) => {
+              expect(staffPortfolio.staffList).toEqual([
                 {
                   StaffID: 59754,
                   StaffName: "Joao Jesus",
