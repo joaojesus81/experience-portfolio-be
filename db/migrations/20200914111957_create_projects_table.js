@@ -1,4 +1,5 @@
 exports.up = function (knex) {
+  console.log("creating projects");
   return knex.schema.createTable("projects", (projectsTable) => {
     projectsTable.integer("ProjectCode").primary().unique().notNullable();
     projectsTable.string("JobNameLong").notNullable();

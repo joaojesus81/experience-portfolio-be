@@ -87,6 +87,8 @@ exports.formatStaffExperience = (list) => {
 
 exports.filterStaffTime = (experience, staffnos, projectcodes) => {
   const filteredArray = experience.filter(({ ...object }) => {
+    //if (!staffnos.includes(object.StaffID)) console.log(object.StaffID);
+
     return (
       projectcodes.includes(object.ProjectCode) &&
       staffnos.includes(object.StaffID)
@@ -109,6 +111,7 @@ exports.formatStaffMeta = (list) => {
     object.professionalAssociations = [];
     object.committees = [];
     object.publications = [];
+    object.careerStart = object.StartDate;
     return object;
   });
   return formattedArray;

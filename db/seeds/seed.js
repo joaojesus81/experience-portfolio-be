@@ -27,14 +27,16 @@ exports.seed = function (knex) {
       return knex("keywordGroups")
         .insert(keywordGroupsData)
         .then(() => {
+          console.log("seeded keywordGroups");
           const formattedKeywords = formatKeywords(keywordListData);
           return knex("keywordList").insert(formattedKeywords);
         })
         .then(() => {
+          console.log("seeded keywordList");
           return knex("keywordThesaurus").insert(keywordThesaurusData);
         })
         .then(() => {
-          //&&&const formattedProjects = formatProjects(projectsData);
+          console.log("seeded keywordThesaurus");
           const formattedProjects = formatProjects(
             projectsData,
             projectKeywordsData,
@@ -46,22 +48,30 @@ exports.seed = function (knex) {
             .returning("ProjectCode");
         })
         .then((projectCodes) => {
+          console.log("seeded projects");
           projectCodeArray = projectCodes;
           return knex("projectKeywords").insert(projectKeywordsData);
         })
         .then(() => {
+          console.log("seeded projectKeywords");
           const formatttedStaffMeta = formatStaffMeta(staffMeta);
           return knex("staffMeta")
             .insert(formatttedStaffMeta)
             .returning("StaffID");
         })
         .then((staffIDArray) => {
+          console.log("seeded StaffID");
+          console.log(staffIDArray);
           const formattedStaff = filterStaffTime(
             staffExperience,
             staffIDArray,
             projectCodeArray
           );
-          return knex("staffExperience").insert(formattedStaff);
+          return knex("staffExperience")
+            .insert(formattedStaff)
+            .then(() => {
+              console.log("seeded staffExperience");
+            });
         });
     });
 };

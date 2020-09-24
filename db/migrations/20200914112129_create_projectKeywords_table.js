@@ -1,4 +1,5 @@
 exports.up = function (knex) {
+  console.log("creating projkeywords");
   return knex.schema.createTable("projectKeywords", (projectKeywordsTable) => {
     projectKeywordsTable.increments("projectKeywordsID");
     projectKeywordsTable

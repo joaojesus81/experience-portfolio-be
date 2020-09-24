@@ -1,4 +1,5 @@
 exports.up = function (knex) {
+  console.log("creating staffexp");
   console.log("creating staff experience table");
   return knex.schema.createTable("staffExperience", (staffExperienceTable) => {
     staffExperienceTable.increments("experienceID");

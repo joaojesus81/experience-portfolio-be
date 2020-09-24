@@ -1,4 +1,5 @@
 exports.up = function (knex) {
+  console.log("creating keywordList table");
   return knex.schema.createTable("keywordList", (keywordListTable) => {
     keywordListTable.string("KeywordCode").notNullable().primary();
     keywordListTable.string("Keyword").notNullable();

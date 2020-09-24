@@ -33,7 +33,26 @@ describe("app", () => {
           );
         });
     });
-
+    describe("/api/info", () => {
+      test("GET: 200 - responds with a JSON object with metadata about the database", () => {
+        return request(app)
+          .get("/api/info")
+          .expect(200)
+          .then(({ body: { dbInfo } }) => {
+            expect(dbInfo).toEqual(
+              expect.objectContaining({
+                ProjectCode: expect.any(Object),
+                ClientName: expect.any(Object),
+                CountryName: expect.any(Object),
+                BusinessName: expect.any(Object),
+                Town: expect.any(Object),
+                State: expect.any(Object),
+                StaffID: expect.any(Object),
+              })
+            );
+          });
+      });
+    });
     describe("/staff", () => {
       describe("/staff/login", () => {
         test("POST: 200 - returns staff credentials", () => {
@@ -205,7 +224,7 @@ describe("app", () => {
                   GradeLevel: 6,
                   DisciplineName: "Structural Engineering",
                   imgURL: null,
-                  careerStart: null,
+                  careerStart: "2007-09-05T23:00:00.000Z",
                   nationality: null,
                   highLevelDescription: null,
                   valueStatement: null,
@@ -249,7 +268,7 @@ describe("app", () => {
                   GradeLevel: 6,
                   DisciplineName: "Structural Engineering",
                   imgURL: null,
-                  careerStart: null,
+                  careerStart: "2007-09-05T23:00:00.000Z",
                   nationality: "British",
                   highLevelDescription: null,
                   valueStatement: null,
@@ -352,7 +371,7 @@ describe("app", () => {
                   GradeLevel: 6,
                   DisciplineName: "Structural Engineering",
                   imgURL: null,
-                  careerStart: null,
+                  careerStart: "2007-09-05T23:00:00.000Z",
                   nationality: null,
                   highLevelDescription:
                     "Sam joined Arup North West’s Building Engineering Group as a Structural Engineer in 2007.  He has lead multi-disciplinary design teams in building engineering projects, and worked as part of large multi-disciplinary design teams on major sports and infrastructure developments. During his time at Arup, he has been responsible for the design of structural elements in reinforced concrete and steel and has demonstrated an ability to use a range of advanced analysis techniques.   Recently Sam has played a major role as Arup’s project manager for the redevelopment of Warrington Bridge Street Quarter, including acting as lead structural engineer and managing Arup’s multi-disciplinary appointment.",
@@ -812,7 +831,7 @@ describe("app", () => {
                   GradeLevel: 6,
                   DisciplineName: "Structural Engineering",
                   imgURL: null,
-                  careerStart: null,
+                  careerStart: "2007-09-05T23:00:00.000Z",
                   nationality: null,
                   qualifications: [],
                   professionalAssociations: [],
@@ -833,7 +852,7 @@ describe("app", () => {
                   GradeLevel: 5,
                   DisciplineName: "Building Services - Electrical",
                   imgURL: null,
-                  careerStart: null,
+                  careerStart: "2015-11-09T00:00:00.000Z",
                   nationality: null,
                   qualifications: [],
                   professionalAssociations: [],
@@ -854,7 +873,7 @@ describe("app", () => {
                   GradeLevel: 4,
                   DisciplineName: "Rail",
                   imgURL: null,
-                  careerStart: null,
+                  careerStart: "2014-09-03T23:00:00.000Z",
                   nationality: null,
                   qualifications: [],
                   professionalAssociations: [],
@@ -884,7 +903,7 @@ describe("app", () => {
                   GradeLevel: 4,
                   DisciplineName: "Rail",
                   imgURL: null,
-                  careerStart: null,
+                  careerStart: "2014-09-03T23:00:00.000Z",
                   nationality: null,
                   qualifications: [],
                   professionalAssociations: [],
@@ -915,7 +934,7 @@ describe("app", () => {
                   GradeLevel: 5,
                   DisciplineName: "Building Services - Electrical",
                   imgURL: null,
-                  careerStart: null,
+                  careerStart: "2015-11-09T00:00:00.000Z",
                   nationality: null,
                   qualifications: [],
                   professionalAssociations: [],
@@ -936,7 +955,7 @@ describe("app", () => {
                   GradeLevel: 6,
                   DisciplineName: "Structural Engineering",
                   imgURL: null,
-                  careerStart: null,
+                  careerStart: "2007-09-05T23:00:00.000Z",
                   nationality: null,
                   qualifications: [],
                   professionalAssociations: [],
@@ -976,7 +995,7 @@ describe("app", () => {
                   GradeLevel: 5,
                   DisciplineName: "Building Services - Electrical",
                   imgURL: null,
-                  careerStart: null,
+                  careerStart: "2015-11-09T00:00:00.000Z",
                   nationality: null,
                   qualifications: [],
                   professionalAssociations: [],

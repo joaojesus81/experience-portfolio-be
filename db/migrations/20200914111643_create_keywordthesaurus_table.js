@@ -1,4 +1,5 @@
 exports.up = function (knex) {
+  console.log("creating keywordThestable");
   return knex.schema.createTable(
     "keywordThesaurus",
     (keywordThesaurusTable) => {

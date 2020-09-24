@@ -1,4 +1,4 @@
-const { getAPIJSON } = require("../models/apis.models");
+const { getAPIJSON, getDBInfo } = require("../models/apis.models");
 
 const sendAPIs = (req, res, next) => {
   getAPIJSON((err, apiObj) => {
@@ -8,4 +8,15 @@ const sendAPIs = (req, res, next) => {
   });
 };
 
-module.exports = sendAPIs;
+const sendDBInfo = (req, res, next) => {
+  getDBInfo()
+    .then((dbInfo) => {
+      console.log(dbInfo);
+      res.status(200).send({ dbInfo });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+module.exports = { sendAPIs, sendDBInfo };
