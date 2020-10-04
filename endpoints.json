@@ -357,6 +357,7 @@
     }
   },
   "POST /api/staff/login": {
+    "description": "verifies whether a staff member exists and returns their grade and projects for which they are the Project Manager",
     "examplePostObject": {
       "StaffID": 37704
     },
